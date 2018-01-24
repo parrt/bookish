@@ -121,6 +121,13 @@
     <mapping directory="" vcs="Git" />
   </component>
   <component name="libraryTable">
+    <library name="antlr-4.7.1-complete">
+      <CLASSES>
+        <root url="jar:///usr/local/lib/antlr-4.7.1-complete.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="KotlinJavaRuntime">
       <CLASSES>
         <root url="jar://$KOTLIN_BUNDLED$/lib/kotlin-stdlib.jar!/" />
