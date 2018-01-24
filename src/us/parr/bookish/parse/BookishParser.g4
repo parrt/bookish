@@ -4,9 +4,30 @@ options {
 	tokenVocab=BookishLexer;
 }
 
-document : element * ;
+document
+	:	chapter
+		(section|element|paragraph)* ;
 
-element : block_eqn | eqn | OTHER ;
+element
+	:	block_eqn
+	|	eqn
+    |	link
+    |	italics
+    |	bold
+	|	other
+	;
+
+paragraph
+	:	PARA element* (PARA|EOF)
+	;
+
+chapter 	:	CHAPTER element* ;
+section 	:	SECTION element* ;
+subsection 	:	SUBSECTION element*;
+link 		:	LINK ;
+italics 	:	ITALICS ;
+bold 		:	BOLD ;
+other       :	OTHER ;
 
 block_eqn : BLOCK_EQN block_eqn_content END_BLOCK_EQN ;
 
