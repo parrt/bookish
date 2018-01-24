@@ -8,7 +8,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-fun tex2svg(equation : String, fontsize : Int) : String {
+fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
+    val eqntext = equation.trim()
     val tex = """\documentclass[xetex,fontsize=${fontsize}pt]{scrartcl}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -16,24 +17,36 @@ fun tex2svg(equation : String, fontsize : Int) : String {
 %\usepackage{%FONT%}
 \begin{document}
 \thispagestyle{empty}
-$$equation$
+$$eqntext$
+\end{document}
+"""
+
+    val displaytex = """\documentclass[xetex,fontsize=${fontsize}pt]{scrartcl}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+%\usepackage{%FONT%}
+\begin{document}
+\thispagestyle{empty}
+\[$eqntext\]
 \end{document}
 """
 
     val tmpdir = File(System.getProperty("java.io.tmpdir")).getAbsolutePath()
 
     val texfilename = tmpdir + "/temp.tex"
-    Files.write(Paths.get(texfilename), tex.toByteArray())
+    if ( display ) {
+        Files.write(Paths.get(texfilename), displaytex.toByteArray())
+    }
+    else {
+        Files.write(Paths.get(texfilename), tex.toByteArray())
+    }
+
     println("wrote $texfilename")
 
     val runtime = Runtime.getRuntime()
 
-    val cmds = listOf(
-            "xelatex -shell-escape temp.tex",
-            "pdfcrop temp.pdf",
-            "pdf2svg temp-crop.pdf temp.svg")
-
-    var results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex")
+    var results = runProcess(tmpdir, "pdflatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex")
     println(results.a)
 
     for (line in results.a.split("\n")) {
@@ -74,5 +87,5 @@ private fun runProcess(execPath: String, vararg args: String): Pair<String, Stri
 }
 
 fun main(args: Array<String>) {
-    println(tex2svg("x^2 = 3+4",16))
+    println(tex2svg("x^2 = 3+4", false,16))
 }
