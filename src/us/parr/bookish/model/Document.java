@@ -1,12 +1,10 @@
 package us.parr.bookish.model;
 
-import java.util.List;
-
 public class Document extends OutputModelObject {
 	@ModelElement
-	public List<OutputModelObject> elements;
+	public Chapter chapter;
 
-	public Document(List<OutputModelObject> elements) {
-		this.elements = elements;
+	public Document(Chapter chapter) {
+		this.chapter = chapter;
 	}
 }

@@ -1,17 +1,21 @@
 lexer grammar BookishLexer;
 
-CHAPTER   : '#' ~'\n'+ ;
-SECTION   : '##' ~'\n'+ ;
 SUBSECTION: '###' ~'\n'+ ;
+SECTION   : '##' ~'\n'+ ;
+CHAPTER   : '#' ~'\n'+ ;
 
 LINK	  : '[' .*? ']' '(' .*? ')' ;
-ITALICS	  : '*' ~' ' .*? ~' ' '*' ;
-BOLD	  : '**' ~' ' .*? ~' ' '**' ;
+ITALICS	  : '*' ~' ' '*'
+ 		  | '*' ~' ' .*? ~' ' '*'
+ 		  ;
+BOLD	  : '**' ~' ' '**'
+          | '**' ~' ' .*? ~' ' '**'
+          ;
 
 EQN       : '$'     -> pushMode(EQN_MODE) ;
 BLOCK_EQN : '\\\\[' -> pushMode(BLOCK_EQN_MODE) ;
 
-PARA	  : '\n\n' ;
+BLANK_LINE : '\n\n' ;
 
 OTHER : . ;
 

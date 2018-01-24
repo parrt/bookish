@@ -1,0 +1,62 @@
+delimiters "$","$"
+
+Document(model, chapter) ::= <<
+<html>
+<head>
+</head>
+<body>
+$chapter$
+</body>
+</html>
+>>
+
+Chapter(model, elements, sections) ::= <<
+<h1>$model.title$</h1>
+
+$elements$
+
+$sections$
+>>
+
+Section(model, elements, sections) ::= <<
+
+<h2>$model.title$</h2>
+
+$elements$
+
+$sections$
+
+>>
+
+Paragraph(model, elements) ::= <<
+
+
+<p>$elements$</p>
+
+>>
+
+InlineImage(model) ::= <<
+<img src="$model.src$">
+>>
+
+BlockImage(model) ::= <<
+
+<div><img src="$model.src$"></div>
+
+>>
+
+InlineEquation(model) ::= "$model.eqn$"
+
+BlockEquation(model) ::= <<
+
+$model.eqn$
+
+>>
+
+HyperLink(model) ::= <<
+<a href="$model.href$">$model.href$</a>
+>>
+
+Other(model) ::= "$model.text$"
+
+Join(model, elements) ::= "$elements$"

@@ -5,25 +5,32 @@ options {
 }
 
 document
-	:	chapter
-		(section|element|paragraph)* ;
+	:	chapter EOF
+	;
 
-element
-	:	block_eqn
-	|	eqn
+chapter : BLANK_LINE? chap=CHAPTER section_element* section* ;
+
+section : BLANK_LINE sec=SECTION section_element* subsection* ;
+
+subsection : BLANK_LINE sec=SUBSECTION section_element*;
+
+section_element
+	:	paragraph
+	|	block_eqn
+	;
+
+paragraph
+	:	BLANK_LINE paragraph_element*
+	;
+
+paragraph_element
+	:	eqn
     |	link
     |	italics
     |	bold
 	|	other
 	;
 
-paragraph
-	:	PARA element* (PARA|EOF)
-	;
-
-chapter 	:	CHAPTER element* ;
-section 	:	SECTION element* ;
-subsection 	:	SUBSECTION element*;
 link 		:	LINK ;
 italics 	:	ITALICS ;
 bold 		:	BOLD ;
