@@ -8,8 +8,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-fun tex2svg(equation : String) {
-    val tex = """\documentclass[xetex,fontsize=12pt]{scrartcl}
+fun tex2svg(equation : String, fontsize : Int) : String {
+    val tex = """\documentclass[xetex,fontsize=${fontsize}pt]{scrartcl}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -33,7 +33,7 @@ $$equation$
             "pdfcrop temp.pdf",
             "pdf2svg temp-crop.pdf temp.svg")
 
-    val results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex")
+    var results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex")
     println(results.a)
 
     for (line in results.a.split("\n")) {
@@ -44,6 +44,20 @@ $$equation$
     if (results.b.length>0) {
         System.err.println(results.b)
     }
+
+    results = runProcess(tmpdir, "pdfcrop", "temp.pdf")
+    if (results.b.length>0) {
+        System.err.println(results.b)
+    }
+
+    results = runProcess(tmpdir, "pdf2svg", "temp-crop.pdf", "temp.svg")
+    if (results.b.length>0) {
+        System.err.println(results.b)
+    }
+
+    val svgfilename = tmpdir + "/temp.svg"
+    val svg = Files.readAllBytes(Paths.get(svgfilename))
+    return String(svg)
 }
 
 @Throws(IOException::class, InterruptedException::class)
@@ -60,5 +74,5 @@ private fun runProcess(execPath: String, vararg args: String): Pair<String, Stri
 }
 
 fun main(args: Array<String>) {
-    tex2svg("x^2 = 3+4")
+    println(tex2svg("x^2 = 3+4",16))
 }
