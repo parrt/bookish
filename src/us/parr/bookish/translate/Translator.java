@@ -8,6 +8,8 @@ import us.parr.bookish.model.Document;
 import us.parr.bookish.model.HyperLink;
 import us.parr.bookish.model.InlineImage;
 import us.parr.bookish.model.Join;
+import us.parr.bookish.model.ListItem;
+import us.parr.bookish.model.OrderedList;
 import us.parr.bookish.model.Other;
 import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.Paragraph;
@@ -159,5 +161,24 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String title = txt.substring(1,middle);
 		String href = txt.substring(middle+2,txt.length()-1);
 		return new HyperLink(title,href);
+	}
+
+	@Override
+	public OutputModelObject visitOrdered_list(BookishParser.Ordered_listContext ctx) {
+		// 		( ws? LI list_item )+
+		List<ListItem> items = new ArrayList<>();
+		for (BookishParser.List_itemContext el : ctx.list_item()) {
+			items.add((ListItem)visit(el));
+		}
+		return new OrderedList(items);
+	}
+
+	@Override
+	public OutputModelObject visitList_item(BookishParser.List_itemContext ctx) {
+		List<OutputModelObject> elements = new ArrayList<>();
+		for (ParseTree el : ctx.children) {
+			elements.add( visit(el) );
+		}
+		return new ListItem(elements);
 	}
 }

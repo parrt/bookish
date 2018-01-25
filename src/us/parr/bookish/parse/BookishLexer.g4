@@ -19,9 +19,20 @@ OL_ : '</ol>' ;
 EQN       : '$'     -> pushMode(EQN_MODE) ;
 BLOCK_EQN : '\\\\[' -> pushMode(BLOCK_EQN_MODE) ;
 
-BLANK_LINE : '\n\n' ;
+BLANK_LINE : '\n' '\n'+ ; // at least one blank line
 
-OTHER : . ;
+TAB : '\t' ;
+SPACE : ' ' ;
+NL : '\r'? '\n' ;
+
+OTHER : NOT_SPECIAL+ ;
+
+XML_TAG : '<' .*? '>' ;
+
+//OTHER : . ;
+
+fragment
+NOT_SPECIAL : ~[$<#[*\\\n] ;
 
 mode EQN_MODE ;
 

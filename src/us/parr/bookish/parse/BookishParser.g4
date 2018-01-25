@@ -16,8 +16,10 @@ subsection : BLANK_LINE sec=SUBSECTION section_element*;
 
 section_element
 	:	paragraph
+	|	eqn
 	|	block_eqn
 	|	ordered_list
+	|	other
 	;
 
 paragraph
@@ -34,14 +36,18 @@ paragraph_element
 
 ordered_list
 	:	OL
-		( LI (paragraph_element|BLANK_LINE)* )+
+		( ws? LI list_item )+ ws?
 		OL_
 	;
+
+list_item : (section_element|BLANK_LINE)* ;
+
+ws  : (BLANK_LINE | SPACE | NL | TAB)+ ;
 
 link 		:	LINK ;
 italics 	:	ITALICS ;
 bold 		:	BOLD ;
-other       :	OTHER ;
+other       :	OTHER | SPACE | NL | TAB | XML_TAG ;
 
 block_eqn : BLOCK_EQN block_eqn_content END_BLOCK_EQN ;
 

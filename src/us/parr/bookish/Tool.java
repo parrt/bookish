@@ -35,7 +35,7 @@ public class Tool {
 		ModelConverter converter = new ModelConverter(trans.templates);
 		ST outputST = converter.walk(omo);
 		String output = outputST.render();
-		Files.write(Paths.get(outputDir+"/t.html"), output.getBytes());
+		Files.write(Paths.get(outputDir+"/index.html"), output.getBytes());
 		System.out.println(output);
 	}
 }
