@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 import static us.parr.bookish.Tool.outputDir;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
+	public static int EQN_FONT_SIZE = 14;
 	public STGroupFile templates = new STGroupFile("templates/HTML.stg", '$', '$');
 
 	public int eqnCounter = 1;
@@ -132,7 +133,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitBlock_eqn_content(BookishParser.Block_eqn_contentContext ctx) {
 		String eqn = ctx.getText();
-		String svg = Tex2SVGKt.tex2svg(eqn, false,12);
+		String svg = Tex2SVGKt.tex2svg(eqn, false,EQN_FONT_SIZE);
 		String src = "n/a";
 		try {
 			src = outputDir+"/images/t"+eqnCounter+".svg";
@@ -170,7 +171,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new EqnIndexedVecVar(elements.get(0), elements.get(1));
 		}
 
-		String svg = Tex2SVGKt.tex2svg(eqn, false,12);
+		String svg = Tex2SVGKt.tex2svg(eqn, false, EQN_FONT_SIZE);
 		String src = "n/a";
 		try {
 			src = outputDir+"/images/t"+eqnCounter+".svg";

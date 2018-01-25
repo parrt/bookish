@@ -5,7 +5,7 @@ options {
 }
 
 document
-	:	chapter EOF
+	:	chapter BLANK_LINE? EOF
 	;
 
 chapter : BLANK_LINE? chap=CHAPTER (section_element|ws)* section* ;
@@ -16,12 +16,12 @@ subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)*;
 
 section_element
 	:	paragraph
-	|	eqn
-	|	block_eqn
-	|	ordered_list
-	|	unordered_list
-	|	table
-	|	block_image
+	|	BLANK_LINE? eqn
+	|	BLANK_LINE? block_eqn
+	|	BLANK_LINE? ordered_list
+	|	BLANK_LINE? unordered_list
+	|	BLANK_LINE? table
+	|	BLANK_LINE? block_image
 	|	other
 	;
 
@@ -57,18 +57,20 @@ table
 		TABLE_
 	;
 
-table_header : TR (ws? TH ws? table_item)+ ;
-table_row : TR (ws? TD ws? table_item)+ ;
+table_header : TR ws? (TH table_item)+ ;
+table_row : TR ws? (TD table_item)+ ;
 
-list_item : (section_element|ws)* ;
+list_item : (section_element|ws|BLANK_LINE)* ;
 
-table_item : (section_element|ws)* ;
+table_item : (section_element|ws|BLANK_LINE)* ;
 
 block_image : IMG attr_assignment+ END_TAG ;
 
 attr_assignment : name=XML_ATTR XML_EQ value=XML_ATTR_VALUE ;
 
-ws  : (BLANK_LINE | SPACE | NL | TAB)+ ;
+//ws  : (BLANK_LINE | SPACE | NL | TAB)+ ;
+
+ws : (SPACE | NL | TAB)+ ;
 
 link 		:	LINK ;
 italics 	:	ITALICS ;

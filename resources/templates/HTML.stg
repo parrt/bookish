@@ -3,18 +3,32 @@ delimiters "$","$"
 Document(model, chapter) ::= <<
 <html>
 <head>
-</head>
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 <style>
 .eqnvec {
-        font-family: "Times New Roman";
+        font-family: Merriweather, serif;
         font-weight: bold;
+        font-size: 14px;
 }
 .eqn {
-        font-family: "Times New Roman";
+        font-family:  Merriweather, serif;
         font-weight: normal;
         font-style: italic;
+        font-size: 14px;
+}
+body {
+        font-family: "Merriweather", serif;
+        font-size: 14px;
+        letter-spacing: 0.01rem;
+        line-height: 1.5em;
+        color: #3A4145;
+        background: #FFFFFF;
+}
+p {
+        margin: 15px 5px 15px 5px;
 }
 </style>
+</head>
 </head>
 <body>
 $chapter$
