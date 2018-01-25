@@ -36,12 +36,14 @@ Paragraph(model, elements) ::= <<
 >>
 
 InlineImage(model) ::= <<
-<img src="$model.src$">
+<img style="vertical-align: middle;" src="$model.src$">
 >>
 
 BlockImage(model) ::= <<
 
-<div><img src="$model.src$"></div>
+<center>
+<img src="$model.src$"></div>
+</center>
 
 >>
 
@@ -49,12 +51,14 @@ InlineEquation(model) ::= "$model.eqn$"
 
 BlockEquation(model) ::= <<
 
+<center>
 $model.eqn$
+</center>
 
 >>
 
 HyperLink(model) ::= <<
-<a href="$model.href$">$model.href$</a>
+<a href="$model.href$">$model.title$</a>
 >>
 
 Other(model) ::= "$model.text$"

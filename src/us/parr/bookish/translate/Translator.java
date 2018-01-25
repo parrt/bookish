@@ -18,6 +18,7 @@ import us.parr.bookish.parse.BookishParserBaseVisitor;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,11 +107,13 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitBlock_eqn_content(BookishParser.Block_eqn_contentContext ctx) {
 		String eqn = ctx.getText();
-		String svg = Tex2SVGKt.tex2svg(eqn, false,14);
+		String svg = Tex2SVGKt.tex2svg(eqn, false,12);
 		String src = "n/a";
 		try {
 			src = outputDir+"/images/t"+eqnCounter+".svg";
-			Files.write(Paths.get(src), svg.getBytes());
+			Path outpath = Paths.get(src);
+			System.out.println(outpath);
+			Files.write(outpath, svg.getBytes());
 			eqnCounter++;
 		}
 		catch (IOException ioe) {
@@ -123,11 +126,13 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitEqn_content(BookishParser.Eqn_contentContext ctx) {
 		String eqn = ctx.getText();
-		String svg = Tex2SVGKt.tex2svg(eqn, false,14);
+		String svg = Tex2SVGKt.tex2svg(eqn, false,12);
 		String src = "n/a";
 		try {
 			src = outputDir+"/images/t"+eqnCounter+".svg";
-			Files.write(Paths.get(src), svg.getBytes());
+			Path outpath = Paths.get(src);
+			System.out.println(outpath);
+			Files.write(outpath, svg.getBytes());
 			eqnCounter++;
 		}
 		catch (IOException ioe) {

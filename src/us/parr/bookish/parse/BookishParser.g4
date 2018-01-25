@@ -17,6 +17,7 @@ subsection : BLANK_LINE sec=SUBSECTION section_element*;
 section_element
 	:	paragraph
 	|	block_eqn
+	|	ordered_list
 	;
 
 paragraph
@@ -29,6 +30,12 @@ paragraph_element
     |	italics
     |	bold
 	|	other
+	;
+
+ordered_list
+	:	OL
+		( LI (paragraph_element|BLANK_LINE)* )+
+		OL_
 	;
 
 link 		:	LINK ;

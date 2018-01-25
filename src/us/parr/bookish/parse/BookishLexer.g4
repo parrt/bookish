@@ -12,6 +12,10 @@ BOLD	  : '**' ~' ' '**'
           | '**' ~' ' .*? ~' ' '**'
           ;
 
+OL : '<ol>' ;
+LI : '<li>' ;
+OL_ : '</ol>' ;
+
 EQN       : '$'     -> pushMode(EQN_MODE) ;
 BLOCK_EQN : '\\\\[' -> pushMode(BLOCK_EQN_MODE) ;
 

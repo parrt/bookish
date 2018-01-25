@@ -5,7 +5,6 @@ import us.parr.bookish.util.StreamVacuum
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 
 fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
@@ -42,12 +41,12 @@ $$eqntext$
         Files.write(Paths.get(texfilename), tex.toByteArray())
     }
 
-    println("wrote $texfilename")
+//    println("wrote $texfilename")
 
     val runtime = Runtime.getRuntime()
 
     var results = runProcess(tmpdir, "pdflatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex")
-    println(results.a)
+//    println(results.a)
 
     for (line in results.a.split("\n")) {
         if ( line.startsWith('!') || line.startsWith("l.") ) {
