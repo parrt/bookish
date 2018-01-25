@@ -5,6 +5,10 @@ import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.Document;
+import us.parr.bookish.model.EqnIndexedVar;
+import us.parr.bookish.model.EqnIndexedVecVar;
+import us.parr.bookish.model.EqnVar;
+import us.parr.bookish.model.EqnVecVar;
 import us.parr.bookish.model.HyperLink;
 import us.parr.bookish.model.InlineImage;
 import us.parr.bookish.model.Join;
@@ -15,6 +19,10 @@ import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SubSection;
+import us.parr.bookish.model.Table;
+import us.parr.bookish.model.TableItem;
+import us.parr.bookish.model.TableRow;
+import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
 
@@ -23,7 +31,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static us.parr.bookish.Tool.outputDir;
 
@@ -31,6 +43,17 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public STGroupFile templates = new STGroupFile("templates/HTML.stg", '$', '$');
 
 	public int eqnCounter = 1;
+	public Pattern eqnVarPattern;
+	public Pattern eqnVecVarPattern;
+	public Pattern eqnIndexedVarPattern;
+	public Pattern eqnIndexedVecVarPattern;
+
+	public Translator() {
+		eqnVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)");
+		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
+		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
+		eqnIndexedVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
+	}
 
 	@Override
 	protected OutputModelObject aggregateResult(OutputModelObject aggregate, OutputModelObject nextResult) {
@@ -121,13 +144,32 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-		return new BlockImage(src);
+		return new BlockImage(src,"");
 //		return new BlockEquation(svg);
 	}
 
 	@Override
 	public OutputModelObject visitEqn_content(BookishParser.Eqn_contentContext ctx) {
 		String eqn = ctx.getText();
+
+		// check for special cases like $w$ and $\mathbf{w}_i$.
+		List<String> elements = extract(eqnVarPattern, eqn);
+		if ( elements.size()>0 ) {
+			return new EqnVar(elements.get(0));
+		}
+		elements = extract(eqnVecVarPattern, eqn);
+		if ( elements.size()>0 ) {
+			return new EqnVecVar(elements.get(0));
+		}
+		elements = extract(eqnIndexedVarPattern, eqn);
+		if ( elements.size()>0 ) {
+			return new EqnIndexedVar(elements.get(0),elements.get(1));
+		}
+		elements = extract(eqnIndexedVecVarPattern, eqn);
+		if ( elements.size()>0 ) {
+			return new EqnIndexedVecVar(elements.get(0), elements.get(1));
+		}
+
 		String svg = Tex2SVGKt.tex2svg(eqn, false,12);
 		String src = "n/a";
 		try {
@@ -164,6 +206,57 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitBlock_image(BookishParser.Block_imageContext ctx) {
+		Map<String,String> attrs = new HashMap<>();
+		for (BookishParser.Attr_assignmentContext a : ctx.attr_assignment()) {
+			String name = a.name.getText();
+			String value = stripQuotes(a.value.getText());
+			attrs.put(name, value);
+		}
+		return new BlockImage(attrs);
+	}
+
+	@Override
+	public OutputModelObject visitTable(BookishParser.TableContext ctx) {
+		List<TableRow> rows = new ArrayList<>();
+		TableRow headers = null;
+		if ( ctx.table_header()!=null ) {
+			headers = (TableRow) visitTable_header(ctx.table_header());
+		}
+		for (BookishParser.Table_rowContext row : ctx.table_row()) {
+			rows.add( (TableRow)visit(row));
+		}
+		return new Table(headers, rows);
+	}
+
+	@Override
+	public OutputModelObject visitTable_header(BookishParser.Table_headerContext ctx) {
+		List<TableItem> items = new ArrayList<>();
+		for (BookishParser.Table_itemContext el : ctx.table_item()) {
+			items.add( (TableItem)visit(el) );
+		}
+		return new TableRow(items);
+	}
+
+	@Override
+	public OutputModelObject visitTable_row(BookishParser.Table_rowContext ctx) {
+		List<TableItem> items = new ArrayList<>();
+		for (BookishParser.Table_itemContext el : ctx.table_item()) {
+			items.add( (TableItem)visit(el) );
+		}
+		return new TableRow(items);
+	}
+
+	@Override
+	public OutputModelObject visitTable_item(BookishParser.Table_itemContext ctx) {
+		List<OutputModelObject> contents = new ArrayList<>();
+		for (BookishParser.Section_elementContext el : ctx.section_element()) {
+			contents.add( visit(el) );
+		}
+		return new TableItem(contents);
+	}
+
+	@Override
 	public OutputModelObject visitOrdered_list(BookishParser.Ordered_listContext ctx) {
 		// 		( ws? LI list_item )+
 		List<ListItem> items = new ArrayList<>();
@@ -174,11 +267,38 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitUnordered_list(BookishParser.Unordered_listContext ctx) {
+		List<ListItem> items = new ArrayList<>();
+		for (BookishParser.List_itemContext el : ctx.list_item()) {
+			items.add((ListItem)visit(el));
+		}
+		return new UnOrderedList(items);
+	}
+
+	@Override
 	public OutputModelObject visitList_item(BookishParser.List_itemContext ctx) {
 		List<OutputModelObject> elements = new ArrayList<>();
 		for (ParseTree el : ctx.children) {
 			elements.add( visit(el) );
 		}
 		return new ListItem(elements);
+	}
+
+	// Support
+
+	private static List<String> extract(Pattern pattern, String text) {
+		Matcher m = pattern.matcher(text);
+		List<String> elements = new ArrayList<>();
+		if ( m.matches() ) {
+			for (int i = 1; i <= m.groupCount(); i++) {
+				elements.add(m.group(i));
+			}
+		}
+		return elements;
+	}
+
+	/** Remove first and last char from argument */
+	public static String stripQuotes(String quotedString) {
+		return quotedString.substring(1, quotedString.length()-1);
 	}
 }

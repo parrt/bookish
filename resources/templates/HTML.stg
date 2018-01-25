@@ -4,6 +4,18 @@ Document(model, chapter) ::= <<
 <html>
 <head>
 </head>
+<style>
+.eqnvec {
+        font-family: "Times New Roman";
+        font-weight: bold;
+}
+.eqn {
+        font-family: "Times New Roman";
+        font-weight: normal;
+        font-style: italic;
+}
+</style>
+</head>
 <body>
 $chapter$
 </body>
@@ -34,7 +46,28 @@ $items$
 </ol>
 >>
 
+UnOrderedList(model, items) ::= <<
+<ul>
+$items$
+</ul>
+>>
+
 ListItem(model, elements) ::= "<li>$elements$</li>"
+
+Table(model, headers, rows) ::= <<
+<table>
+	$headers$
+	$rows; separator="\n"$
+</table>
+>>
+
+TableRow(model, items) ::= <<
+<tr>
+	$items$
+</tr>
+>>
+
+TableItem(model, contents) ::= "<td>$contents$</td>"
 
 Paragraph(model, elements) ::= <<
 
@@ -50,7 +83,7 @@ InlineImage(model) ::= <<
 BlockImage(model) ::= <<
 
 <center>
-<img src="$model.src$"></div>
+<img $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>
 </center>
 
 >>
@@ -64,6 +97,11 @@ $model.eqn$
 </center>
 
 >>
+
+EqnVar(model) ::= "<span class=eqn>$model.varname$</span>"
+EqnIndexedVar(model) ::= "<span class=eqn>$model.varname$<sub>$model.indexname$</sub></span>"
+EqnVecVar(model) ::= "<span class=eqnvec>$model.varname$</span>"
+EqnIndexedVecVar(model) ::= "<span class=eqnvec>$model.varname$</span><sub class=eqn>$model.indexname$</sub>"
 
 HyperLink(model) ::= <<
 <a href="$model.href$">$model.title$</a>
