@@ -13,7 +13,12 @@ fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
-%\usepackage{%FONT%}
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
 \begin{document}
 \thispagestyle{empty}
 $$eqntext$
@@ -24,7 +29,12 @@ $$eqntext$
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
-%\usepackage{%FONT%}
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
 \begin{document}
 \thispagestyle{empty}
 \[$eqntext\]
@@ -86,5 +96,6 @@ private fun runProcess(execPath: String, vararg args: String): Pair<String, Stri
 }
 
 fun main(args: Array<String>) {
-    println(tex2svg("x^2 = 3+4", false,16))
+    val svg = tex2svg("\\frac{\\partial}{\\partial x}f(x^2) = 3+4", false,16)
+    Files.write(Paths.get("/tmp/t.svg"), svg.toByteArray())
 }
