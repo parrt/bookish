@@ -3,6 +3,7 @@ package us.parr.bookish.translate;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.model.BlockImage;
+import us.parr.bookish.model.Bold;
 import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.Document;
 import us.parr.bookish.model.EqnIndexedVar;
@@ -11,6 +12,7 @@ import us.parr.bookish.model.EqnVar;
 import us.parr.bookish.model.EqnVecVar;
 import us.parr.bookish.model.HyperLink;
 import us.parr.bookish.model.InlineImage;
+import us.parr.bookish.model.Italics;
 import us.parr.bookish.model.Join;
 import us.parr.bookish.model.ListItem;
 import us.parr.bookish.model.OrderedList;
@@ -23,6 +25,8 @@ import us.parr.bookish.model.Table;
 import us.parr.bookish.model.TableItem;
 import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.UnOrderedList;
+import us.parr.bookish.model.XMLEndTag;
+import us.parr.bookish.model.XMLTag;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
 
@@ -38,6 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static us.parr.bookish.Tool.outputDir;
+import static us.parr.bookish.parse.BookishParser.END_TAG;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 13;
@@ -286,6 +291,31 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return new ListItem(elements);
 	}
 
+	@Override
+	public OutputModelObject visitXml(BookishParser.XmlContext ctx) {
+		if ( ctx.start.getType()==END_TAG ) {
+			String text = ctx.getText();
+			return new XMLEndTag(text.substring(2, text.length()-1));
+		}
+		String name = ctx.tagname.getText();
+		Map<String,String> attrs = new HashMap<>();
+		for (BookishParser.Attr_assignmentContext a : ctx.attr_assignment()) {
+			String value = stripQuotes(a.value.getText());
+			attrs.put(a.name.getText(), value);
+		}
+		return new XMLTag(name, attrs);
+	}
+
+	@Override
+	public OutputModelObject visitBold(BookishParser.BoldContext ctx) {
+		return new Bold(stripQuotes(ctx.getText(),2));
+	}
+
+	@Override
+	public OutputModelObject visitItalics(BookishParser.ItalicsContext ctx) {
+		return new Italics(stripQuotes(ctx.getText()));
+	}
+
 	// Support
 
 	private static List<String> extract(Pattern pattern, String text) {
@@ -301,6 +331,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	/** Remove first and last char from argument */
 	public static String stripQuotes(String quotedString) {
-		return quotedString.substring(1, quotedString.length()-1);
+		return stripQuotes(quotedString, 1);
+	}
+
+	public static String stripQuotes(String quotedString, int n) {
+		return quotedString.substring(n, quotedString.length()-n);
 	}
 }

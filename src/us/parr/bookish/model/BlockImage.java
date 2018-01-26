@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BlockImage extends OutputModelObject {
-	public String src;
-	public String alt;
 	public Map<String, String> attrs;
 
 	public BlockImage(String src, String alt) {

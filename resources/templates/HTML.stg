@@ -69,10 +69,12 @@ $items; separator="\n"$
 ListItem(model, elements) ::= "<li>$elements$</li>"
 
 Table(model, headers, rows) ::= <<
+<center>
 <table>
 	$headers$
 	$rows; separator="\n"$
 </table>
+</center>
 >>
 
 TableRow(model, items) ::= <<
@@ -102,6 +104,11 @@ BlockImage(model) ::= <<
 
 >>
 
+XMLTag(model) ::= <<
+<$model.name$ $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>
+>>
+XMLEndTag(model) ::= "</$model.name$>"
+
 InlineEquation(model) ::= "$model.eqn$"
 
 BlockEquation(model) ::= <<
@@ -120,6 +127,9 @@ EqnIndexedVecVar(model) ::= "<span class=eqnvec>$model.varname$</span><sub class
 HyperLink(model) ::= <<
 <a href="$model.href$">$model.title$</a>
 >>
+
+Bold(model) ::= "<b>$model.text$</b>"
+Italics(model) ::= "<i>$model.text$</i>"
 
 Other(model) ::= "$model.text$"
 

@@ -19,8 +19,8 @@ public class Tool {
 	public static String rootDir = "/Users/parrt/github/autodx";
 
 	public static void main(String[] args) throws Exception {
-//		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName("/Users/parrt/github/autodx/images/matrix-calculus.md"));
-		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName("/tmp/t.md"));
+		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName("/Users/parrt/github/autodx/matrix-calculus.md"));
+//		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName("/tmp/t.md"));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		TokenStreamRewriter rewriter = new TokenStreamRewriter(tokens);
 		BookishParser parser = new BookishParser(tokens);

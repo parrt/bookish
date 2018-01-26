@@ -23,6 +23,7 @@ section_element
 	|	BLANK_LINE? unordered_list
 	|	BLANK_LINE? table
 	|	BLANK_LINE? block_image
+	|	xml
 	|	other
 	;
 
@@ -35,6 +36,7 @@ paragraph_element
     |	link
     |	italics
     |	bold
+	|	xml
 	|	other
 	;
 
@@ -69,16 +71,12 @@ block_image : IMG attr_assignment+ END_OF_TAG ;
 
 attr_assignment : name=XML_ATTR XML_EQ value=XML_ATTR_VALUE ;
 
-//ws  : (BLANK_LINE | SPACE | NL | TAB)+ ;
-
-ws : (SPACE | NL | TAB)+ ;
+xml	: XML tagname=XML_ATTR attr_assignment* END_OF_TAG | END_TAG ;
 
 link 		:	LINK ;
 italics 	:	ITALICS ;
 bold 		:	BOLD ;
-other       :	OTHER | xml ;
-
-xml			:   XML tagname=XML_ATTR attr_assignment* END_OF_TAG | END_TAG ;
+other       :	OTHER ;
 
 block_eqn : BLOCK_EQN block_eqn_content END_BLOCK_EQN ;
 
@@ -101,3 +99,4 @@ eqn_element
 	|	EQN_OTHER
 	;
 
+ws : (SPACE | NL | TAB)+ ;
