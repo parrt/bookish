@@ -30,8 +30,8 @@ TABLE_ : '</table>' ;
 
 END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
 
-EQN       : '$'     -> pushMode(EQN_MODE) ;
-BLOCK_EQN : '\\\\[' -> pushMode(BLOCK_EQN_MODE) ;
+EQN       : '$' ~'$'+ '$' ;
+BLOCK_EQN : '\\\\[' .+? '\\\\]' ;
 
 BLANK_LINE : NL (NL [ \t]*)+ ; // at least one blank line (optional junk whitespace on lines)
 
@@ -51,6 +51,7 @@ XML_ATTR_VALUE : '"' .*? '"' ;
 XML_WS : [ \t]+ -> skip ;
 END_OF_TAG : '>' -> popMode ;
 
+/*
 mode EQN_MODE ;
 EQN_UNDERSCORE : '_' ;
 EQN_NL : '\n' {System.err.println("newline in $...$ at line "+getLine());} ;
@@ -63,3 +64,4 @@ BLOCK_EQN_UNDERSCORE : '_' ;
 BLOCK_EQN_END_ROW : '\\\\' ;
 END_BLOCK_EQN : '\\\\]' -> popMode ;
 BLOCK_EQN_OTHER : . ;
+*/

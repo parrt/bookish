@@ -115,13 +115,15 @@ XMLTag(model) ::= <<
 >>
 XMLEndTag(model) ::= "</$model.name$>"
 
-InlineEquation(model) ::= "$model.eqn$"
-
 BlockEquation(model) ::= <<
 
 <center>
 <img class="blkeqn" $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>
 </center>
+>>
+
+InlineEquation(model) ::= <<
+<img style="vertical-align: middle;" src="$model.src$">
 >>
 
 EqnVar(model) ::= "<span class=eqn>$model.varname$</span>"

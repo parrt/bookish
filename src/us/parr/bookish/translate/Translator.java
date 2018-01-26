@@ -12,7 +12,7 @@ import us.parr.bookish.model.EqnIndexedVecVar;
 import us.parr.bookish.model.EqnVar;
 import us.parr.bookish.model.EqnVecVar;
 import us.parr.bookish.model.HyperLink;
-import us.parr.bookish.model.InlineImage;
+import us.parr.bookish.model.InlineEquation;
 import us.parr.bookish.model.Italics;
 import us.parr.bookish.model.Join;
 import us.parr.bookish.model.ListItem;
@@ -47,8 +47,8 @@ import static us.parr.bookish.parse.BookishParser.END_TAG;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 14;
-	public static int BLOCK_EQN_FONT_SIZE = 14;
-	public STGroupFile templates = new STGroupFile("templates/HTML.stg", '$', '$');
+	public static int BLOCK_EQN_FONT_SIZE = 13; // not sure why this would look better smaller than inline but...
+	public STGroupFile templates = new STGroupFile("templates/HTML.stg");
 
 	public int eqnCounter = 1;
 	public Pattern eqnVarPattern;
@@ -138,8 +138,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
-	public OutputModelObject visitBlock_eqn_content(BookishParser.Block_eqn_contentContext ctx) {
-		String eqn = ctx.getText();
+	public OutputModelObject visitBlock_eqn(BookishParser.Block_eqnContext ctx) {
+		String eqn = stripQuotes(ctx.getText(), 3);
 		String svg = Tex2SVGKt.tex2svg(eqn, false, BLOCK_EQN_FONT_SIZE);
 		String src = "n/a";
 		try {
@@ -156,8 +156,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
-	public OutputModelObject visitEqn_content(BookishParser.Eqn_contentContext ctx) {
-		String eqn = ctx.getText();
+	public OutputModelObject visitEqn(BookishParser.EqnContext ctx) {
+		String eqn = stripQuotes(ctx.getText());
 
 		// check for special cases like $w$ and $\mathbf{w}_i$.
 		List<String> elements = extract(eqnVarPattern, eqn);
@@ -189,18 +189,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-		return new InlineImage(src);
-//		return new InlineEquation(svg);
-	}
-
-	@Override
-	public OutputModelObject visitBlock_eqn_element(BookishParser.Block_eqn_elementContext ctx) {
-//		switch ( ctx.start.getType() ) {
-//			case EQN_UNDERSCORE :
-//			case EQN_NL :
-//			case  EQN_OTHER :
-//		}
-		return new Other(ctx.start.getText());
+		return new InlineEquation(src,eqn);
 	}
 
 	@Override
