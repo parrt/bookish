@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 
 public class Tool {
 	public static String outputDir = "/tmp/bookish/calculus";
+	public static String rootDir = "/Users/parrt/github/autodx";
 
 	public static void main(String[] args) throws Exception {
 //		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName("/Users/parrt/github/autodx/images/matrix-calculus.md"));

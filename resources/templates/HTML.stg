@@ -56,13 +56,13 @@ $sections$
 
 OrderedList(model, items) ::= <<
 <ol>
-$items$
+$items; separator="\n"$
 </ol>
 >>
 
 UnOrderedList(model, items) ::= <<
 <ul>
-$items$
+$items; separator="\n"$
 </ul>
 >>
 
@@ -91,7 +91,7 @@ Paragraph(model, elements) ::= <<
 >>
 
 InlineImage(model) ::= <<
-<img style="vertical-align: middle;" src="$model.src$">
+<img style="vertical-align: text-bottom;" src="$model.src$">
 >>
 
 BlockImage(model) ::= <<

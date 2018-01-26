@@ -1,6 +1,7 @@
 package us.parr.bookish.translate
 
 import org.antlr.v4.runtime.misc.Pair
+import us.parr.bookish.Tool
 import us.parr.bookish.util.StreamVacuum
 import java.io.File
 import java.io.IOException
@@ -9,7 +10,9 @@ import java.nio.file.Paths
 
 fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
     val eqntext = equation.trim()
-    val tex = """\documentclass[xetex,fontsize=${fontsize}pt]{scrartcl}
+    val tex = """\documentclass[fontsize=${fontsize}pt]{scrartcl}
+\usepackage{graphicx}
+\usepackage{epstopdf}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -25,7 +28,9 @@ $$eqntext$
 \end{document}
 """
 
-    val displaytex = """\documentclass[xetex,fontsize=${fontsize}pt]{scrartcl}
+    val displaytex = """\documentclass[fontsize=${fontsize}pt]{scrartcl}
+\usepackage{graphicx}
+\usepackage{epstopdf}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -41,7 +46,14 @@ $$eqntext$
 \end{document}
 """
 
-    val tmpdir = File(System.getProperty("java.io.tmpdir")).getAbsolutePath()
+    val tmpdir = File(System.getProperty("java.io.tmpdir")+"/bookish").getAbsolutePath()
+
+    if ( !Files.exists(Paths.get(tmpdir)) ) {
+        Files.createDirectories(Paths.get(tmpdir))
+    }
+    if ( !Files.exists(Paths.get(tmpdir+"/images")) ) {
+        Files.createSymbolicLink(Paths.get(tmpdir + "/images"), Paths.get(Tool.rootDir + "/images"))
+    }
 
     val texfilename = tmpdir + "/temp.tex"
     if ( display ) {
@@ -61,6 +73,7 @@ $$eqntext$
     for (line in results.a.split("\n")) {
         if ( line.startsWith('!') || line.startsWith("l.") ) {
             System.err.println(line)
+            System.err.println(eqntext)
         }
     }
     if (results.b.length>0) {

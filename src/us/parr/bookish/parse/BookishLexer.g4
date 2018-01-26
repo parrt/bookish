@@ -28,10 +28,12 @@ TD : '<td>' ;
 TH : '<th>' ;
 TABLE_ : '</table>' ;
 
+END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
+
 EQN       : '$'     -> pushMode(EQN_MODE) ;
 BLOCK_EQN : '\\\\[' -> pushMode(BLOCK_EQN_MODE) ;
 
-BLANK_LINE : '\n' '\n'+ ; // at least one blank line
+BLANK_LINE : NL (NL [ \t]*)+ ; // at least one blank line (optional junk whitespace on lines)
 
 TAB : '\t' ;
 SPACE : ' ' ;
@@ -47,7 +49,7 @@ XML_ATTR : [a-zA-Z]+ ;
 XML_EQ : '=' ;
 XML_ATTR_VALUE : '"' .*? '"' ;
 XML_WS : [ \t]+ -> skip ;
-END_TAG : '>' -> popMode ;
+END_OF_TAG : '>' -> popMode ;
 
 mode EQN_MODE ;
 EQN_UNDERSCORE : '_' ;

@@ -16,6 +16,7 @@ subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)*;
 
 section_element
 	:	paragraph
+	|	BLANK_LINE? link
 	|	BLANK_LINE? eqn
 	|	BLANK_LINE? block_eqn
 	|	BLANK_LINE? ordered_list
@@ -64,7 +65,7 @@ list_item : (section_element|ws|BLANK_LINE)* ;
 
 table_item : (section_element|ws|BLANK_LINE)* ;
 
-block_image : IMG attr_assignment+ END_TAG ;
+block_image : IMG attr_assignment+ END_OF_TAG ;
 
 attr_assignment : name=XML_ATTR XML_EQ value=XML_ATTR_VALUE ;
 
@@ -77,7 +78,7 @@ italics 	:	ITALICS ;
 bold 		:	BOLD ;
 other       :	OTHER | xml ;
 
-xml			:   XML tagname=XML_ATTR attr_assignment* END_TAG ;
+xml			:   XML tagname=XML_ATTR attr_assignment* END_OF_TAG | END_TAG ;
 
 block_eqn : BLOCK_EQN block_eqn_content END_BLOCK_EQN ;
 
