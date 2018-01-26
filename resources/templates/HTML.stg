@@ -1,6 +1,7 @@
 delimiters "$","$"
 
 Document(model, chapter) ::= <<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
@@ -16,6 +17,9 @@ Document(model, chapter) ::= <<
         font-style: italic;
         font-size: 14px;
 }
+.blkeqn {
+		padding: 10px;
+}
 body {
         font-family: "Merriweather", serif;
         font-size: 14px;
@@ -23,6 +27,8 @@ body {
         line-height: 1.5em;
         color: #3A4145;
         background: #FFFFFF;
+        max-width: 900px;
+        margin: auto;
 }
 p {
         margin: 15px 5px 15px 5px;
@@ -114,9 +120,8 @@ InlineEquation(model) ::= "$model.eqn$"
 BlockEquation(model) ::= <<
 
 <center>
-$model.eqn$
+<img class="blkeqn" $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>
 </center>
-
 >>
 
 EqnVar(model) ::= "<span class=eqn>$model.varname$</span>"

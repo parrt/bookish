@@ -10,7 +10,7 @@ import java.nio.file.Paths
 
 fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
     val eqntext = equation.trim()
-    val tex = """\documentclass[fontsize=${fontsize}pt]{scrartcl}
+    val tex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{amsmath}
@@ -28,7 +28,7 @@ $$eqntext$
 \end{document}
 """
 
-    val displaytex = """\documentclass[fontsize=${fontsize}pt]{scrartcl}
+    val displaytex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{amsmath}

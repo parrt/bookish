@@ -1,9 +1,7 @@
 package us.parr.bookish.model;
 
-public class BlockEquation extends OutputModelObject {
-	public String eqn;
-
-	public BlockEquation(String eqn) {
-		this.eqn = eqn;
+public class BlockEquation extends BlockImage {
+	public BlockEquation(String src, String alt) {
+		super(src, alt);
 	}
 }

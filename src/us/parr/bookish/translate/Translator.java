@@ -2,6 +2,7 @@ package us.parr.bookish.translate;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.STGroupFile;
+import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
 import us.parr.bookish.model.Chapter;
@@ -45,8 +46,8 @@ import static us.parr.bookish.Tool.outputDir;
 import static us.parr.bookish.parse.BookishParser.END_TAG;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
-	public static int INLINE_EQN_FONT_SIZE = 13;
-	public static int BLOCK_EQN_FONT_SIZE = 13;
+	public static int INLINE_EQN_FONT_SIZE = 14;
+	public static int BLOCK_EQN_FONT_SIZE = 14;
 	public STGroupFile templates = new STGroupFile("templates/HTML.stg", '$', '$');
 
 	public int eqnCounter = 1;
@@ -142,7 +143,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String svg = Tex2SVGKt.tex2svg(eqn, false, BLOCK_EQN_FONT_SIZE);
 		String src = "n/a";
 		try {
-			src = outputDir+"/images/t"+eqnCounter+".svg";
+			src = outputDir+"/images/blkeqn"+eqnCounter+".svg";
 			Path outpath = Paths.get(src);
 			System.out.println(outpath);
 			Files.write(outpath, svg.getBytes());
@@ -151,8 +152,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-		return new BlockImage(src,"");
-//		return new BlockEquation(svg);
+		return new BlockEquation(src, eqn);
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String svg = Tex2SVGKt.tex2svg(eqn, false, INLINE_EQN_FONT_SIZE);
 		String src = "n/a";
 		try {
-			src = outputDir+"/images/t"+eqnCounter+".svg";
+			src = outputDir+"/images/eqn"+eqnCounter+".svg";
 			Path outpath = Paths.get(src);
 			System.out.println(outpath);
 			Files.write(outpath, svg.getBytes());
