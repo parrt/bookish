@@ -63,9 +63,9 @@ table
 table_header : TR ws? (TH table_item)+ ;
 table_row : TR ws? (TD table_item)+ ;
 
-list_item : (section_element|ws|BLANK_LINE)* ;
+list_item : (section_element|paragraph_element|ws|BLANK_LINE)* ;
 
-table_item : (section_element|ws|BLANK_LINE)* ;
+table_item : (section_element|paragraph_element|ws|BLANK_LINE)* ;
 
 block_image : IMG attr_assignment+ END_OF_TAG ;
 

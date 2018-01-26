@@ -8,6 +8,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
+
 fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
     val eqntext = equation.trim()
     val tex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
@@ -22,6 +23,8 @@ fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
 \DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
 \DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
 \DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\usepackage[T1]{fontenc}
+\usepackage{baskervillef}
 \begin{document}
 \thispagestyle{empty}
 $$eqntext$
@@ -40,6 +43,8 @@ $$eqntext$
 \DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
 \DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
 \DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\usepackage[T1]{fontenc}
+\usepackage{baskervillef}
 \begin{document}
 \thispagestyle{empty}
 \[$eqntext\]
@@ -67,7 +72,7 @@ $$eqntext$
 
     val runtime = Runtime.getRuntime()
 
-    var results = runProcess(tmpdir, "pdflatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex")
+    var results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex")
 //    println(results.a)
 
     for (line in results.a.split("\n")) {

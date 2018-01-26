@@ -1,6 +1,7 @@
 package us.parr.bookish.translate;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.jetbrains.annotations.NotNull;
 import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
@@ -23,6 +24,7 @@ import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SubSection;
 import us.parr.bookish.model.Table;
+import us.parr.bookish.model.TableHeaderItem;
 import us.parr.bookish.model.TableItem;
 import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.UnOrderedList;
@@ -35,6 +37,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +53,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int BLOCK_EQN_FONT_SIZE = 13; // not sure why this would look better smaller than inline but...
 	public STGroupFile templates = new STGroupFile("templates/HTML.stg");
 
-	public int eqnCounter = 1;
 	public Pattern eqnVarPattern;
 	public Pattern eqnVecVarPattern;
 	public Pattern eqnIndexedVarPattern;
@@ -140,17 +142,17 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitBlock_eqn(BookishParser.Block_eqnContext ctx) {
 		String eqn = stripQuotes(ctx.getText(), 3);
-		String svg = Tex2SVGKt.tex2svg(eqn, false, BLOCK_EQN_FONT_SIZE);
-		String src = "n/a";
-		try {
-			src = outputDir+"/images/blkeqn"+eqnCounter+".svg";
-			Path outpath = Paths.get(src);
-			System.out.println(outpath);
-			Files.write(outpath, svg.getBytes());
-			eqnCounter++;
-		}
-		catch (IOException ioe) {
-			ioe.printStackTrace();
+
+		String src = outputDir+"/images/blkeqn-"+hash(eqn)+".svg";
+		Path outpath = Paths.get(src);
+		if ( !Files.exists(outpath) ) {
+			String svg = Tex2SVGKt.tex2svg(eqn, false, BLOCK_EQN_FONT_SIZE);
+			try {
+				System.out.println(outpath);
+				Files.write(outpath, svg.getBytes());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
 		}
 		return new BlockEquation(src, eqn);
 	}
@@ -170,26 +172,25 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 		elements = extract(eqnIndexedVarPattern, eqn);
 		if ( elements.size()>0 ) {
-			return new EqnIndexedVar(elements.get(0),elements.get(1));
+			return new EqnIndexedVar(elements.get(0), elements.get(1));
 		}
 		elements = extract(eqnIndexedVecVarPattern, eqn);
 		if ( elements.size()>0 ) {
 			return new EqnIndexedVecVar(elements.get(0), elements.get(1));
 		}
 
-		String svg = Tex2SVGKt.tex2svg(eqn, false, INLINE_EQN_FONT_SIZE);
-		String src = "n/a";
-		try {
-			src = outputDir+"/images/eqn"+eqnCounter+".svg";
-			Path outpath = Paths.get(src);
-			System.out.println(outpath);
-			Files.write(outpath, svg.getBytes());
-			eqnCounter++;
+		String src = outputDir+"/images/eqn-"+hash(eqn)+".svg";
+		Path outpath = Paths.get(src);
+		if ( !Files.exists(outpath) ) {
+			String svg = Tex2SVGKt.tex2svg(eqn, false, INLINE_EQN_FONT_SIZE);
+			try {
+				System.out.println(outpath);
+				Files.write(outpath, svg.getBytes());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
 		}
-		catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-		return new InlineEquation(src,eqn);
+		return new InlineEquation(src, eqn);
 	}
 
 	@Override
@@ -229,7 +230,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitTable_header(BookishParser.Table_headerContext ctx) {
 		List<TableItem> items = new ArrayList<>();
 		for (BookishParser.Table_itemContext el : ctx.table_item()) {
-			items.add( (TableItem)visit(el) );
+			TableItem item = (TableItem) visit(el);
+			items.add(new TableHeaderItem(item.contents));
 		}
 		return new TableRow(items);
 	}
@@ -238,7 +240,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitTable_row(BookishParser.Table_rowContext ctx) {
 		List<TableItem> items = new ArrayList<>();
 		for (BookishParser.Table_itemContext el : ctx.table_item()) {
-			items.add( (TableItem)visit(el) );
+			TableItem item = (TableItem) visit(el);
+			items.add(item);
 		}
 		return new TableRow(items);
 	}
@@ -246,8 +249,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitTable_item(BookishParser.Table_itemContext ctx) {
 		List<OutputModelObject> contents = new ArrayList<>();
-		for (BookishParser.Section_elementContext el : ctx.section_element()) {
-			contents.add( visit(el) );
+		for (ParseTree child : ctx.children) {
+			contents.add( visit(child) );
 		}
 		return new TableItem(contents);
 	}
@@ -325,5 +328,26 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	public static String stripQuotes(String quotedString, int n) {
 		return quotedString.substring(n, quotedString.length()-n);
+	}
+
+	public static String hash(String text) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] digest = md.digest(text.getBytes());
+			return toHexString(digest);
+		}
+		catch (Exception e) {
+			e.printStackTrace(System.err);
+		}
+		return "bad-hash";
+	}
+
+	@NotNull
+	private static String toHexString(byte[] digest) {
+		StringBuilder buf = new StringBuilder();
+		for (byte b : digest) {
+			buf.append(String.format("%02X", b));
+		}
+		return buf.toString();
 	}
 }

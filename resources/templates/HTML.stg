@@ -90,6 +90,7 @@ TableRow(model, items) ::= <<
 >>
 
 TableItem(model, contents) ::= "<td>$contents$</td>"
+TableHeaderItem(model, contents) ::= "<th>$contents$</th>"
 
 Paragraph(model, elements) ::= <<
 
@@ -118,7 +119,7 @@ XMLEndTag(model) ::= "</$model.name$>"
 BlockEquation(model) ::= <<
 
 <center>
-<img class="blkeqn" $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>
+<div><img class="blkeqn" $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$></div>
 </center>
 >>
 
