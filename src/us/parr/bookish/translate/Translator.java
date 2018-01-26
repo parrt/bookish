@@ -7,7 +7,6 @@ import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
 import us.parr.bookish.model.Chapter;
-import us.parr.bookish.model.Document;
 import us.parr.bookish.model.EqnIndexedVar;
 import us.parr.bookish.model.EqnIndexedVecVar;
 import us.parr.bookish.model.EqnVar;
@@ -57,12 +56,14 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public Pattern eqnVecVarPattern;
 	public Pattern eqnIndexedVarPattern;
 	public Pattern eqnIndexedVecVarPattern;
+	public Pattern sectionAnchorPattern;
 
 	public Translator() {
 		eqnVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)");
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
 		eqnIndexedVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
+		sectionAnchorPattern = Pattern.compile(".*\\(([a-zA-Z_][a-zA-Z0-9\\-_]*?)\\)");
 	}
 
 	@Override
@@ -80,11 +81,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new Join(elements);
 		}
 		return new Join(aggregate, nextResult);
-	}
-
-	@Override
-	public OutputModelObject visitDocument(BookishParser.DocumentContext ctx) {
-		return new Document((Chapter)visit(ctx.chapter()));
 	}
 
 	@Override
@@ -108,12 +104,21 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitSection(BookishParser.SectionContext ctx) {
+		List<ParseTree> children = ctx.children;
 		String title = ctx.sec.getText();
 		title = title.substring(2).trim();
 
+		List<String> anchors = extract(sectionAnchorPattern, title);
+		String anchor = null;
+		if ( anchors.size()>0 ) {
+			anchor = anchors.get(0);
+			int lparent = title.indexOf('(');
+			title = title.substring(0, lparent);
+		}
+
 		List<OutputModelObject> elements = new ArrayList<>();
 		List<SubSection> subsections = new ArrayList<>();
-		for (ParseTree el : ctx.children) {
+		for (ParseTree el : children) {
 			OutputModelObject m = visit(el);
 			if ( m instanceof SubSection ) {
 				subsections.add((SubSection)m);
@@ -122,7 +127,29 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(m);
 			}
 		}
-		return new Section(title, elements, subsections);
+		return new Section(title, anchor, elements, subsections);
+	}
+
+	@Override
+	public OutputModelObject visitSubsection(BookishParser.SubsectionContext ctx) {
+		List<ParseTree> children = ctx.children;
+		String title = ctx.sec.getText();
+		title = title.substring(3).trim();
+
+		List<String> anchors = extract(sectionAnchorPattern, title);
+		String anchor = null;
+		if ( anchors.size()>0 ) {
+			anchor = anchors.get(0);
+			int lparent = title.indexOf('(');
+			title = title.substring(0, lparent);
+		}
+
+		List<OutputModelObject> elements = new ArrayList<>();
+		for (ParseTree el : children) {
+			OutputModelObject m = visit(el);
+			elements.add(m);
+		}
+		return new SubSection(title, anchor, elements);
 	}
 
 	@Override

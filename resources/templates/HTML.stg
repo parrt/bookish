@@ -1,11 +1,26 @@
 delimiters "$","$"
 
-Document(model, chapter) ::= <<
+Document(model, chapters, TOC) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 <style>
+#toc {
+    background: #f9f9f9 none repeat scroll 0 0;
+    border: 1px solid #aaa;
+    display: table;
+    font-size: 83%;
+    padding: 10px;
+    width: auto;
+}
+.toc_title {
+    font-weight: 700;
+    text-align: center;
+}
+#toc li, #toc ul, #toc ul li{
+    list-style: outside none none !important;
+}
 .eqnvec {
         font-family: Merriweather, serif;
         font-weight: bold;
@@ -37,13 +52,27 @@ p {
 </head>
 </head>
 <body>
-$chapter$
+$chapters$
 </body>
 </html>
 >>
 
 Chapter(model, elements, sections) ::= <<
 <h1>$model.title$</h1>
+
+<div id="toc">
+<p class="toc_title">Contents</p>
+<ul>
+$model.sections:{sec |
+	<li><a href="#$sec.anchor$">$sec.title$</a></li>
+	<ul>
+	$sec.sections:{subsec |
+		<li><a href="#$subsec.anchor$">$subsec.title$</a></li>
+	}$
+	</ul>
+}$
+</ul>
+</div>
 
 $elements$
 
@@ -52,11 +81,19 @@ $sections$
 
 Section(model, elements, sections) ::= <<
 
-<h2>$model.title$</h2>
+<h2 id="$model.anchor$">$model.title$</h2>
 
 $elements$
 
 $sections$
+
+>>
+
+SubSection(model, elements, sections) ::= <<
+
+<h3 id="$model.anchor$">$model.title$</h3>
+
+$elements$
 
 >>
 

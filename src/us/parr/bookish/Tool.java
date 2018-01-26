@@ -4,7 +4,8 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 import org.stringtemplate.v4.ST;
-import us.parr.bookish.model.OutputModelObject;
+import us.parr.bookish.model.Chapter;
+import us.parr.bookish.model.Document;
 import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
@@ -24,19 +25,22 @@ public class Tool {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		TokenStreamRewriter rewriter = new TokenStreamRewriter(tokens);
 		BookishParser parser = new BookishParser(tokens);
-		BookishParser.DocumentContext doc = parser.document();
-		//    println(doc.toStringTree(parser))
-		//    eqn = ProcessDoc(rewriter)
-		//    ParseTreeWalker.DEFAULT.walk(eqn, doc)
-		//    println(rewriter.getText())
+		BookishParser.DocumentContext doctree = parser.document();
 
 		new File(outputDir+"/images").mkdirs();
 		Translator trans = new Translator();
-		OutputModelObject omo = trans.visitDocument(doc);
+		Chapter chapter = (Chapter)trans.visit(doctree); // get single chapter
+		chapter.connectSectionTree();
+		Document doc = new Document();
+		doc.addChapter(chapter);
+//		doc.createTOCModel();
+
+//		chapter.createTOCModel();
+
 		ModelConverter converter = new ModelConverter(trans.templates);
-		ST outputST = converter.walk(omo);
+		ST outputST = converter.walk(doc);
 		String output = outputST.render();
 		Files.write(Paths.get(outputDir+"/index.html"), output.getBytes());
-		System.out.println(output);
+//		System.out.println(output);
 	}
 }
