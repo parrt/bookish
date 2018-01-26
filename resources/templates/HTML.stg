@@ -93,7 +93,7 @@ Paragraph(model, elements) ::= <<
 >>
 
 InlineImage(model) ::= <<
-<img style="vertical-align: text-bottom;" src="$model.src$">
+<img style="vertical-align: middle;" src="$model.src$">
 >>
 
 BlockImage(model) ::= <<
