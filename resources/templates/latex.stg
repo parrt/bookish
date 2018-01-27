@@ -46,6 +46,8 @@ Chapter(model, author, abstract_, elements, subcontainers) ::= <<
 
 <abstract_>
 
+{\small \setlength{\parskip}{0pt} \tableofcontents}
+
 <elements>
 
 <subcontainers>
