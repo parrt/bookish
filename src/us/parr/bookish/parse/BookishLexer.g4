@@ -4,7 +4,10 @@ SUBSECTION: '###' ~'\n'+ ;
 SECTION   : '##' ~'\n'+ ;
 CHAPTER   : '#' ~'\n'+ ;
 
-LINK	  : '[' .*? ']' '(' .*? ')' ;
+AUTHOR	  : '[author]' ;
+ABSTRACT  : '[abstract]' ;
+
+LINK	  : '[' ~']'+ ']' '(' ~')'+ ')' ;
 ITALICS	  : '*' ~' ' '*'
  		  | '*' ~' ' .*? ~' ' '*'
  		  ;
@@ -33,7 +36,7 @@ END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
 EQN       : '$' ~'$'+ '$' ;
 BLOCK_EQN : '\\\\[' .+? '\\\\]' ;
 
-BLANK_LINE : NL (NL [ \t]*)+ ; // at least one blank line (optional junk whitespace on lines)
+BLANK_LINE : NL ([ \t]* NL)+ ; // at least one blank line (optional junk whitespace on lines)
 
 TAB : '\t' ;
 SPACE : ' ' ;

@@ -10,8 +10,7 @@ public class Section extends Chapter {
 	               List<OutputModelObject> elements,
 	               List<? extends Section> subsections)
 	{
-		super(title, elements, subsections);
-		this.anchor = anchor;
+		super(title, anchor, null, null, elements, subsections);
 	}
 
 	public void connectSectionTree(Chapter parent, int n) {

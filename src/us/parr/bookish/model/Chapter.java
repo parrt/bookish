@@ -4,6 +4,10 @@ import java.util.List;
 
 public class Chapter extends OutputModelObject {
 	@ModelElement
+	public Author author;
+	@ModelElement
+	public Abstract abstract_;
+	@ModelElement
 	public List<OutputModelObject> elements;
 	@ModelElement
 	public List<? extends Section> sections;
@@ -13,10 +17,19 @@ public class Chapter extends OutputModelObject {
 
 	public int sectionNumber;
 
-	public Chapter(String title, List<OutputModelObject> elements, List<? extends Section> sections) {
-		this.title = title;
+	public Chapter(String title,
+	               String anchor,
+	               Author author,
+	               Abstract abstract_,
+	               List<OutputModelObject> elements,
+	               List<? extends Section> sections)
+	{
+		this.author = author;
+		this.abstract_ = abstract_;
 		this.elements = elements;
 		this.sections = sections;
+		this.title = title;
+		this.anchor = anchor;
 	}
 
 	public void connectSectionTree() {

@@ -3,6 +3,8 @@ package us.parr.bookish.translate;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jetbrains.annotations.NotNull;
 import org.stringtemplate.v4.STGroupFile;
+import us.parr.bookish.model.Abstract;
+import us.parr.bookish.model.Author;
 import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
@@ -84,13 +86,37 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitAuthor(BookishParser.AuthorContext ctx) {
+		Paragraph para = (Paragraph)visit(ctx.paragraph());
+		return new Author(para.elements);
+	}
+
+	@Override
+	public OutputModelObject visitAbstract_(BookishParser.Abstract_Context ctx) {
+		Paragraph para = (Paragraph)visit(ctx.paragraph());
+		return new Abstract(para.elements);
+	}
+
+	@Override
 	public OutputModelObject visitChapter(BookishParser.ChapterContext ctx) {
 		String title = ctx.chap.getText();
 		title = title.substring(1).trim();
-
+		OutputModelObject auth = null;
+		if ( ctx.author()!=null ) {
+			auth = visit(ctx.author());
+		}
+		OutputModelObject abs = null;
+		if ( ctx.abstract_()!=null ) {
+			abs = visit(ctx.abstract_());
+		}
 		List<OutputModelObject> elements = new ArrayList<>();
 		List<Section> sections = new ArrayList<>();
 		for (ParseTree el : ctx.children) {
+			if ( el instanceof BookishParser.AuthorContext ||
+				 el instanceof BookishParser.Abstract_Context )
+			{
+				continue;
+			}
 			OutputModelObject m = visit(el);
 			if ( m instanceof Section ) {
 				sections.add((Section)m);
@@ -99,8 +125,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(m);
 			}
 		}
-		return new Chapter(title, elements, sections);
+		return new Chapter(title, null, (Author)auth, (Abstract)abs, elements, sections);
 	}
+
 
 	@Override
 	public OutputModelObject visitSection(BookishParser.SectionContext ctx) {
@@ -170,7 +197,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitBlock_eqn(BookishParser.Block_eqnContext ctx) {
 		String eqn = stripQuotes(ctx.getText(), 3);
 
-		String src = outputDir+"/images/blkeqn-"+hash(eqn)+".svg";
+		String relativePath = "images/blkeqn-"+hash(eqn)+".svg";
+		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
 			String svg = Tex2SVGKt.tex2svg(eqn, false, BLOCK_EQN_FONT_SIZE);
@@ -181,7 +209,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				ioe.printStackTrace();
 			}
 		}
-		return new BlockEquation(src, eqn);
+		return new BlockEquation(relativePath, eqn);
 	}
 
 	@Override
@@ -206,7 +234,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new EqnIndexedVecVar(elements.get(0), elements.get(1));
 		}
 
-		String src = outputDir+"/images/eqn-"+hash(eqn)+".svg";
+		String relativePath = "images/eqn-"+hash(eqn)+".svg";
+		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
 			String svg = Tex2SVGKt.tex2svg(eqn, false, INLINE_EQN_FONT_SIZE);
@@ -217,7 +246,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				ioe.printStackTrace();
 			}
 		}
-		return new InlineEquation(src, eqn);
+		return new InlineEquation(relativePath, eqn);
 	}
 
 	@Override
