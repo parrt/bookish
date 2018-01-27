@@ -30,7 +30,7 @@ public class Tool {
 		new File(outputDir+"/images").mkdirs();
 		Translator trans = new Translator();
 		Chapter chapter = (Chapter)trans.visit(doctree); // get single chapter
-		chapter.connectSectionTree();
+		chapter.connectContainerTree();
 		Document doc = new Document();
 		doc.addChapter(chapter);
 //		doc.createTOCModel();

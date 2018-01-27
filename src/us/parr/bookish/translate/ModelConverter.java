@@ -160,13 +160,10 @@ public class ModelConverter {
 
 	public static Field[] getAllAnnotatedFields(Class<?> clazz) {
 		List<Field> fields = new ArrayList<>();
-		while ( clazz!=null && clazz != Object.class ) {
-			for (Field f : clazz.getDeclaredFields()) {
-				if ( f.getAnnotations().length>0 ) {
-					fields.add(f);
-				}
+		for (Field f : clazz.getFields()) { // all fields up the chain
+			if ( f.getAnnotations().length>0 ) {
+				fields.add(f);
 			}
-			clazz = clazz.getSuperclass();
 		}
 		return fields.toArray(new Field[fields.size()]);
 	}

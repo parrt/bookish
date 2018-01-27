@@ -2,24 +2,23 @@ package us.parr.bookish.model;
 
 import java.util.List;
 
-public class Section extends Chapter {
-	public Chapter parent; // who contains us? we inherit from Chapter also as elements are similar
-
+public class Section extends ContainerWithTitle {
 	public Section(String title,
 	               String anchor,
 	               List<OutputModelObject> elements,
-	               List<? extends Section> subsections)
+	               List<ContainerWithTitle> subsections)
 	{
-		super(title, anchor, null, null, elements, subsections);
+		super(title, anchor, elements);
+		this.subcontainers = subsections;
 	}
 
-	public void connectSectionTree(Chapter parent, int n) {
+	public void connectContainerTree(ContainerWithTitle parent, int n) {
 		this.parent = parent;
 		sectionNumber = n;
 		int i = 1;
-		if ( sections!=null ) {
-			for (Section subsec : sections) {
-				subsec.connectSectionTree(this, i++);
+		if ( subcontainers!=null ) {
+			for (ContainerWithTitle subcontainer : subcontainers) {
+				subcontainer.connectContainerTree(this, i++);
 			}
 		}
 	}

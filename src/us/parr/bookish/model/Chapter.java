@@ -2,44 +2,38 @@ package us.parr.bookish.model;
 
 import java.util.List;
 
-public class Chapter extends OutputModelObject {
+public class Chapter extends ContainerWithTitle {
 	@ModelElement
 	public Author author;
 	@ModelElement
 	public Abstract abstract_;
-	@ModelElement
-	public List<OutputModelObject> elements;
-	@ModelElement
-	public List<? extends Section> sections;
-
-	public String title;
-	public String anchor;
-
-	public int sectionNumber;
 
 	public Chapter(String title,
 	               String anchor,
 	               Author author,
 	               Abstract abstract_,
 	               List<OutputModelObject> elements,
-	               List<? extends Section> sections)
+	               List<ContainerWithTitle> sections)
 	{
+		super(title, anchor, elements);
 		this.author = author;
 		this.abstract_ = abstract_;
-		this.elements = elements;
-		this.sections = sections;
-		this.title = title;
-		this.anchor = anchor;
+		this.subcontainers = sections;
 	}
 
-	public void connectSectionTree() {
+	@Override
+	public void connectContainerTree(ContainerWithTitle parent, int n) {
 		int i = 1;
-		if ( sections!=null ) {
-			for (Section sec : sections) {
-				sec.connectSectionTree(this,i);
+		if ( subcontainers!=null ) {
+			for (ContainerWithTitle sec : subcontainers) {
+				sec.connectContainerTree(this, i);
 				i++;
 			}
 		}
+	}
+
+	public void connectContainerTree() {
+		connectContainerTree(null,0);
 	}
 
 	/*

@@ -9,6 +9,7 @@ import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
 import us.parr.bookish.model.Chapter;
+import us.parr.bookish.model.ContainerWithTitle;
 import us.parr.bookish.model.EqnIndexedVar;
 import us.parr.bookish.model.EqnIndexedVecVar;
 import us.parr.bookish.model.EqnVar;
@@ -51,7 +52,7 @@ import static us.parr.bookish.parse.BookishParser.END_TAG;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 14;
-	public static int BLOCK_EQN_FONT_SIZE = 13; // not sure why this would look better smaller than inline but...
+	public static int BLOCK_EQN_FONT_SIZE = 14;
 	public STGroupFile templates = new STGroupFile("templates/HTML.stg");
 
 	public Pattern eqnVarPattern;
@@ -110,7 +111,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			abs = visit(ctx.abstract_());
 		}
 		List<OutputModelObject> elements = new ArrayList<>();
-		List<Section> sections = new ArrayList<>();
+		List<ContainerWithTitle> sections = new ArrayList<>();
 		for (ParseTree el : ctx.children) {
 			if ( el instanceof BookishParser.AuthorContext ||
 				 el instanceof BookishParser.Abstract_Context )
@@ -144,7 +145,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 
 		List<OutputModelObject> elements = new ArrayList<>();
-		List<SubSection> subsections = new ArrayList<>();
+		List<ContainerWithTitle> subsections = new ArrayList<>();
 		for (ParseTree el : children) {
 			OutputModelObject m = visit(el);
 			if ( m instanceof SubSection ) {
@@ -201,7 +202,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = Tex2SVGKt.tex2svg(eqn, false, BLOCK_EQN_FONT_SIZE);
+			String svg = Tex2SVGKt.tex2svg(eqn, true, BLOCK_EQN_FONT_SIZE);
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());

@@ -68,7 +68,7 @@ $chapters$
 </html>
 >>
 
-Chapter(model, author, abstract_, elements, sections) ::= <<
+Chapter(model, author, abstract_, elements, subcontainers) ::= <<
 <h1>$model.title$</h1>
 
 $author$
@@ -78,10 +78,10 @@ $abstract_$
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>
-$model.sections:{sec |
+$model.subcontainers:{sec |
 	<li><a href="#$sec.anchor$">$sec.title$</a></li>
 	<ul>
-	$sec.sections:{subsec |
+	$sec.subcontainers:{subsec |
 		<li><a href="#$subsec.anchor$">$subsec.title$</a></li>
 	}$
 	</ul>
@@ -91,7 +91,7 @@ $model.sections:{sec |
 
 $elements$
 
-$sections$
+$subcontainers$
 >>
 
 Author(model, elements) ::= <<
@@ -106,17 +106,17 @@ Abstract(model, elements) ::= <<
 
 >>
 
-Section(model, author, abstract_, elements, sections) ::= <<
+Section(model, elements, subcontainers) ::= <<
 
 <h2 id="$model.anchor$">$model.title$</h2>
 
 $elements$
 
-$sections$
+$subcontainers$
 
 >>
 
-SubSection(model, author, abstract_, elements, sections) ::= <<
+SubSection(model, elements, subcontainers) ::= <<
 
 <h3 id="$model.anchor$">$model.title$</h3>
 
