@@ -18,6 +18,8 @@ import java.nio.file.Paths;
 public class Tool {
 	public static String outputDir = "/tmp/bookish/calculus";
 	public static String rootDir = "/Users/parrt/github/autodx";
+	public enum Target { HTML, LATEX }
+	public static final Target target = Target.LATEX;
 
 	public static void main(String[] args) throws Exception {
 		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName("/Users/parrt/github/autodx/matrix-calculus.md"));
@@ -28,19 +30,27 @@ public class Tool {
 		BookishParser.DocumentContext doctree = parser.document();
 
 		new File(outputDir+"/images").mkdirs();
-		Translator trans = new Translator();
+		Translator trans;
+		if ( target==Target.HTML ) {
+			trans = new Translator("templates/HTML.stg");
+		}
+		else {
+			trans = new Translator("templates/latex.stg");
+		}
 		Chapter chapter = (Chapter)trans.visit(doctree); // get single chapter
 		chapter.connectContainerTree();
 		Document doc = new Document();
 		doc.addChapter(chapter);
-//		doc.createTOCModel();
-
-//		chapter.createTOCModel();
 
 		ModelConverter converter = new ModelConverter(trans.templates);
 		ST outputST = converter.walk(doc);
 		String output = outputST.render();
-		Files.write(Paths.get(outputDir+"/index.html"), output.getBytes());
+		if ( target==Target.HTML ) {
+			Files.write(Paths.get(outputDir+"/index.html"), output.getBytes());
+		}
+		else {
+			Files.write(Paths.get(outputDir+"/matrix-calculus.tex"), output.getBytes());
+		}
 //		System.out.println(output);
 	}
 }

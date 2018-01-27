@@ -36,6 +36,13 @@ END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
 EQN       : '$' ~'$'+ '$' ;
 BLOCK_EQN : '\\\\[' .+? '\\\\]' ;
 
+/** Block of random latex show as block style content (not inline)
+\latex{{
+...
+}}
+*/
+LATEX	  : '\\latex{{' '\r'? '\n' .*? '\r'? '\n}}' ;
+
 BLANK_LINE : NL ([ \t]* NL)+ ; // at least one blank line (optional junk whitespace on lines)
 
 TAB : '\t' ;

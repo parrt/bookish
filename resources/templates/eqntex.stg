@@ -1,0 +1,64 @@
+delimiters "<", ">"
+
+eqntex(text,fontsize) ::= <<
+\documentclass[fontsize=<fontsize>pt]{scrlttr2}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\usepackage[T1]{fontenc}
+\usepackage{baskervillef}
+\begin{document}
+\thispagestyle{empty}
+$<text>$
+\end{document}
+>>
+
+blockeqntex(text,fontsize) ::= <<
+\documentclass[fontsize=<fontsize>pt]{scrlttr2}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\usepackage[T1]{fontenc}
+\usepackage{baskervillef}
+\begin{document}
+\thispagestyle{empty}
+\[<text>\]
+\end{document}
+>>
+
+blocktex(text,fontsize) ::= <<
+\documentclass[fontsize=<fontsize>pt]{scrlttr2}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\usepackage[T1]{fontenc}
+\usepackage{baskervillef}
+\begin{document}
+\thispagestyle{empty}
+<text>
+\end{document}
+>>

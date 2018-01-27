@@ -1,0 +1,125 @@
+delimiters "<",">"
+
+Document(model, chapters) ::= <<
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage[fleqn]{amsmath}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+\newcommand{\cut}[1]{}
+
+\allowdisplaybreaks
+
+<chapters>
+>>
+
+Chapter(model, author, abstract_, elements, subcontainers) ::= <<
+\title{<model.title>}
+\author{<author>}
+\begin{document}
+\maketitle
+
+<abstract_>
+
+<elements>
+
+<subcontainers>
+
+\end{document}
+>>
+
+Author(model, elements) ::= "<elements>"
+
+Abstract(model, elements) ::= "<elements>"
+
+Section(model, elements, subcontainers) ::= <<
+\section{<model.title>}\label{<model.anchor>}
+
+<elements>
+
+<subcontainers>
+>>
+
+SubSection(model, elements, subcontainers) ::= <<
+\subsection{<model.title>}\label{<model.anchor>}
+
+<elements>
+
+<subcontainers>
+>>
+
+OrderedList(model, items) ::= <<
+>>
+
+UnOrderedList(model, items) ::= <<
+>>
+
+ListItem(model, elements) ::= "\item <elements>"
+
+Table(model, headers, rows) ::= <<
+>>
+
+TableRow(model, items) ::= <<
+>>
+
+TableItem(model, contents) ::= "<contents>"
+
+TableHeaderItem(model, contents) ::= "<contents>"
+
+Paragraph(model, elements) ::= "<\n><elements><\n>"
+
+InlineImage(model) ::= <<
+>>
+
+BlockImage(model) ::= <<
+>>
+
+XMLTag(model) ::= <<
+>>
+
+XMLEndTag(model) ::= ""
+
+Latex(model) ::= <<
+<model.text>
+>>
+
+BlockEquation(model) ::= <<
+\[<model.eqn>\]
+>>
+
+InlineEquation(model) ::= "$<model.eqn>$"
+
+EqnVar(model) ::= "$<model.varname>$"
+
+EqnIndexedVar(model) ::= "$<model.varname>_<model.indexname>$"
+
+EqnVecVar(model) ::= "$\mathbf{<model.varname>}$"
+
+EqnIndexedVecVar(model) ::= "$\mathbf{<model.varname>}_<model.indexname>$"
+
+HyperLink(model) ::= <<
+>>
+
+Bold(model) ::= "{\bf <model.text>}"
+
+Italics(model) ::= "{\em <model.text>}"
+
+Other(model) ::= "<model.text>"
+
+Join(model, elements) ::= "<elements>"

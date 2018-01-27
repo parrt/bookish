@@ -8,10 +8,10 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
+fun tex2svg(latex: String, display : Boolean, fontsize : Int) : String {
+    val latexText = latex.trim()
 
-fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
-    val eqntext = equation.trim()
-    val tex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
+    val eqntex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{amsmath}
@@ -27,11 +27,11 @@ fun tex2svg(equation : String, display : Boolean, fontsize : Int) : String {
 \usepackage{baskervillef}
 \begin{document}
 \thispagestyle{empty}
-$$eqntext$
+$$latexText$
 \end{document}
 """
 
-    val displaytex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
+    val blockeqntex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{amsmath}
@@ -47,7 +47,27 @@ $$eqntext$
 \usepackage{baskervillef}
 \begin{document}
 \thispagestyle{empty}
-\[$eqntext\]
+\[$latexText\]
+\end{document}
+"""
+
+    val blocktex = """\documentclass[fontsize=${fontsize}pt]{scrlttr2}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\usepackage[T1]{fontenc}
+\usepackage{baskervillef}
+\begin{document}
+\thispagestyle{empty}
+$latexText
 \end{document}
 """
 
@@ -62,10 +82,10 @@ $$eqntext$
 
     val texfilename = tmpdir + "/temp.tex"
     if ( display ) {
-        Files.write(Paths.get(texfilename), displaytex.toByteArray())
+        Files.write(Paths.get(texfilename), blockeqntex.toByteArray())
     }
     else {
-        Files.write(Paths.get(texfilename), tex.toByteArray())
+        Files.write(Paths.get(texfilename), eqntex.toByteArray())
     }
 
 //    println("wrote $texfilename")
@@ -78,7 +98,7 @@ $$eqntext$
     for (line in results.a.split("\n")) {
         if ( line.startsWith('!') || line.startsWith("l.") ) {
             System.err.println(line)
-            System.err.println(eqntext)
+            System.err.println(latexText)
         }
     }
     if (results.b.length>0) {

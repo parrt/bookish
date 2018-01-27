@@ -27,6 +27,7 @@ section_element
 	|	BLANK_LINE? unordered_list
 	|	BLANK_LINE? table
 	|	BLANK_LINE? block_image
+	|	BLANK_LINE? latex
 	|	xml
 	|	other
 	;
@@ -43,6 +44,8 @@ paragraph_element
 	|	xml
 	|	other
 	;
+
+latex : LATEX ;
 
 ordered_list
 	:	OL

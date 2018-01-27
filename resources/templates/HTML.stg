@@ -1,6 +1,6 @@
 delimiters "$","$"
 
-Document(model, chapters, TOC) ::= <<
+Document(model, chapters) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -179,6 +179,12 @@ XMLTag(model) ::= <<
 <$model.name$ $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>
 >>
 XMLEndTag(model) ::= "</$model.name$>"
+
+Latex(model) ::= <<
+
+<div><img class="blkeqn" $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$></div>
+
+>>
 
 BlockEquation(model) ::= <<
 

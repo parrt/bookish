@@ -18,6 +18,7 @@ import us.parr.bookish.model.HyperLink;
 import us.parr.bookish.model.InlineEquation;
 import us.parr.bookish.model.Italics;
 import us.parr.bookish.model.Join;
+import us.parr.bookish.model.Latex;
 import us.parr.bookish.model.ListItem;
 import us.parr.bookish.model.OrderedList;
 import us.parr.bookish.model.Other;
@@ -53,20 +54,23 @@ import static us.parr.bookish.parse.BookishParser.END_TAG;
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 14;
 	public static int BLOCK_EQN_FONT_SIZE = 14;
-	public STGroupFile templates = new STGroupFile("templates/HTML.stg");
+	public STGroupFile templates;
 
 	public Pattern eqnVarPattern;
 	public Pattern eqnVecVarPattern;
 	public Pattern eqnIndexedVarPattern;
 	public Pattern eqnIndexedVecVarPattern;
 	public Pattern sectionAnchorPattern;
+	public Pattern latexPattern;
 
-	public Translator() {
+	public Translator(String templateFileName) {
+		templates = new STGroupFile(templateFileName);
 		eqnVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)");
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
 		eqnIndexedVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
 		sectionAnchorPattern = Pattern.compile(".*\\(([a-zA-Z_][a-zA-Z0-9\\-_]*?)\\)");
+		latexPattern = Pattern.compile("\\\\latex\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
 	}
 
 	@Override
@@ -195,6 +199,27 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitLatex(BookishParser.LatexContext ctx) {
+		String text = ctx.getText().trim();
+		List<String> stuff = extract(latexPattern, text); // \latex{{...}}
+		text = stuff.get(0);
+
+		String relativePath = "images/latex-"+hash(text)+".svg";
+		String src = outputDir+"/"+relativePath;
+		Path outpath = Paths.get(src);
+		if ( !Files.exists(outpath) ) {
+			String svg = Tex2SVG.tex2svg(text, Tex2SVG.LatexType.LATEX, BLOCK_EQN_FONT_SIZE);
+			try {
+				System.out.println(outpath);
+				Files.write(outpath, svg.getBytes());
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+		return new Latex(relativePath, text, text);
+	}
+
+	@Override
 	public OutputModelObject visitBlock_eqn(BookishParser.Block_eqnContext ctx) {
 		String eqn = stripQuotes(ctx.getText(), 3);
 
@@ -202,7 +227,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = Tex2SVGKt.tex2svg(eqn, true, BLOCK_EQN_FONT_SIZE);
+			String svg = Tex2SVG.tex2svg(eqn, Tex2SVG.LatexType.BLOCKEQN, BLOCK_EQN_FONT_SIZE);
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());
@@ -239,7 +264,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = Tex2SVGKt.tex2svg(eqn, false, INLINE_EQN_FONT_SIZE);
+			String svg = Tex2SVG.tex2svg(eqn, Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());
