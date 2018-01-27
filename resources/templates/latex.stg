@@ -2,6 +2,7 @@ delimiters "<",">"
 
 Document(model, chapters) ::= <<
 \documentclass[11pt]{article}
+\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage[fleqn]{amsmath}
@@ -25,6 +26,14 @@ Document(model, chapters) ::= <<
 \newcommand{\cut}[1]{}
 
 \allowdisplaybreaks
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\urlstyle{same}
 
 <chapters>
 >>
@@ -65,17 +74,30 @@ SubSection(model, elements, subcontainers) ::= <<
 >>
 
 OrderedList(model, items) ::= <<
+\begin{enumerate}
+<items>
+\end{enumerate}
 >>
 
 UnOrderedList(model, items) ::= <<
+\begin{itemize}
+<items>
+\end{itemize}
 >>
 
 ListItem(model, elements) ::= "\item <elements>"
 
 Table(model, headers, rows) ::= <<
+
+\begin{tabular}{<headers.items:{th | l}>}
+<headers>
+<rows>
+\end{tabular}
+
 >>
 
 TableRow(model, items) ::= <<
+<items; separator="&">\\\\<\n>
 >>
 
 TableItem(model, contents) ::= "<contents>"
@@ -85,9 +107,15 @@ TableHeaderItem(model, contents) ::= "<contents>"
 Paragraph(model, elements) ::= "<\n><elements><\n>"
 
 InlineImage(model) ::= <<
+\includegraphics{<model.src>}
 >>
 
 BlockImage(model) ::= <<
+
+\begin{center}
+\includegraphics{<model.attrs.src>}
+\end{center}
+
 >>
 
 XMLTag(model) ::= <<
@@ -114,6 +142,7 @@ EqnVecVar(model) ::= "$\mathbf{<model.varname>}$"
 EqnIndexedVecVar(model) ::= "$\mathbf{<model.varname>}_<model.indexname>$"
 
 HyperLink(model) ::= <<
+\href{<model.href; format="tex-encode">}{<model.title; format="tex-encode">}
 >>
 
 Bold(model) ::= "{\bf <model.text>}"

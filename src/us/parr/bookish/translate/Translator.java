@@ -1,7 +1,6 @@
 package us.parr.bookish.translate;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.jetbrains.annotations.NotNull;
 import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.model.Abstract;
 import us.parr.bookish.model.Author;
@@ -65,6 +64,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	public Translator(String templateFileName) {
 		templates = new STGroupFile(templateFileName);
+		templates.registerRenderer(String.class, new LatexEscaper());
 		eqnVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)");
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
@@ -424,7 +424,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return "bad-hash";
 	}
 
-	@NotNull
 	private static String toHexString(byte[] digest) {
 		StringBuilder buf = new StringBuilder();
 		for (byte b : digest) {
