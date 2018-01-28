@@ -1,21 +1,24 @@
 package us.parr.bookish.translate;
 
 import org.antlr.v4.runtime.misc.Pair;
+import org.antlr.v4.runtime.misc.Triple;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.Tool;
 import us.parr.bookish.util.StreamVacuum;
+import us.parr.lib.ParrtIO;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 
 public class Tex2SVG {
 	public static STGroupFile templates = new STGroupFile("templates/eqntex.stg");
 
 	enum LatexType {EQN, BLOCKEQN, LATEX}
 
-	public static String tex2svg(String latex, LatexType type, int fontsize) {
+	public static Triple<String,Float,Float> tex2svg(String latex, LatexType type, int fontsize) {
 		try {
 			latex = latex.trim();
 			String tmpdir = new File(System.getProperty("java.io.tmpdir")+"/bookish").getAbsolutePath();
@@ -51,9 +54,22 @@ public class Tex2SVG {
 			Pair<String, String> results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex");
 //    println(results.a)
 
-			//"!!bookish metrics: ";
+			String metricsRegex = "// bookish metrics: ([0-9]*[.][0-9]+)pt, ([0-9]*[.][0-9]+)pt";
+			Pattern metricsPattern =  Pattern.compile("metricsRegex");
+			String log = ParrtIO.load(tmpdir+"/temp.log");
+
+			float height=0, depth=0;
 
 			for (String line : results.a.split("\n")) {
+				String prefix = "// bookish metrics: ";
+				if ( line.startsWith(prefix) ) {
+					int first = prefix.length();
+					int comma = line.indexOf(',');
+					String heightS = line.substring(first,comma-"pt".length());
+					String depthS = line.substring(comma+1,line.indexOf('p',comma));
+					height = Float.parseFloat(heightS);
+					depth = Float.parseFloat(depthS);
+				}
 				if ( line.startsWith("!") || line.startsWith("l.") ) {
 					System.err.println(line);
 					System.err.println(latex);
@@ -74,7 +90,7 @@ public class Tex2SVG {
 			}
 
 			String svgfilename = tmpdir+"/temp.svg";
-			return new String(Files.readAllBytes(Paths.get(svgfilename)));
+			return new Triple<>(new String(Files.readAllBytes(Paths.get(svgfilename))),height,depth);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,7 +111,8 @@ public class Tex2SVG {
 	}
 
 	public static void main(String[] args) throws Exception {
-		String svg = tex2svg("\\frac{\\partial}{\\partial x}f(x^2) = 3+4", LatexType.LATEX, 16);
-		Files.write(Paths.get("/tmp/t.svg"), svg.getBytes());
+		Triple<String,Float,Float> results = tex2svg("\\frac{\\partial}{\\partial x}f(x^2) = 3+4", LatexType.LATEX, 16);
+		Files.write(Paths.get("/tmp/t.svg"), results.a.getBytes());
+		System.out.println(results.a+" "+results.b);
 	}
 }

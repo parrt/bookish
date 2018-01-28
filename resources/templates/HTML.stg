@@ -193,7 +193,7 @@ BlockEquation(model) ::= <<
 >>
 
 InlineEquation(model) ::= <<
-<img style="vertical-align: middle;" src="$model.src$">
+<!-- h:$model.height$,d:$model.depth$ --><img style="vertical-align: -$model.depthRounded$.55pt;" src="$model.src$">
 >>
 
 EqnVar(model) ::= "<span class=eqn>$model.varname$</span>"

@@ -1,7 +1,15 @@
 delimiters "<", ">"
 
+/*
+NOTES
+
+From: https://css-tricks.com/probably-dont-base64-svg/
+<img src="data:image/svg+xml;base64,[data]"> for embedding SVG directly in HTML doc with base64
+<img src='data:image/svg+xml;utf8,<svg ... > ... </svg>'>
+*/
 texdoc(body,fontsize) ::= <<
 \documentclass[fontsize=<fontsize>pt]{scrlttr2}
+%\usepackage{layouts}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{amsmath}
@@ -17,13 +25,12 @@ texdoc(body,fontsize) ::= <<
 \usepackage{baskervillef}
 \begin{document}
 \thispagestyle{empty}
+%\drawfontframelabel{<body>}
 <body>
 \newdimen\height
 \newdimen\depth
 \setbox0=\vbox{<body>}
-\height=\ht0 \advance\height by \dp0
-\depth=\dp0 \advance\height by \dp0
-\message{!!bookish metrics: \the\height, \the\depth}
+\typeout{// bookish metrics: \the\ht0, \the\dp0}
 \end{document}
 >>
 

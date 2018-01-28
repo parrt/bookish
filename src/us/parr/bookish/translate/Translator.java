@@ -1,5 +1,6 @@
 package us.parr.bookish.translate;
 
+import org.antlr.v4.runtime.misc.Triple;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.model.Abstract;
@@ -35,6 +36,7 @@ import us.parr.bookish.model.XMLTag;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -208,7 +210,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = us.parr.bookish.translate.Tex2SVG.tex2svg(text, us.parr.bookish.translate.Tex2SVG.LatexType.LATEX, BLOCK_EQN_FONT_SIZE);
+			Triple<String,Float,Float> results = us.parr.bookish.translate.Tex2SVG.tex2svg(text, us.parr.bookish.translate.Tex2SVG.LatexType.LATEX, BLOCK_EQN_FONT_SIZE);
+			String svg = results.a;
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());
@@ -227,7 +230,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = us.parr.bookish.translate.Tex2SVG.tex2svg(eqn, us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN, BLOCK_EQN_FONT_SIZE);
+			Triple<String,Float,Float> results = us.parr.bookish.translate.Tex2SVG.tex2svg(eqn, us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN, BLOCK_EQN_FONT_SIZE);
+			String svg = results.a;
+
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());
@@ -260,19 +265,38 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new EqnIndexedVecVar(elements.get(0), elements.get(1));
 		}
 
-		String relativePath = "images/eqn-"+hash(eqn)+".svg";
-		String src = outputDir+"/"+relativePath;
-		Path outpath = Paths.get(src);
-		if ( !Files.exists(outpath) ) {
-			String svg = us.parr.bookish.translate.Tex2SVG.tex2svg(eqn, us.parr.bookish.translate.Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);
-			try {
-				System.out.println(outpath);
-				Files.write(outpath, svg.getBytes());
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
+		float height=0, depth = 0;
+
+		String prefix = String.format("eqn-%s",hash(eqn));
+//		String prefix = String.format("images/eqn-%s",hash(eqn));
+		File[] files =
+			new File(outputDir+"/images")
+				.listFiles((dir, name) -> name.startsWith(prefix));
+		String existing = null;
+		if ( files!=null && files.length>0 ) {
+			existing = files[0].getName();
+			int i = existing.indexOf("-depth");
+			int j = existing.indexOf(".", i);
+			String depthS = existing.substring(i+"-depth".length(), j);
+			depth = Integer.parseInt(depthS);
+			return new InlineEquation(outputDir+"/images/"+existing, eqn, -1, depth);
 		}
-		return new InlineEquation(relativePath, eqn);
+		Triple<String,Float,Float> results =
+			Tex2SVG.tex2svg(eqn, Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);
+		String svg = results.a;
+		height = results.b;
+		depth = results.c;
+		try {
+			String src = outputDir+"/images/"+prefix+"-depth"+Math.round(depth)+".svg";
+			Path outpath = Paths.get(src);
+			System.out.println(outpath);
+			Files.write(outpath, svg.getBytes());
+			String relativePath = "images/"+prefix+"-depth"+Math.round(depth)+".svg";
+			return new InlineEquation(relativePath, eqn, height, depth);
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
@@ -392,7 +416,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	// Support
 
-	private static List<String> extract(Pattern pattern, String text) {
+	public static List<String> extract(Pattern pattern, String text) {
 		Matcher m = pattern.matcher(text);
 		List<String> elements = new ArrayList<>();
 		if ( m.matches() ) {

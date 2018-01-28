@@ -26,6 +26,11 @@
             <version>4.7.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>us.parr</groupId>
+            <artifactId>parrtlib</artifactId>
+            <version>0.5</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -58,7 +63,7 @@
                 <executions>
                     <execution>
                         <configuration>
-                            <sourceDirectory>grammars</sourceDirectory>
+                            <sourceDirectory>src</sourceDirectory>
                             <visitor>true</visitor>
                         </configuration>
                         <id>antlr</id>
