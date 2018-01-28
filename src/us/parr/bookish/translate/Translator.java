@@ -64,7 +64,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	public Translator(String templateFileName) {
 		templates = new STGroupFile(templateFileName);
-		templates.registerRenderer(String.class, new LatexEscaper());
+		templates.registerRenderer(String.class, new us.parr.bookish.translate.LatexEscaper());
 		eqnVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)");
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
@@ -208,7 +208,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = Tex2SVG.tex2svg(text, Tex2SVG.LatexType.LATEX, BLOCK_EQN_FONT_SIZE);
+			String svg = us.parr.bookish.translate.Tex2SVG.tex2svg(text, us.parr.bookish.translate.Tex2SVG.LatexType.LATEX, BLOCK_EQN_FONT_SIZE);
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());
@@ -227,7 +227,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = Tex2SVG.tex2svg(eqn, Tex2SVG.LatexType.BLOCKEQN, BLOCK_EQN_FONT_SIZE);
+			String svg = us.parr.bookish.translate.Tex2SVG.tex2svg(eqn, us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN, BLOCK_EQN_FONT_SIZE);
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());
@@ -264,7 +264,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			String svg = Tex2SVG.tex2svg(eqn, Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);
+			String svg = us.parr.bookish.translate.Tex2SVG.tex2svg(eqn, us.parr.bookish.translate.Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);
 			try {
 				System.out.println(outpath);
 				Files.write(outpath, svg.getBytes());

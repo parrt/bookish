@@ -51,6 +51,8 @@ public class Tex2SVG {
 			Pair<String, String> results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex");
 //    println(results.a)
 
+			//"!!bookish metrics: ";
+
 			for (String line : results.a.split("\n")) {
 				if ( line.startsWith("!") || line.startsWith("l.") ) {
 					System.err.println(line);
