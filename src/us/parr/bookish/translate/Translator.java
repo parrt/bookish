@@ -276,9 +276,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		if ( files!=null && files.length>0 ) {
 			existing = files[0].getName();
 			int i = existing.indexOf("-depth");
-			int j = existing.indexOf(".", i);
+			int j = existing.indexOf(".svg", i);
 			String depthS = existing.substring(i+"-depth".length(), j);
-			depth = Integer.parseInt(depthS);
+			depth = Float.parseFloat(depthS);
 			return new InlineEquation(outputDir+"/images/"+existing, eqn, -1, depth);
 		}
 		Triple<String,Float,Float> results =
@@ -287,11 +287,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		height = results.b;
 		depth = results.c;
 		try {
-			String src = outputDir+"/images/"+prefix+"-depth"+Math.round(depth)+".svg";
+			String src = String.format("%s/images/%s-depth%06.2f.svg",outputDir,prefix,depth);
 			Path outpath = Paths.get(src);
 			System.out.println(outpath);
 			Files.write(outpath, svg.getBytes());
-			String relativePath = "images/"+prefix+"-depth"+Math.round(depth)+".svg";
+			String relativePath = String.format("images/%s-depth%06.2f.svg",prefix,depth);
 			return new InlineEquation(relativePath, eqn, height, depth);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
