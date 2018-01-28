@@ -61,6 +61,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public Pattern eqnVecVarPattern;
 	public Pattern eqnIndexedVarPattern;
 	public Pattern eqnIndexedVecVarPattern;
+//	public Pattern eqnfxPattern;
+//	public Pattern eqnfvxPattern;
+//	public Pattern eqnvfvxPattern;
+
 	public Pattern sectionAnchorPattern;
 	public Pattern latexPattern;
 
@@ -71,6 +75,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
 		eqnIndexedVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
+//		eqnfxPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*\\([a-zA-Z][a-zA-Z0-9]*\\))");
+//		eqnfvxPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*\\(\\\\mathbf\\{[a-zA-Z][a-zA-Z0-9]*\\}\\))");
 		sectionAnchorPattern = Pattern.compile(".*\\(([a-zA-Z_][a-zA-Z0-9\\-_]*?)\\)");
 		latexPattern = Pattern.compile("\\\\latex\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
 	}
