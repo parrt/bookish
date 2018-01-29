@@ -48,7 +48,9 @@ Chapter(model, author, preabstract, abstract_, elements, subcontainers) ::= <<
 
 <abstract_>
 
+\pagebreak
 {\small \setlength{\parskip}{0pt} \tableofcontents}
+\pagebreak
 
 <elements>
 
@@ -143,7 +145,9 @@ XMLTag(model) ::= <<
 XMLEndTag(model) ::= ""
 
 Latex(model) ::= <<
+\begin{center}
 <model.text>
+\end{center}
 >>
 
 BlockEquation(model) ::= <<
