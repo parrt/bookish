@@ -18,7 +18,6 @@ BOLD	  : '**' ~' ' '**'
           ;
 
 IMG		  : '<img ' -> pushMode(XML_MODE) ;
-XML		  : '<' -> pushMode(XML_MODE) ;
 
 OL : '<ol>' ;
 LI : '<li>' ;
@@ -29,10 +28,11 @@ UL_ : '</ul>' ;
 
 TABLE : '<table>' ;
 TR : '<tr>' ;
+TH : '<th' -> pushMode(XML_MODE) ;
 TD : '<td>' ;
-TH : '<th>' ;
 TABLE_ : '</table>' ;
 
+XML		  : '<' -> pushMode(XML_MODE) ;
 END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
 
 EQN       : '$' ~'$'+ '$' ;

@@ -1,5 +1,11 @@
 parser grammar BookishParser;
 
+@header {
+import java.util.Map;
+import java.util.HashMap;
+import us.parr.bookish.translate.Translator;
+}
+
 options {
 	tokenVocab=BookishLexer;
 }
@@ -71,18 +77,23 @@ table
 		TABLE_
 	;
 
-table_header : TR ws? (TH table_item)+ ;
+table_header : TR ws? (TH attrs END_OF_TAG table_item)+ ;
 table_row : TR ws? (TD table_item)+ ;
 
 list_item : (section_element|paragraph_element|ws|BLANK_LINE)* ;
 
 table_item : (section_element|paragraph_element|ws|BLANK_LINE)* ;
 
-block_image : IMG attr_assignment+ END_OF_TAG ;
+block_image : IMG attrs END_OF_TAG ;
 
-attr_assignment : name=XML_ATTR XML_EQ value=XML_ATTR_VALUE ;
+attrs returns [Map<String,String> attrMap = new HashMap<>()] : attr_assignment[$attrMap]* ;
 
-xml	: XML tagname=XML_ATTR attr_assignment* END_OF_TAG | END_TAG ;
+attr_assignment[Map<String,String> attrMap]
+	:	name=XML_ATTR XML_EQ value=XML_ATTR_VALUE
+		{$attrMap.put($name.text,Translator.stripQuotes($value.text));}
+	;
+
+xml	: XML tagname=XML_ATTR attrs END_OF_TAG | END_TAG ;
 
 link 		:	LINK ;
 italics 	:	ITALICS ;

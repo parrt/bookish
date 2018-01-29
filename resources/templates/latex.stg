@@ -108,7 +108,7 @@ ListItem(model, elements) ::= "\item <elements>"
 
 Table(model, headers, rows) ::= <<
 
-\begin{tabular}{<headers.items:{th | l}>}
+\begin{tabular}{<headers.items:{th | <if(th.model.widthPercentage)>p{0.<th.model.widthPercentage>\linewidth\}<else>l<endif>}>}
 <headers>
 <rows>
 \end{tabular}
@@ -121,7 +121,7 @@ TableRow(model, items) ::= <<
 
 TableItem(model, contents) ::= "<contents>"
 
-TableHeaderItem(model, contents) ::= "<contents>"
+TableHeaderItem(model, contents) ::= "{\bf <contents>}"
 
 Paragraph(model, elements) ::= "<\n><elements><\n>"
 

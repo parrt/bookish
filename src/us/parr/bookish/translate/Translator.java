@@ -45,9 +45,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -366,13 +364,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitBlock_image(BookishParser.Block_imageContext ctx) {
-		Map<String,String> attrs = new HashMap<>();
-		for (BookishParser.Attr_assignmentContext a : ctx.attr_assignment()) {
-			String name = a.name.getText();
-			String value = stripQuotes(a.value.getText());
-			attrs.put(name, value);
-		}
-		return new BlockImage(attrs);
+		return new BlockImage(ctx.attrs().attrMap);
 	}
 
 	@Override
@@ -388,12 +380,18 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return new Table(headers, rows);
 	}
 
+	/*
+	table_header : TR ws? (TH attrs END_OF_TAG table_item)+ ;
+	th_tag : TH attr_assignment+ END_OF_TAG ;
+	*/
 	@Override
 	public OutputModelObject visitTable_header(BookishParser.Table_headerContext ctx) {
 		List<TableItem> items = new ArrayList<>();
-		for (BookishParser.Table_itemContext el : ctx.table_item()) {
-			TableItem item = (TableItem) visit(el);
-			items.add(new TableHeaderItem(item.contents));
+		for (int i = 0; i<ctx.attrs().size(); i++) {
+			BookishParser.AttrsContext attrsOfTH = ctx.attrs().get(i);
+			BookishParser.Table_itemContext itemCtx = ctx.table_item().get(i);
+			TableItem item = (TableItem) visit(itemCtx);
+			items.add(new TableHeaderItem(item.contents,attrsOfTH.attrMap));
 		}
 		return new TableRow(items);
 	}
@@ -452,12 +450,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new XMLEndTag(text.substring(2, text.length()-1));
 		}
 		String name = ctx.tagname.getText();
-		Map<String,String> attrs = new HashMap<>();
-		for (BookishParser.Attr_assignmentContext a : ctx.attr_assignment()) {
-			String value = stripQuotes(a.value.getText());
-			attrs.put(a.name.getText(), value);
-		}
-		return new XMLTag(name, attrs);
+		return new XMLTag(name, ctx.attrs().attrMap);
 	}
 
 	@Override
