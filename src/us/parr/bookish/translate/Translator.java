@@ -293,7 +293,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			int j = existing.indexOf(".svg", i);
 			String depthS = existing.substring(i+"-depth".length(), j);
 			depth = Float.parseFloat(depthS);
-			return new InlineEquation(outputDir+"/images/"+existing, eqn, -1, depth);
+			return new InlineEquation("images/"+existing, eqn, -1, depth);
 		}
 		Triple<String,Float,Float> results =
 			Tex2SVG.tex2svg(eqn, Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);

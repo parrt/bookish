@@ -1,5 +1,14 @@
 delimiters "$","$"
 
+/*
+NOTES
+
+From: https://css-tricks.com/probably-dont-base64-svg/
+<img src="data:image/svg+xml;base64,[data]"> for embedding SVG directly in HTML doc with base64
+<img src='data:image/svg+xml;utf8,<svg ... > ... </svg>'>
+make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
+*/
+
 Document(model, chapters) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
