@@ -6,11 +6,14 @@ public class Chapter extends ContainerWithTitle {
 	@ModelElement
 	public Author author;
 	@ModelElement
+	public PreAbstract preabstract;
+	@ModelElement
 	public Abstract abstract_;
 
 	public Chapter(String title,
 	               String anchor,
 	               Author author,
+	               PreAbstract preabstract,
 	               Abstract abstract_,
 	               List<OutputModelObject> elements,
 	               List<ContainerWithTitle> sections)
@@ -18,6 +21,7 @@ public class Chapter extends ContainerWithTitle {
 		super(title, anchor, elements);
 		this.author = author;
 		this.abstract_ = abstract_;
+		this.preabstract = preabstract;
 		this.subcontainers = sections;
 	}
 

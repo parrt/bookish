@@ -5,6 +5,7 @@ SECTION   : '##' ~'\n'+ ;
 CHAPTER   : '#' ~'\n'+ ;
 
 AUTHOR	  : '[author]' ;
+PREABSTRACT  : '[preabstract]' ;
 ABSTRACT  : '[abstract]' ;
 
 LINK	  : '[' ~']'+ ']' '(' ~')'+ ')' ;

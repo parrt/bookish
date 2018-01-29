@@ -24,6 +24,7 @@ import us.parr.bookish.model.OrderedList;
 import us.parr.bookish.model.Other;
 import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.Paragraph;
+import us.parr.bookish.model.PreAbstract;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SubSection;
 import us.parr.bookish.model.Table;
@@ -100,12 +101,17 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitAuthor(BookishParser.AuthorContext ctx) {
+		return new Author(visit(ctx.paragraph()));
+	}
+
+	@Override
+	public OutputModelObject visitPreabstract(BookishParser.PreabstractContext ctx) {
 		List<OutputModelObject> paras = new ArrayList<>();
 		for (ParseTree p : ctx.paragraph()) {
 			Paragraph para = (Paragraph) visit(p);
 			paras.add(para);
 		}
-		return new Author(paras);
+		return new PreAbstract(paras);
 	}
 
 	@Override
@@ -126,6 +132,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		if ( ctx.author()!=null ) {
 			auth = visit(ctx.author());
 		}
+		OutputModelObject preabs = null;
+		if ( ctx.preabstract()!=null ) {
+			preabs = visit(ctx.preabstract());
+		}
 		OutputModelObject abs = null;
 		if ( ctx.abstract_()!=null ) {
 			abs = visit(ctx.abstract_());
@@ -134,7 +144,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		List<ContainerWithTitle> sections = new ArrayList<>();
 		for (ParseTree el : ctx.children) {
 			if ( el instanceof BookishParser.AuthorContext ||
-				 el instanceof BookishParser.Abstract_Context )
+				el instanceof BookishParser.PreabstractContext ||
+				el instanceof BookishParser.Abstract_Context )
 			{
 				continue;
 			}
@@ -146,7 +157,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(m);
 			}
 		}
-		return new Chapter(title, null, (Author)auth, (Abstract)abs, elements, sections);
+		return new Chapter(title, null,
+		                   (Author)auth, (PreAbstract)preabs,
+		                   (Abstract)abs, elements, sections);
 	}
 
 

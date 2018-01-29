@@ -80,10 +80,12 @@ $chapters$
 </html>
 >>
 
-Chapter(model, author, abstract_, elements, subcontainers) ::= <<
+Chapter(model, author, preabstract, abstract_, elements, subcontainers) ::= <<
 <h1>$model.title$</h1>
 
 $author$
+
+$preabstract$
 
 $abstract_$
 
@@ -106,13 +108,19 @@ $elements$
 $subcontainers$
 >>
 
-Author(model, elements) ::= <<
+Author(model, author) ::= <<
 
-<p id="author">$elements$</p>
+<p id="author">$author$</p>
 
 >>
 
 Abstract(model, elements) ::= <<
+
+<p>$elements$</p>
+
+>>
+
+PreAbstract(model, elements) ::= <<
 
 <p>$elements$</p>
 
