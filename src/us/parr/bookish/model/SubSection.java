@@ -3,8 +3,12 @@ package us.parr.bookish.model;
 import java.util.List;
 
 public class SubSection extends Section {
-	public SubSection(String title, String anchor, List<OutputModelObject> elements) {
-		super(title, anchor, elements, null);
+	public SubSection(String title,
+	                  String anchor,
+	                  List<OutputModelObject> elements,
+	                  List<ContainerWithTitle> subsections)
+	{
+		super(title, anchor, elements, subsections);
 	}
 
 	@Override

@@ -27,6 +27,7 @@ import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.PreAbstract;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SubSection;
+import us.parr.bookish.model.SubSubSection;
 import us.parr.bookish.model.Table;
 import us.parr.bookish.model.TableHeaderItem;
 import us.parr.bookish.model.TableItem;
@@ -206,11 +207,39 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 
 		List<OutputModelObject> elements = new ArrayList<>();
+		List<ContainerWithTitle> subsubsections = new ArrayList<>();
+		for (ParseTree el : children) {
+			OutputModelObject m = visit(el);
+			if ( m instanceof SubSection ) {
+				subsubsections.add((SubSection)m);
+			}
+			else {
+				elements.add(m);
+			}
+		}
+		return new SubSection(title, anchor, elements, subsubsections);
+	}
+
+	@Override
+	public OutputModelObject visitSubsubsection(BookishParser.SubsubsectionContext ctx) {
+		List<ParseTree> children = ctx.children;
+		String title = ctx.sec.getText();
+		title = title.substring(4).trim();
+
+		List<String> anchors = extract(sectionAnchorPattern, title);
+		String anchor = null;
+		if ( anchors.size()>0 ) {
+			anchor = anchors.get(0);
+			int lparent = title.indexOf('(');
+			title = title.substring(0, lparent);
+		}
+
+		List<OutputModelObject> elements = new ArrayList<>();
 		for (ParseTree el : children) {
 			OutputModelObject m = visit(el);
 			elements.add(m);
 		}
-		return new SubSection(title, anchor, elements);
+		return new SubSubSection(title, anchor, elements);
 	}
 
 	@Override

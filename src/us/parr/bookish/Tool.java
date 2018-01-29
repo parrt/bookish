@@ -19,8 +19,8 @@ public class Tool {
 	public static String outputDir = "/tmp/bookish/calculus";
 	public static String rootDir = "/Users/parrt/github/autodx";
 	public enum Target { HTML, LATEX }
-//	public static final Target target = Target.LATEX;
-	public static final Target target = Target.HTML;
+	public static final Target target = Target.LATEX;
+//	public static final Target target = Target.HTML;
 
 	public static void main(String[] args) throws Exception {
 		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName("/Users/parrt/github/autodx/matrix-calculus.md"));

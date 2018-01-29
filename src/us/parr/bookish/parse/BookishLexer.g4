@@ -1,5 +1,6 @@
 lexer grammar BookishLexer;
 
+SUBSUBSECTION: '####' ~'\n'+ ;
 SUBSECTION: '###' ~'\n'+ ;
 SECTION   : '##' ~'\n'+ ;
 CHAPTER   : '#' ~'\n'+ ;

@@ -18,7 +18,9 @@ preabstract : BLANK_LINE? PREABSTRACT paragraph+;
 
 section : BLANK_LINE sec=SECTION (section_element|ws)* subsection* ;
 
-subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)*;
+subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)* subsubsection*;
+
+subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*;
 
 section_element
 	:	paragraph
