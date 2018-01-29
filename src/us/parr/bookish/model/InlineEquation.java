@@ -12,11 +12,14 @@ public class InlineEquation extends InlineImage {
 		this.eqn = eqn;
 		this.height = height;
 		this.depth = depth;
-		if ( depth < 1.3 ) {
+		if ( depth < 0.5 ) {
 			depthTweaked = 0.5f;
 		}
+		else if ( depth < 1.3 ) {
+			depthTweaked = depth;//0.5f;
+		}
 		else {
-			depthTweaked = depth*1.20f;
+			depthTweaked = depth*1.05f;
 		}
 		this.descentPercentage = (int)(100*depth/(height+depth));
 		depthRounded = Math.round(depth);

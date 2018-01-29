@@ -47,9 +47,7 @@ public class Tex2SVG {
 			template.add("fontsize", fontsize);
 			Files.write(Paths.get(texfilename), template.render().getBytes());
 
-//    println("wrote $texfilename")
-
-			Runtime runtime = Runtime.getRuntime();
+//			System.out.println("wrote "+texfilename);
 
 			Pair<String, String> results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex");
 //    println(results.a)

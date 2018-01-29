@@ -53,8 +53,8 @@ import static us.parr.bookish.Tool.outputDir;
 import static us.parr.bookish.parse.BookishParser.END_TAG;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
-	public static int INLINE_EQN_FONT_SIZE = 14;
-	public static int BLOCK_EQN_FONT_SIZE = 14;
+	public static int INLINE_EQN_FONT_SIZE = 13;
+	public static int BLOCK_EQN_FONT_SIZE = 13;
 	public STGroupFile templates;
 
 	public Pattern eqnVarPattern;

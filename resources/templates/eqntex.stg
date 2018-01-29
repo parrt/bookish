@@ -25,12 +25,11 @@ texdoc(body,fontsize) ::= <<
 \usepackage{baskervillef}
 \begin{document}
 \thispagestyle{empty}
-%\drawfontframelabel{<body>}
 <body>
 \newdimen\height
 \newdimen\depth
-\setbox0=\vbox{<body>}
-\typeout{// bookish metrics: \the\ht0, \the\dp0}
+\setbox0=\vbox{<body>\}
+\typeout{// bookish metrics: \the\ht0, \the\dp0\}
 \end{document}
 >>
 
