@@ -100,14 +100,22 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitAuthor(BookishParser.AuthorContext ctx) {
-		Paragraph para = (Paragraph)visit(ctx.paragraph());
-		return new Author(para.elements);
+		List<OutputModelObject> paras = new ArrayList<>();
+		for (ParseTree p : ctx.paragraph()) {
+			Paragraph para = (Paragraph) visit(p);
+			paras.add(para);
+		}
+		return new Author(paras);
 	}
 
 	@Override
 	public OutputModelObject visitAbstract_(BookishParser.Abstract_Context ctx) {
-		Paragraph para = (Paragraph)visit(ctx.paragraph());
-		return new Abstract(para.elements);
+		List<OutputModelObject> paras = new ArrayList<>();
+		for (ParseTree p : ctx.paragraph()) {
+			Paragraph para = (Paragraph) visit(p);
+			paras.add(para);
+		}
+		return new Abstract(paras);
 	}
 
 	@Override

@@ -10,9 +10,9 @@ document
 
 chapter : BLANK_LINE? chap=CHAPTER author? abstract_? (section_element|ws)* section* ;
 
-author : BLANK_LINE? AUTHOR paragraph ;
+author : BLANK_LINE? AUTHOR paragraph+ ;
 
-abstract_ : BLANK_LINE? ABSTRACT paragraph;
+abstract_ : BLANK_LINE? ABSTRACT paragraph+;
 
 section : BLANK_LINE sec=SECTION (section_element|ws)* subsection* ;
 

@@ -46,6 +46,9 @@ Document(model, chapters) ::= <<
 		padding: 10px;
 		margin-left: 100px;
 }
+table {
+	border-spacing: 15px 0px
+}
 body {
         font-family: "Merriweather", serif;
         font-size: 14px;
@@ -140,9 +143,13 @@ ListItem(model, elements) ::= "<li>$elements$</li>"
 
 Table(model, headers, rows) ::= <<
 <center>
-<table>
+<table style="">
+<thead>
 	$headers$
+</thead>
+<tbody>
 	$rows; separator="\n"$
+</tbody>
 </table>
 </center>
 >>
@@ -153,8 +160,8 @@ TableRow(model, items) ::= <<
 </tr>
 >>
 
-TableItem(model, contents) ::= "<td>$contents$</td>"
-TableHeaderItem(model, contents) ::= "<th>$contents$</th>"
+TableItem(model, contents) ::= "<td align=left>$contents$</td>"
+TableHeaderItem(model, contents) ::= "<th align=left>$contents$</th>"
 
 Paragraph(model, elements) ::= <<
 
@@ -193,7 +200,7 @@ BlockEquation(model) ::= <<
 >>
 
 InlineEquation(model) ::= <<
-<!-- h:$model.height$,d:$model.depth$ --><img style="vertical-align: -$model.depthTweaked$pt;" src="$model.src$">
+<img style="vertical-align: -$model.depthTweaked$pt;" src="$model.src$">
 >>
 
 EqnVar(model) ::= "<span class=eqn>$model.varname$</span>"
