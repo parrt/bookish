@@ -27,7 +27,7 @@ If you can't use JavaScript, you have to use images. If you have to use images, 
 The really tricky bit is the vertical alignment of equations within a line of HTML text. Check out this sentence with embedded equations:
 
 <center>
-<img src="images/snapshot2.png" width=500>
+<img src="images/snapshot2.png" width=560>
 </center>
 
 (I had to take a snapshot and show that instead of giving raw HTML plus equations; github's markdown processor didn't handle it properly. haha.)
