@@ -44,6 +44,17 @@ What does it mean to properly align an equation's image? It's painful.  We need 
 
 where `<body>` is the hole where the equation goes.
 
+Oh, and to get the font to look less anemic, you need to set the math fonts:
+
+```tex
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+```
+
 One last little tidbit. Image file names are based upon the MD5 digest hash of the equation. There are two benefits: (1) repeated equations share the same file and (2) latex is slow, like 1 second per equation, but the hashed filename lets us cache all of the images and know when we must refresh an image because the equation changed.  
 
 It's safe to stop reading here.  You can learn everything you need to know about doing this yourself from this description and the source code.  This repository is just getting started and is in progress so don't expect a tool you can use yourself, at least at the moment.

@@ -2,7 +2,6 @@ delimiters "<", ">"
 
 texdoc(body,fontsize) ::= <<
 \documentclass[fontsize=<fontsize>pt]{scrlttr2}
-%\usepackage{layouts}
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{amsmath}
@@ -14,13 +13,9 @@ texdoc(body,fontsize) ::= <<
 \DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
 \DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
 \DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
-\usepackage[T1]{fontenc}
-\usepackage{baskervillef}
 \begin{document}
 \thispagestyle{empty}
 <body>
-\newdimen\height
-\newdimen\depth
 \setbox0=\vbox{<body>\}
 \typeout{// bookish metrics: \the\ht0, \the\dp0\}
 \end{document}
