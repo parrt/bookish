@@ -12,7 +12,7 @@ All of those equations, even the ones inline in the text paragraph, are `<img>` 
 
 ## What's so hard about rendering equations?
 
-If you're doing markdown or HTML, people tend to use MathJax or its faster cousin Katex. MathJax is just too slow when you have 600 equations. Katex is much better but requires every `&`, `_`, etc... be escaped as `\&`, `\_` to avoid getting processed as markdown.  That's no problem because I built a translator that escaped everything for me. Then I found out that the JavaScript parser that extracted the latex equation strings was extremely finicky. I had to randomly insert spaces in my equations trying to get them recognized as equations.
+If you're doing markdown or HTML, people tend to use MathJax or its faster cousin Katex. MathJax is just too slow when you have 600 equations. Katex is much better but it (and MathJax) requires every `&`, `_`, etc... be escaped as `\&`, `\_` to avoid getting processed as markdown.  That's no problem because I built a translator that escaped everything for me. Then I found out that the JavaScript parser that extracted the latex equation strings was extremely finicky. I had to randomly insert spaces in my equations trying to get them recognized as equations.
 
 There's another problem.  Is all of that JavaScript gonna work in epub formats? What about the Kindle? Because I'm hoping to write a book on machine learning, I'm leary of relying on full-blown JavaScript to render equations.
 
