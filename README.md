@@ -4,9 +4,11 @@
 
 In the end we converted the source document to markdown and build a translator that generated [HTML](http://parrt.cs.usfca.edu/doc/matrix-calculus/index.html) using SVG for equations and [PDF](http://parrt.cs.usfca.edu/doc/matrix-calculus.pdf) from native latex equations. It does a pretty good job with html as you can see:
 
-<img src="images/snapshot.png" width=650>
+<center>
+<img src="images/snapshot.png" width=700>
+</center>
 
-All of those equations, even the ones in the text, are `<img>` references.
+All of those equations, even the ones inline in the text paragraph, are `<img>` references.
 
 ## What's so hard about rendering equations?
 
@@ -16,7 +18,7 @@ There's another problem.  Is all of that JavaScript gonna work in epub formats? 
 
 I tried pandoc and a few other tools like multimarkdown but not everything came through correctly to the translated output and I got tired of chasing all of this down.
 
-As the [ANTLR](http://www.antlr.org) guy, building a language translator is not super scary and, following my motto ``*Why program by hand in five days what you can spend five years of your life automating*'', I decided to simply solve this problem by building my own markdown translator.
+As the [ANTLR](http://www.antlr.org) guy, I ain't afeared of building a language translator and so, following my motto ``*Why program by hand in five days what you can spend five years of your life automating*'', I decided to simply solve this problem by building my own markdown translator.
 
 ## How to typeset and display math via SVG
 
