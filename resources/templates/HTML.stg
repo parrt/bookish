@@ -164,6 +164,8 @@ SubSection(model, elements, subcontainers) ::= <<
 
 $elements$
 
+$subcontainers$
+
 >>
 
 SubSubSection(model, elements, subcontainers) ::= <<
