@@ -13,6 +13,7 @@ Document(model, chapters) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 <style>
 #toc {
@@ -67,9 +68,30 @@ body {
         background: #FFFFFF;
         max-width: 900px;
         margin: auto;
+        -webkit-text-size-adjust: 100%;
 }
 p {
         margin: 15px 5px 15px 5px;
+}
+@media (max-width: 415px) {
+        /* iphone 6+ 414x628 browser window, iphone 6 is 375 x 559 in browser */
+        .blkeqn {
+                padding: 0px;
+                margin-left: 0px;
+        }
+        body {
+                font-size: 14px;
+        }
+}
+@media (max-width: 736px) {
+        /* iphone7+ 736 wide */
+        .blkeqn {
+                padding: 0px;
+                margin-left: 0px;
+        }
+        body {
+                font-size: 14px;
+        }
 }
 </style>
 </head>
@@ -238,6 +260,8 @@ EqnIndexedVecVar(model) ::= "<span class=eqnvec>$model.varname$</span><sub class
 HyperLink(model) ::= <<
 <a href="$model.href$">$model.title$</a>
 >>
+
+Quoted(model, elements) ::= "&ldquo;$elements$&rdquo;"
 
 Bold(model) ::= "<b>$model.text$</b>"
 Italics(model) ::= "<i>$model.text$</i>"

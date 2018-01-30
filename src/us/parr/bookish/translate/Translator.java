@@ -25,6 +25,7 @@ import us.parr.bookish.model.Other;
 import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.PreAbstract;
+import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SubSection;
 import us.parr.bookish.model.SubSubSection;
@@ -451,6 +452,15 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 		String name = ctx.tagname.getText();
 		return new XMLTag(name, ctx.attrs().attrMap);
+	}
+
+	@Override
+	public OutputModelObject visitQuoted(BookishParser.QuotedContext ctx) {
+		List<OutputModelObject> elements = new ArrayList<>();
+		for (ParseTree el : ctx.children) {
+			elements.add( visit(el) );
+		}
+		return new Quoted(elements);
 	}
 
 	@Override

@@ -43,7 +43,7 @@ section_element
 	;
 
 paragraph
-	:	BLANK_LINE (paragraph_element|ws)+
+	:	BLANK_LINE (paragraph_element|quoted|ws)+
 	;
 
 paragraph_element
@@ -54,6 +54,8 @@ paragraph_element
 	|	xml
 	|	other
 	;
+
+quoted : QUOTE (paragraph_element|ws)+ QUOTE ;
 
 latex : LATEX ;
 
@@ -80,9 +82,9 @@ table
 table_header : TR ws? (TH attrs END_OF_TAG table_item)+ ;
 table_row : TR ws? (TD table_item)+ ;
 
-list_item : (section_element|paragraph_element|ws|BLANK_LINE)* ;
+list_item : (section_element|paragraph_element|quoted|ws|BLANK_LINE)* ;
 
-table_item : (section_element|paragraph_element|ws|BLANK_LINE)* ;
+table_item : (section_element|paragraph_element|quoted|ws|BLANK_LINE)* ;
 
 block_image : IMG attrs END_OF_TAG ;
 
