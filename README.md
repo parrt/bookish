@@ -4,7 +4,7 @@
 
 In the end we converted the source document to markdown and build a translator that generated [HTML](http://parrt.cs.usfca.edu/doc/matrix-calculus/index.html) using SVG for equations and [PDF](http://parrt.cs.usfca.edu/doc/matrix-calculus.pdf) from native latex equations. It does a pretty good job with html as you can see:
 
-<img src="images/snapshot.png" width=500>
+<img src="images/snapshot.png" width=650>
 
 All of those equations, even the ones in the text, are `<img>` references.
 
