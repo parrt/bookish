@@ -40,6 +40,7 @@ What does it mean to properly align an equation's image? It's painful.  We need 
 <body>
 \setbox0=\vbox{<body>\}
 \typeout{// bookish metrics: \the\ht0, \the\dp0\}
+\end{document}
 ```
 
 where `<body>` is the hole where the equation goes.
