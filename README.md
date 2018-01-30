@@ -22,13 +22,15 @@ As the [ANTLR](http://www.antlr.org) guy, I ain't afeared of building a language
 
 ## How to typeset and display math via SVG
 
-If you can't use JavaScript, you have to use images. If you have to use images, you want scalable graphics, which means SVG files. So, the translator must extract equations and replace them with `<img>` tags. That part is not too hard; take a look at [Tex2SVG](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/Tex2SVG.java) and you'll see that I'm just running three programs in sequence to process the equation into an SVG file: `xelatex` then `pdfcrop` then `pdf2svg`.
+If you can't use JavaScript, you have to use images. If you have to use images, you want scalable graphics, which means SVG files. So, the translator must extract equations and replace them with `<img>` tags referencing SVG files. That part is not too hard; take a look at [Tex2SVG](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/Tex2SVG.java) and you'll see that I'm just running three programs in sequence to process the equation into an SVG file: `xelatex` then `pdfcrop` then `pdf2svg`.
 
 The really tricky bit is the vertical alignment of equations within a line of HTML text. Check out this sentence with embedded equations:
 
-> A sample sentence with inline equation as plain image: <img src="images/xT.svg"> or centered<img style="vertical-align: middle;" src="images/xT.svg">, or properly aligned <img style="vertical-align: -0.5pt;" src="images/xT.svg">. 
+<center>
+<img src="images/snapshot2.png" width=500>
+</center>
 
-You see that and think that the plain image reference will work fine until you see equation <img src="images/dfdx.svg"> as a plain image.  That image needs to be centered <img style="vertical-align: middle;" src="images/dfdx.svg"> or properly aligned <img style="vertical-align: -4.9035pt;" src="images/dfdx.svg">. So, neither middle nor centering vertically works in every case. We have figure out how to properly align each equation.
+(I had to take a snapshot and show that instead of giving raw HTML plus equations; github's markdown processor didn't handle it properly. haha.)
 
 What does it mean to properly align an equation's image? It's painful.  We need to convince latex to give us metrics on how far the typeset image drops below the baseline. (Latex calls this the *depth*.)  It took a while, but I figured out how to not only compute the depth below baseline but also how to get it back into this Java program via the latex log file. You can see how all of this is done here: [Translator.visitEqn()](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/Translator.java#L302).
 
