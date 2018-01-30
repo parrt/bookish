@@ -32,7 +32,17 @@ The really tricky bit is the vertical alignment of equations within a line of HT
 
 (I had to take a snapshot and show that instead of giving raw HTML plus equations; github's markdown processor didn't handle it properly. haha.)
 
-What does it mean to properly align an equation's image? It's painful.  We need to convince latex to give us metrics on how far the typeset image drops below the baseline. (Latex calls this the *depth*.)  It took a while, but I figured out how to not only compute the depth below baseline but also how to get it back into this Java program via the latex log file. You can see how all of this is done here: [Translator.visitEqn()](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/Translator.java#L302).
+What does it mean to properly align an equation's image? It's painful.  We need to convince latex to give us metrics on how far the typeset image drops below the baseline. (Latex calls this the *depth*.)  It took a while, but I figured out how to not only compute the depth below baseline but also how to get it back into this Java program via the latex log file. You can see how all of this is done here: [Translator.visitEqn()](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/Translator.java#L302). Here is the latex incantation to extract height and depth of the rendered equation:
+
+```tex
+\begin{document}
+\thispagestyle{empty}
+<body>
+\setbox0=\vbox{<body>\}
+\typeout{// bookish metrics: \the\ht0, \the\dp0\}
+```
+
+where `<body>` is the hole where the equation goes.
 
 One last little tidbit. Image file names are based upon the MD5 digest hash of the equation. There are two benefits: (1) repeated equations share the same file and (2) latex is slow, like 1 second per equation, but the hashed filename lets us cache all of the images and know when we must refresh an image because the equation changed.  
 
@@ -46,4 +56,4 @@ There is lots of hideous cut-and-paste programming, which is how I build any pro
 
 Unlike any other markdown processor I've seen, this one has [an actual lexer](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/parse/BookishLexer.g4) and [parser](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/parse/BookishParser.g4)!
 
-You will also notice that I have built this program as if it were a programming language.  The strategy I use is to construct a model of the document from the parse tree using a visitor. Then I use a [fiendishly clever bit of code](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/ModelConverter.java) to automatically convert that representation of the document into a tree of [string templates](http://www.stringtemplate.org).   Of course the set of templates you use determines what output you get.  Change the templates and you change the target language. For example here are the [HTML templates](https://github.com/parrt/bookish/blob/master/resources/templates/HTML.stg).
+You will also notice that I have built this program as if it were a programming language.  The strategy I use is to construct a model of the document from the parse tree using a visitor. Then I use a [fiendishly clever bit of code](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/ModelConverter.java) to automatically convert that representation of the document into a tree of [string templates](http://www.stringtemplate.org).  Of course the set of templates you use determines what output you get.  Change the templates and you change the target language. For example here are the [HTML templates](https://github.com/parrt/bookish/blob/master/resources/templates/HTML.stg).
