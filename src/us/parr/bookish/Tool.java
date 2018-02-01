@@ -29,6 +29,16 @@ import static us.parr.lib.ParrtIO.basename;
 import static us.parr.lib.ParrtIO.stripFileExtension;
 import static us.parr.lib.ParrtStrings.stripQuotes;
 
+/**
+ * java us.parr.bookish.Tool -target latex -o /tmp/mybook book.json
+ * java us.parr.bookish.Tool -target html -o /tmp/mybook book.json
+ *
+ * Assumes images/ subdir (and these are copied to target dir).
+ *
+ * metadata in json. e.g.,
+ *
+ *      https://github.com/parrt/bookish/blob/master/examples/matrix-calculus/matrix-calculus.json
+ */
 public class Tool {
 	public enum Target { HTML, LATEX }
 
@@ -51,27 +61,51 @@ public class Tool {
 		String inputDir = new File(metadataFilename).getParent();
 		String outputDir = option("o");
 
-		// read metadata
-		JsonReader jsonReader = Json.createReader(new FileReader(metadataFilename));
-		JsonObject metadata = jsonReader.readObject();
-		System.out.println(metadata);
-		JsonArray markdownFilenames = metadata.getJsonArray("files");
-
-		ParrtIO.mkdir(outputDir+"/images");
 		String outFilename;
 		Translator trans;
-		Target target = (Target) optionO("target");
+		Target target = (Target)optionO("target");
 		if ( target==Target.HTML ) {
 			trans = new Translator(target, outputDir);
-			outFilename = "index.html";
 		}
 		else {
 			trans = new Translator(target, outputDir);
-			outFilename = stripFileExtension(basename(metadataFilename))+".tex";
 		}
 
+		ParrtIO.mkdir(outputDir+"/images");
+
+		if ( metadataFilename.endsWith(".md") ) { // just one file (legacy stuff)
+			if ( target==Target.HTML ) {
+				trans = new Translator(target, outputDir);
+				outFilename = "index.html";
+			}
+			else {
+				trans = new Translator(target, outputDir);
+				outFilename = stripFileExtension(basename(metadataFilename))+".tex";
+			}
+			String output = translate(trans, metadataFilename);
+			ParrtIO.save(outputDir+"/"+outFilename, output);
+			System.out.println("Wrote "+outputDir+"/"+outFilename);
+			copyImages(inputDir, outputDir);
+			return;
+		}
+
+		// otherwise, read and use metadata
+		JsonReader jsonReader = Json.createReader(new FileReader(metadataFilename));
+		JsonObject metadata = jsonReader.readObject();
+		System.out.println(metadata);
+
+		JsonArray markdownFilenames = metadata.getJsonArray("files");
 		for (JsonValue f : markdownFilenames) {
-			String output = translate(trans, inputDir+"/"+stripQuotes(f.toString()));
+			String fname = stripQuotes(f.toString());
+			String output = translate(trans, inputDir+"/"+fname);
+			if ( target==Target.HTML ) {
+				outFilename = stripFileExtension(fname)+".html";
+				// TODO: gen index.html
+			}
+			else {
+				outFilename = stripFileExtension(fname)+".tex";
+				// TODO: gen book.tex that includes files
+			}
 			ParrtIO.save(outputDir+"/"+outFilename, output);
 			System.out.println("Wrote "+outputDir+"/"+outFilename);
 		}
