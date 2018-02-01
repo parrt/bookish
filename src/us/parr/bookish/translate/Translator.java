@@ -3,6 +3,7 @@ package us.parr.bookish.translate;
 import org.antlr.v4.runtime.misc.Triple;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.STGroupFile;
+import us.parr.bookish.Tool;
 import us.parr.bookish.model.Abstract;
 import us.parr.bookish.model.Author;
 import us.parr.bookish.model.BlockEquation;
@@ -50,8 +51,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static us.parr.bookish.Tool.outputDir;
 import static us.parr.bookish.parse.BookishParser.END_TAG;
+import static us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN;
+import static us.parr.bookish.translate.Tex2SVG.LatexType.LATEX;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 13;
@@ -62,22 +64,35 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public Pattern eqnVecVarPattern;
 	public Pattern eqnIndexedVarPattern;
 	public Pattern eqnIndexedVecVarPattern;
-//	public Pattern eqnfxPattern;
-//	public Pattern eqnfvxPattern;
-//	public Pattern eqnvfvxPattern;
-
 	public Pattern sectionAnchorPattern;
 	public Pattern latexPattern;
 
-	public Translator(String templateFileName) {
+	public String outputDir;
+	public Tool.Target target;
+
+	public Tex2SVG texConverter;
+
+	public Translator(Tool.Target target, String outputDir) {
+		this.target = target;
+		String templateFileName = null;
+		switch ( target ) {
+			case HTML :
+				templateFileName = "templates/HTML.stg";
+				break;
+			case LATEX :
+				templateFileName = "templates/latex.stg";
+				break;
+		}
 		templates = new STGroupFile(templateFileName);
 		templates.registerRenderer(String.class, new us.parr.bookish.translate.LatexEscaper());
+		this.outputDir = outputDir;
+
+		texConverter = new Tex2SVG(outputDir);
+
 		eqnVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)");
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
 		eqnIndexedVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
-//		eqnfxPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*\\([a-zA-Z][a-zA-Z0-9]*\\))");
-//		eqnfvxPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*\\(\\\\mathbf\\{[a-zA-Z][a-zA-Z0-9]*\\}\\))");
 		sectionAnchorPattern = Pattern.compile(".*\\(([a-zA-Z_][a-zA-Z0-9\\-_]*?)\\)");
 		latexPattern = Pattern.compile("\\\\latex\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
 	}
@@ -261,11 +276,15 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		List<String> stuff = extract(latexPattern, text); // \latex{{...}}
 		text = stuff.get(0);
 
+		if ( target==Tool.Target.LATEX ) {
+			return new Latex(null, text, text);
+		}
+
 		String relativePath = "images/latex-"+hash(text)+".svg";
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			Triple<String,Float,Float> results = us.parr.bookish.translate.Tex2SVG.tex2svg(text, us.parr.bookish.translate.Tex2SVG.LatexType.LATEX, BLOCK_EQN_FONT_SIZE);
+			Triple<String,Float,Float> results = texConverter.tex2svg(text, LATEX, BLOCK_EQN_FONT_SIZE);
 			String svg = results.a;
 			try {
 				System.out.println(outpath);
@@ -281,11 +300,15 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitBlock_eqn(BookishParser.Block_eqnContext ctx) {
 		String eqn = stripQuotes(ctx.getText(), 3);
 
+		if ( target==Tool.Target.LATEX ) {
+			return new BlockEquation(null, eqn);
+		}
+
 		String relativePath = "images/blkeqn-"+hash(eqn)+".svg";
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
-			Triple<String,Float,Float> results = us.parr.bookish.translate.Tex2SVG.tex2svg(eqn, us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN, BLOCK_EQN_FONT_SIZE);
+			Triple<String,Float,Float> results = texConverter.tex2svg(eqn, BLOCKEQN, BLOCK_EQN_FONT_SIZE);
 			String svg = results.a;
 
 			try {
@@ -301,6 +324,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitEqn(BookishParser.EqnContext ctx) {
 		String eqn = stripQuotes(ctx.getText());
+
+		if ( target==Tool.Target.LATEX ) {
+			return new InlineEquation(null, eqn, -1, -1);
+		}
 
 		// check for special cases like $w$ and $\mathbf{w}_i$.
 		List<String> elements = extract(eqnVarPattern, eqn);
@@ -337,7 +364,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new InlineEquation("images/"+existing, eqn, -1, depth);
 		}
 		Triple<String,Float,Float> results =
-			Tex2SVG.tex2svg(eqn, Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);
+			texConverter.tex2svg(eqn, Tex2SVG.LatexType.EQN, INLINE_EQN_FONT_SIZE);
 		String svg = results.a;
 		height = results.b;
 		depth = results.c;

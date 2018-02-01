@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.misc.Triple;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
-import us.parr.bookish.Tool;
 import us.parr.bookish.util.StreamVacuum;
 import us.parr.lib.ParrtIO;
 
@@ -18,7 +17,13 @@ public class Tex2SVG {
 
 	enum LatexType {EQN, BLOCKEQN, LATEX}
 
-	public static Triple<String,Float,Float> tex2svg(String latex, LatexType type, int fontsize) {
+	public String outputDir;
+
+	public Tex2SVG(String outputDir) {
+		this.outputDir = outputDir;
+	}
+
+	public Triple<String,Float,Float> tex2svg(String latex, LatexType type, int fontsize) {
 		try {
 			latex = latex.trim();
 			String tmpdir = new File(System.getProperty("java.io.tmpdir")+"/bookish").getAbsolutePath();
@@ -27,7 +32,7 @@ public class Tex2SVG {
 				Files.createDirectories(Paths.get(tmpdir));
 			}
 			if ( !Files.exists(Paths.get(tmpdir+"/images")) ) {
-				Files.createSymbolicLink(Paths.get(tmpdir+"/images"), Paths.get(Tool.rootDir+"/images"));
+				Files.createSymbolicLink(Paths.get(tmpdir+"/images"), Paths.get(outputDir+"/images"));
 			}
 
 			String texfilename = tmpdir+"/temp.tex";
@@ -106,11 +111,5 @@ public class Tex2SVG {
 		stdoutVacuum.join();
 		stderrVacuum.join();
 		return new Pair<>(stdoutVacuum.toString(), stderrVacuum.toString());
-	}
-
-	public static void main(String[] args) throws Exception {
-		Triple<String,Float,Float> results = tex2svg("\\frac{\\partial}{\\partial x}f(x^2) = 3+4", LatexType.LATEX, 16);
-		Files.write(Paths.get("/tmp/t.svg"), results.a.getBytes());
-		System.out.println(results.a+" "+results.b);
 	}
 }
