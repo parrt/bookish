@@ -80,7 +80,7 @@ public class Tool {
 				System.err.println(exec[2]);
 			}
 		}
-		System.out.printf("Copyied %s to %s\n", src, trg);
+		System.out.printf("Copied %s to %s\n", src, trg);
 	}
 
 	public String option(String name) { return (String)options.get(name); }
