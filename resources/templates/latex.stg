@@ -168,7 +168,7 @@ HyperLink(model) ::= <<
 \href{<model.href; format="tex-encode">}{<model.title; format="tex-encode">}
 >>
 
-Quoted(model, elements) ::= "``$elements$''"
+Quoted(model, elements) ::= "``<elements>''"
 
 Bold(model) ::= "{\bf <model.text>}"
 
