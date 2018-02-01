@@ -10,6 +10,8 @@ In the end we converted the source document to markdown and build a translator t
 
 All of those equations, even the ones inline in the text paragraph, are `<img>` references.
 
+Here is the [matrix-calculus.md](examples/matrix-calculus/matrix-calculus.md) that `bookish` processed to generate those documents.
+
 ## What's so hard about rendering equations?
 
 If you're doing markdown or HTML, people tend to use MathJax or its faster cousin Katex. MathJax is just too slow when you have 600 equations. Katex is much better but it (and MathJax) requires every `&`, `_`, etc... be escaped as `\&`, `\_` to avoid getting processed as markdown.  That's no problem because I built a translator that escaped everything for me. Then I found out that the JavaScript parser that extracted the latex equation strings was extremely finicky. I had to randomly insert spaces in my equations trying to get them recognized as equations.
