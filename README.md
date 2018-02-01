@@ -10,7 +10,7 @@ In the end we converted the source document to markdown and build a translator t
 
 All of those equations, even the ones inline in the text paragraph, are `<img>` references.
 
-Here is the [matrix-calculus.md](examples/matrix-calculus/matrix-calculus.md) that `bookish` processed to generate those documents.
+Here is the [raw matrix-calculus.md](https://raw.githubusercontent.com/parrt/bookish/master/examples/matrix-calculus/matrix-calculus.md) that `bookish` processed to generate those documents.
 
 ## What's so hard about rendering equations?
 
