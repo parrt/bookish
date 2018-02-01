@@ -1063,7 +1063,7 @@ From there, notice that this computation is a weighted average across all $\math
 
 Of course, we want to reduce, not increase, the loss, which is why the [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent) recurrence relation takes the negative of the gradient to update the current position (for scalar learning rate  $\eta$):
 
-\\[ \mathbf{x}_{t+1} = \mathbf{x}_{t} - \eta \frac{\partial C}{\partial \mathbf{w}} \\]
+\\[ \mathbf{w}_{t+1} = \mathbf{w}_{t} - \eta \frac{\partial C}{\partial \mathbf{w}} \\]
 
 Because the gradient indicates the direction of higher cost, we want to update $\mathbf{x}$ in the opposite direction.
 
