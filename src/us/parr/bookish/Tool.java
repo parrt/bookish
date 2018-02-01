@@ -12,11 +12,22 @@ import us.parr.bookish.translate.Translator;
 import us.parr.lib.ParrtIO;
 import us.parr.lib.ParrtSys;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static us.parr.lib.ParrtIO.basename;
+import static us.parr.lib.ParrtIO.stripFileExtension;
+import static us.parr.lib.ParrtStrings.stripQuotes;
 
 public class Tool {
 	public enum Target { HTML, LATEX }
@@ -36,14 +47,16 @@ public class Tool {
 
 	public void process(String[] args) throws Exception {
 		options = handleArgs(args);
-		String inputFilename = option("inputFilename");
-		String inputDir = new File(inputFilename).getParent();
-		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName(inputFilename));
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		BookishParser parser = new BookishParser(tokens);
-		BookishParser.DocumentContext doctree = parser.document();
-
+		String metadataFilename = option("metadataFilename");
+		String inputDir = new File(metadataFilename).getParent();
 		String outputDir = option("o");
+
+		// read metadata
+		JsonReader jsonReader = Json.createReader(new FileReader(metadataFilename));
+		JsonObject metadata = jsonReader.readObject();
+		System.out.println(metadata);
+		JsonArray markdownFilenames = metadata.getJsonArray("files");
+
 		ParrtIO.mkdir(outputDir+"/images");
 		String outFilename;
 		Translator trans;
@@ -54,8 +67,23 @@ public class Tool {
 		}
 		else {
 			trans = new Translator(target, outputDir);
-			outFilename = "book.tex";
+			outFilename = stripFileExtension(basename(metadataFilename))+".tex";
 		}
+
+		for (JsonValue f : markdownFilenames) {
+			String output = translate(trans, inputDir+"/"+stripQuotes(f.toString()));
+			ParrtIO.save(outputDir+"/"+outFilename, output);
+			System.out.println("Wrote "+outputDir+"/"+outFilename);
+		}
+		copyImages(inputDir, outputDir);
+	}
+
+	public String translate(Translator trans, String inputFilename) throws IOException {
+		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName(inputFilename));
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		BookishParser parser = new BookishParser(tokens);
+		BookishParser.DocumentContext doctree = parser.document();
+
 		Chapter chapter = (Chapter)trans.visit(doctree); // get single chapter
 		chapter.connectContainerTree();
 		Document doc = new Document();
@@ -63,10 +91,7 @@ public class Tool {
 
 		ModelConverter converter = new ModelConverter(trans.templates);
 		ST outputST = converter.walk(doc);
-		String output = outputST.render();
-		ParrtIO.save(outputDir+"/"+outFilename, output);
-		System.out.println("Wrote "+outputDir+"/"+outFilename);
-		copyImages(inputDir, outputDir);
+		return outputST.render();
 	}
 
 	/** Copy images/ subdir to outputDir/images */
@@ -97,7 +122,7 @@ public class Tool {
 			String arg = args[i];
 			i++;
 			if ( arg.charAt(0)!='-' ) { // must be file name
-				options.put("inputFilename", arg);
+				options.put("metadataFilename", arg);
 				continue;
 			}
 			if ( !validOptions.contains(arg) ) {

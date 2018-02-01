@@ -39,6 +39,7 @@ import us.parr.bookish.model.XMLEndTag;
 import us.parr.bookish.model.XMLTag;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
+import us.parr.lib.ParrtStrings;
 
 import java.io.File;
 import java.io.IOException;
@@ -323,7 +324,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitEqn(BookishParser.EqnContext ctx) {
-		String eqn = stripQuotes(ctx.getText());
+		String eqn = ParrtStrings.stripQuotes(ctx.getText());
 
 		if ( target==Tool.Target.LATEX ) {
 			return new InlineEquation(null, eqn, -1, -1);
@@ -497,7 +498,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitItalics(BookishParser.ItalicsContext ctx) {
-		return new Italics(stripQuotes(ctx.getText()));
+		return new Italics(ParrtStrings.stripQuotes(ctx.getText()));
 	}
 
 	// Support
@@ -511,11 +512,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			}
 		}
 		return elements;
-	}
-
-	/** Remove first and last char from argument */
-	public static String stripQuotes(String quotedString) {
-		return stripQuotes(quotedString, 1);
 	}
 
 	public static String stripQuotes(String quotedString, int n) {

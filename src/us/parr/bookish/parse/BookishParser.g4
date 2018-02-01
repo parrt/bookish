@@ -3,7 +3,7 @@ parser grammar BookishParser;
 @header {
 import java.util.Map;
 import java.util.HashMap;
-import us.parr.bookish.translate.Translator;
+import us.parr.lib.ParrtStrings;
 }
 
 options {
@@ -92,7 +92,7 @@ attrs returns [Map<String,String> attrMap = new HashMap<>()] : attr_assignment[$
 
 attr_assignment[Map<String,String> attrMap]
 	:	name=XML_ATTR XML_EQ value=XML_ATTR_VALUE
-		{$attrMap.put($name.text,Translator.stripQuotes($value.text));}
+		{$attrMap.put($name.text,ParrtStrings.stripQuotes($value.text));}
 	;
 
 xml	: XML tagname=XML_ATTR attrs END_OF_TAG | END_TAG ;
