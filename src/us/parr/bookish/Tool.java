@@ -1,10 +1,15 @@
 package us.parr.bookish;
 
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.Pair;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.ST;
+import us.parr.bookish.model.Book;
 import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.Document;
+import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
@@ -20,6 +25,7 @@ import javax.json.JsonValue;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -82,7 +88,8 @@ public class Tool {
 				trans = new Translator(target, outputDir);
 				outFilename = stripFileExtension(basename(metadataFilename))+".tex";
 			}
-			String output = translate(trans, metadataFilename);
+			Pair<Document, String> results = translate(trans, metadataFilename);
+			String output = results.b;
 			ParrtIO.save(outputDir+"/"+outFilename, output);
 			System.out.println("Wrote "+outputDir+"/"+outFilename);
 			copyImages(inputDir, outputDir);
@@ -94,38 +101,79 @@ public class Tool {
 		JsonObject metadata = jsonReader.readObject();
 		System.out.println(metadata);
 
+		String author = metadata.getString("author");
+		author = "\n\n"+author; // Rule paragraph needs blank line on the front
+		author = translateString(trans, author, "paragraph");
+		String title = metadata.getString("title");
+		Book book = new Book(title, author);
+
+		String mainOutFilename;
+		if ( target==Target.HTML ) {
+			mainOutFilename = "index.html";
+		}
+		else {
+			mainOutFilename = "book.tex";
+		}
+
 		JsonArray markdownFilenames = metadata.getJsonArray("files");
 		for (JsonValue f : markdownFilenames) {
 			String fname = stripQuotes(f.toString());
-			String output = translate(trans, inputDir+"/"+fname);
+			Pair<Document, String> results = translate(trans, inputDir+"/"+fname);
+			Document doc = results.a;
+			String output = results.b;
+			book.addChapter(doc.chapter);
 			if ( target==Target.HTML ) {
 				outFilename = stripFileExtension(fname)+".html";
-				// TODO: gen index.html
+				mainOutFilename = "index.html";
 			}
 			else {
 				outFilename = stripFileExtension(fname)+".tex";
-				// TODO: gen book.tex that includes files
+				mainOutFilename = "book.tex";
 			}
 			ParrtIO.save(outputDir+"/"+outFilename, output);
 			System.out.println("Wrote "+outputDir+"/"+outFilename);
 		}
+
+		ST bookTemplate = trans.templates.getInstanceOf("Book");
+		bookTemplate.add("model", book);
+		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
+		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
 		copyImages(inputDir, outputDir);
 	}
 
-	public String translate(Translator trans, String inputFilename) throws IOException {
-		BookishLexer lexer = new BookishLexer(CharStreams.fromFileName(inputFilename));
+	public String translateString(Translator trans, String markdown, String startRule) throws Exception {
+		CharStream input = CharStreams.fromString(markdown);
+		BookishLexer lexer = new BookishLexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		BookishParser parser = new BookishParser(tokens);
+		Method startMethod = BookishParser.class.getMethod(startRule, (Class[])null);
+		ParseTree doctree = (ParseTree)startMethod.invoke(parser, (Object[])null);
+
+		OutputModelObject omo = trans.visit(doctree); // get single chapter
+
+		ModelConverter converter = new ModelConverter(trans.templates);
+		ST outputST = converter.walk(omo);
+		return outputST.render();
+	}
+
+	public Pair<Document,String> translate(Translator trans, String inputFilename) throws IOException {
+		CharStream input = CharStreams.fromFileName(inputFilename);
+		return translate(trans, input);
+	}
+
+	public Pair<Document,String> translate(Translator trans, CharStream input) {
+		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		BookishParser parser = new BookishParser(tokens);
 		BookishParser.DocumentContext doctree = parser.document();
 
 		Chapter chapter = (Chapter)trans.visit(doctree); // get single chapter
 		chapter.connectContainerTree();
-		Document doc = new Document();
-		doc.addChapter(chapter);
+		Document doc = new Document(chapter);
 
 		ModelConverter converter = new ModelConverter(trans.templates);
 		ST outputST = converter.walk(doc);
-		return outputST.render();
+		return new Pair<>(doc,outputST.render());
 	}
 
 	/** Copy images/ subdir to outputDir/images */

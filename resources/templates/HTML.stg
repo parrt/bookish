@@ -9,7 +9,7 @@ From: https://css-tricks.com/probably-dont-base64-svg/
 make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
 */
 
-Document(model, chapters) ::= <<
+header() ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -97,9 +97,22 @@ p {
 </head>
 </head>
 <body>
-$chapters$
+>>
+
+footer() ::= <<
 </body>
 </html>
+>>
+
+Book(model) ::= <<
+$header()$
+$footer()$
+>>
+
+Document(model, chapter) ::= <<
+$header()$
+$chapter$
+$footer()$
 >>
 
 Chapter(model, author, preabstract, abstract_, elements, subcontainers) ::= <<
