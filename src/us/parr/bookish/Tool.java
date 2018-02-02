@@ -115,22 +115,21 @@ public class Tool {
 			mainOutFilename = "book.tex";
 		}
 
-		JsonArray markdownFilenames = metadata.getJsonArray("files");
+		JsonArray markdownFilenames = metadata.getJsonArray("chapters");
 		for (JsonValue f : markdownFilenames) {
 			String fname = stripQuotes(f.toString());
 			Pair<Document, String> results = translate(trans, inputDir+"/"+fname);
 			Document doc = results.a;
 			String output = results.b;
-			book.addChapter(doc.chapter);
+			book.addChapterDocument(doc);
 			if ( target==Target.HTML ) {
 				outFilename = stripFileExtension(fname)+".html";
-				mainOutFilename = "index.html";
 			}
 			else {
 				outFilename = stripFileExtension(fname)+".tex";
-				mainOutFilename = "book.tex";
 			}
 			ParrtIO.save(outputDir+"/"+outFilename, output);
+			doc.generatedFilename = outFilename;
 			System.out.println("Wrote "+outputDir+"/"+outFilename);
 		}
 
@@ -158,10 +157,6 @@ public class Tool {
 
 	public Pair<Document,String> translate(Translator trans, String inputFilename) throws IOException {
 		CharStream input = CharStreams.fromFileName(inputFilename);
-		return translate(trans, input);
-	}
-
-	public Pair<Document,String> translate(Translator trans, CharStream input) {
 		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		BookishParser parser = new BookishParser(tokens);

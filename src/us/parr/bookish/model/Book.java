@@ -7,14 +7,15 @@ public class Book {
 	public String author;
 	public String title;
 	/** The chapter model objects (not templates) */
-	public List<Chapter> chapters = new ArrayList<>();
+	public List<Document> chapterDocuments = new ArrayList<>();
 
 	public Book(String title, String author) {
 		this.author = author;
 		this.title = title;
 	}
 
-	public void addChapter(Chapter chapter) {
-		chapters.add(chapter);
+	/** Add doc wrapper for a chapter */
+	public void addChapterDocument(Document chapter) {
+		chapterDocuments.add(chapter);
 	}
 }

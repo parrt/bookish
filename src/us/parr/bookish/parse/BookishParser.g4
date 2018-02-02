@@ -100,7 +100,7 @@ xml	: XML tagname=XML_ATTR attrs END_OF_TAG | END_TAG ;
 link 		:	LINK ;
 italics 	:	ITALICS ;
 bold 		:	BOLD ;
-other       :	OTHER ;
+other       :	OTHER | POUND ;
 
 block_eqn : BLOCK_EQN ;
 

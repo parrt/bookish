@@ -106,6 +106,24 @@ footer() ::= <<
 
 Book(model) ::= <<
 $header()$
+<h1>$model.title$</h1>
+
+<p>$model.author$</p>
+
+<div id="toc">
+<p class="toc_title">Contents</p>
+<ul>
+$model.chapterDocuments:{doc |
+	<li><a href="$doc.generatedFilename$">$doc.chapter.title$</a></li>
+	<ul>
+	$doc.chapter.subcontainers:{sec |
+		<li><a href="$doc.generatedFilename$#$sec.anchor$">$sec.title$</a></li>
+	}$
+	</ul>
+}$
+</ul>
+</div>
+
 $footer()$
 >>
 

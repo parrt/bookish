@@ -1,9 +1,11 @@
 lexer grammar BookishLexer;
 
-SUBSUBSECTION: '####' ~'\n'+ ;
-SUBSECTION: '###' ~'\n'+ ;
-SECTION   : '##' ~'\n'+ ;
-CHAPTER   : '#' ~'\n'+ ;
+SUBSUBSECTION: '####' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+SUBSECTION: '###' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+SECTION   : '##' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+CHAPTER   : '#' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+
+POUND	  : '#'+ {_tokenStartCharPositionInLine!=0}? ;
 
 AUTHOR	  : '[author]' ;
 PREABSTRACT  : '[preabstract]' ;
