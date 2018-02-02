@@ -4,10 +4,25 @@ parser grammar BookishParser;
 import java.util.Map;
 import java.util.HashMap;
 import us.parr.lib.ParrtStrings;
+import us.parr.bookish.model.entity.*;
 }
 
 options {
 	tokenVocab=BookishLexer;
+}
+
+@members {
+	/** Global labels such as citations, figures, websites.
+	 *  Collected from all input markdown files.
+	 *
+	 *  Track all labels in this file for inclusion in overall book.
+	 *  Do during parse for speed, to avoid having to walk tree 2x.
+	 */
+	public Map<String,EntityDef> labels = new HashMap<>();
+
+	public void defEntity(EntityDef entity) {
+		labels.put(entity.label, entity);
+	}
 }
 
 document
@@ -51,11 +66,11 @@ section_element
 	|	other
 	;
 
-site      : SITE REF ws? block ;
+site      : SITE REF ws? block {defEntity(new SiteDef($REF.text, $block.text));} ;
 citation  : CITATION REF ws? block ws? block ;
-chapquote : SIDENOTE block ws? block;
+chapquote : CHAPQUOTE block ws? block;
 sidequote : SIDEQUOTE (REF ws?)? block ws? block ;
-sidenote  : CHAPQUOTE (REF ws?)? block ws? block ;
+sidenote  : CHAPQUOTE (REF ws?)? block ;
 
 sidefig   : SIDEFIG REF? ws? block (ws? block)? ;
 figure    : FIGURE REF? ws? block (ws? block)? ;

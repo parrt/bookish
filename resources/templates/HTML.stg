@@ -66,7 +66,7 @@ body {
         line-height: 1.5em;
         color: #3A4145;
         background: #FFFFFF;
-        max-width: 900px;
+        max-width: 800px;
         margin: auto;
         -webkit-text-size-adjust: 100%;
 }
