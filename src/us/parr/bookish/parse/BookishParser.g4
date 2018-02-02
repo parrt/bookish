@@ -30,17 +30,37 @@ subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*;
 
 section_element
 	:	paragraph
-	|	BLANK_LINE? link
-	|	BLANK_LINE? eqn
-	|	BLANK_LINE? block_eqn
-	|	BLANK_LINE? ordered_list
-	|	BLANK_LINE? unordered_list
-	|	BLANK_LINE? table
-	|	BLANK_LINE? block_image
-	|	BLANK_LINE? latex
-	|	xml
+	|	BLANK_LINE?
+	 	(	link
+		|	eqn
+		|	block_eqn
+		|	ordered_list
+		|	unordered_list
+		|	table
+		|	block_image
+		|	latex
+		|	xml
+		|	site
+		|	citation
+		|	sidequote
+		|	sidenote
+		|	chapquote
+		|	sidefig
+		|	figure
+		)
 	|	other
 	;
+
+site      : SITE REF ws? block ;
+citation  : CITATION REF ws? block ws? block ;
+chapquote : SIDENOTE block ws? block;
+sidequote : SIDEQUOTE (REF ws?)? block ws? block ;
+sidenote  : CHAPQUOTE (REF ws?)? block ws? block ;
+
+sidefig   : SIDEFIG REF? ws? block (ws? block)? ;
+figure    : FIGURE REF? ws? block (ws? block)? ;
+
+block : LCURLY paragraph_content? RCURLY ;
 
 paragraph
 	:	BLANK_LINE paragraph_content
@@ -59,9 +79,16 @@ paragraph_element
     |	link
     |	italics
     |	bold
+    |	image
 	|	xml
+	|	ref
+	|	symbol
 	|	other
 	;
+
+ref : REF ;
+
+symbol : SYMBOL REF ; // e.g., \symbol[degree], \symbol[tm]
 
 quoted : QUOTE (paragraph_element|ws)+ QUOTE ;
 
@@ -94,7 +121,9 @@ list_item : (section_element|paragraph_element|quoted|ws|BLANK_LINE)* ;
 
 table_item : (section_element|paragraph_element|quoted|ws|BLANK_LINE)* ;
 
-block_image : IMG attrs END_OF_TAG ;
+block_image : image ;
+
+image : IMG attrs END_OF_TAG ;
 
 attrs returns [Map<String,String> attrMap = new HashMap<>()] : attr_assignment[$attrMap]* ;
 

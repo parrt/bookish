@@ -395,7 +395,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitBlock_image(BookishParser.Block_imageContext ctx) {
-		return new BlockImage(ctx.attrs().attrMap);
+		return new BlockImage(ctx.image().attrs().attrMap);
 	}
 
 	@Override

@@ -1,19 +1,25 @@
 lexer grammar BookishLexer;
 
-SUBSUBSECTION: '####' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
-SUBSECTION: '###' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
-SECTION   : '##' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
-CHAPTER   : '#' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+SUBSUBSECTION: '#### ' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+SUBSECTION: '### ' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+SECTION   : '## ' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
+CHAPTER   : '# ' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
 
 POUND	  : '#'+ {_tokenStartCharPositionInLine!=0}? ;
 
+SITE      : '\\site' ;
+CITATION  : '\\citation' ;
 SIDEQUOTE : '\\sidequote' ;
 CHAPQUOTE : '\\chapquote' ;
 SIDENOTE  : '\\sidenote' ;
+SIDEFIG   : '\\sidefig' ;
+FIGURE    : '\\figure' ;
 
 AUTHOR	  : '\\author' ;
 PREABSTRACT  : '\\preabstract' ;
 ABSTRACT  : '\\abstract' ;
+
+SYMBOL    : '\\symbol' ;
 
 LINK	  : '[' ~']'+ ']' '(' ~')'+ ')' ;
 ITALICS	  : '*' ~' ' '*'
