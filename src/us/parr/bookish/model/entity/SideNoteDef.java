@@ -5,6 +5,6 @@ public class SideNoteDef extends EntityDef {
 
 	public SideNoteDef(String label, String note) {
 		super(label);
-		this.note = note;
+		this.note = stripCurlies(note);
 	}
 }

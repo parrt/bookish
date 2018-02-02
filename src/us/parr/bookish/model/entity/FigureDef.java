@@ -6,7 +6,7 @@ public class FigureDef extends EntityDef {
 
 	public FigureDef(String label, String figure, String caption) {
 		super(label);
-		this.figure = figure;
-		this.caption = caption;
+		this.figure = stripCurlies(figure);
+		this.caption = stripCurlies(caption);
 	}
 }

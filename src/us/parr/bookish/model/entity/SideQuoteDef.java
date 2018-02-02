@@ -6,7 +6,7 @@ public class SideQuoteDef extends EntityDef {
 
 	public SideQuoteDef(String label, String quote, String author) {
 		super(label);
-		this.quote = quote;
-		this.author = author;
+		this.quote = stripCurlies(quote);
+		this.author = stripCurlies(author);
 	}
 }

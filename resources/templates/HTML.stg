@@ -39,36 +39,51 @@ header() ::= <<
 	text-decoration: underline;
 }
 #author {
-        font-size: 16px;
+	font-size: 16px;
 }
 .eqnvec {
-        font-family: Merriweather, serif;
-        font-weight: bold;
-        font-size: 14px;
+	font-family: Merriweather, serif;
+	font-weight: bold;
+	font-size: 14px;
 }
 .eqn {
-        font-family:  Merriweather, serif;
-        font-weight: normal;
-        font-style: italic;
-        font-size: 14px;
+	font-family:  Merriweather, serif;
+	font-weight: normal;
+	font-style: italic;
+	font-size: 14px;
 }
 .blkeqn {
-		padding: 10px;
-		margin-left: 100px;
+	padding: 10px;
+	margin-left: 100px;
+}
+.sidenote {
+	/* Adapted from https://github.com/edwardtufte/tufte-css/blob/gh-pages/tufte.css MIT license */
+	float: right;
+	clear: right;
+	margin-right: -35%;
+	width: 35%;
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 11px;
+	line-height: 1.1;
+	vertical-align: baseline;
+	position: relative;
 }
 table {
 	border-spacing: 15px 0px
 }
 body {
-        font-family: "Merriweather", serif;
-        font-size: 14px;
-        letter-spacing: 0.01rem;
-        line-height: 1.5em;
-        color: #3A4145;
-        background: #FFFFFF;
-        max-width: 800px;
-        margin: auto;
-        -webkit-text-size-adjust: 100%;
+	margin-left: 5%;
+	margin-right: auto;
+	width: 65%;
+	font-family: "Merriweather", serif;
+	font-size: 14px;
+	letter-spacing: 0.01rem;
+	line-height: 1.5em;
+	color: #3A4145;
+	background: #FFFFFF;
+	max-width: 800px;
+	-webkit-text-size-adjust: 100%;
 }
 p {
         margin: 15px 5px 15px 5px;
@@ -206,6 +221,10 @@ SubSubSection(model, elements, subcontainers) ::= <<
 $elements$
 
 >>
+
+ChapQuoteDef(model) ::= "<i>$model.quote$</i> &mdash; $model.author$"
+
+SiteDef(model) ::= "<p class=sidenote>$model.website$</p>"
 
 OrderedList(model, items) ::= <<
 <ol>

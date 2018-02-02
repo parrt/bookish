@@ -37,6 +37,8 @@ import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.XMLEndTag;
 import us.parr.bookish.model.XMLTag;
+import us.parr.bookish.model.entity.ChapQuoteDef;
+import us.parr.bookish.model.entity.SiteDef;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
 import us.parr.lib.ParrtStrings;
@@ -501,6 +503,16 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitItalics(BookishParser.ItalicsContext ctx) {
 		return new Italics(ParrtStrings.stripQuotes(ctx.getText()));
+	}
+
+	@Override
+	public OutputModelObject visitChapquote(BookishParser.ChapquoteContext ctx) {
+		return new ChapQuoteDef(ctx.q.getText(), ctx.a.getText());
+	}
+
+	@Override
+	public OutputModelObject visitSite(BookishParser.SiteContext ctx) {
+		return new SiteDef(ctx.REF.getText(), ctx.block.getText());
 	}
 
 	// Support

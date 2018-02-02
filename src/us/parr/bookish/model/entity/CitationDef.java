@@ -6,7 +6,7 @@ public class CitationDef extends EntityDef {
 
 	public CitationDef(String label, String title, String bibinfo) {
 		super(label);
-		this.title = title;
-		this.bibinfo = bibinfo;
+		this.title = stripCurlies(title);
+		this.bibinfo = stripCurlies(bibinfo);
 	}
 }

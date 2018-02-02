@@ -1,21 +1,19 @@
 package us.parr.bookish.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class Book {
+public class Book extends OutputModelObject {
 	public String author;
 	public String title;
 
 	/** The chapter model objects (not templates) */
 	public List<Document> chapterDocuments = new ArrayList<>();
 
-	/** Global labels such as citations, figures, websites.
+	/** Global labeled entities such as citations, figures, websites.
 	 *  Collected from all input markdown files.
 	 */
-	public Map<String,OutputModelObject> labels = new HashMap<>();
+//	public Map<String,OutputModelObject> entities = new HashMap<>();
 
 	public Book(String title, String author) {
 		this.author = author;
@@ -26,4 +24,5 @@ public class Book {
 	public void addChapterDocument(Document chapter) {
 		chapterDocuments.add(chapter);
 	}
+
 }

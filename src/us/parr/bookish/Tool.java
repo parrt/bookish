@@ -10,6 +10,7 @@ import us.parr.bookish.model.Book;
 import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.Document;
 import us.parr.bookish.model.OutputModelObject;
+import us.parr.bookish.model.entity.EntityDef;
 import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
@@ -26,8 +27,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,7 +102,7 @@ public class Tool {
 		// otherwise, read and use metadata
 		JsonReader jsonReader = Json.createReader(new FileReader(metadataFilename));
 		JsonObject metadata = jsonReader.readObject();
-		System.out.println(metadata);
+//		System.out.println(metadata);
 
 		String author = metadata.getString("author");
 		author = "\n\n"+author; // Rule paragraph needs blank line on the front
@@ -115,13 +118,25 @@ public class Tool {
 			mainOutFilename = "book.tex";
 		}
 
+		List<Document> documents = new ArrayList<>();
+
 		JsonArray markdownFilenames = metadata.getJsonArray("chapters");
+		// parse all documents first to get entity defs
 		for (JsonValue f : markdownFilenames) {
 			String fname = stripQuotes(f.toString());
-			Pair<Document, String> results = translate(trans, inputDir+"/"+fname);
-			Document doc = results.a;
-			String output = results.b;
+			Pair<BookishParser.DocumentContext, Map<String, EntityDef>> results = parseChapter(inputDir+"/"+fname);
+			Document doc = new Document();
+			doc.markdownFilename = fname;
+			doc.tree = results.a;
+			doc.entities = results.b;
+			documents.add(doc);
 			book.addChapterDocument(doc);
+		}
+
+		// now walk all trees and translate
+		for (Document doc : documents) {
+			String fname = doc.markdownFilename;
+			String output = translate(trans, doc);
 			if ( target==Target.HTML ) {
 				outFilename = stripFileExtension(fname)+".html";
 			}
@@ -156,19 +171,33 @@ public class Tool {
 	}
 
 	public Pair<Document,String> translate(Translator trans, String inputFilename) throws IOException {
+		Pair<BookishParser.DocumentContext,Map<String,EntityDef>> results = parseChapter(inputFilename);
+		Chapter chapter = (Chapter)trans.visit(results.a); // get single chapter
+		chapter.connectContainerTree();
+		Document doc = new Document(chapter);
+		doc.entities = results.b;
+
+		ModelConverter converter = new ModelConverter(trans.templates);
+		ST outputST = converter.walk(doc);
+		return new Pair<>(doc,outputST.render());
+	}
+
+	public String translate(Translator trans, Document doc) throws IOException {
+		doc.chapter = (Chapter)trans.visit(doc.tree); // get single chapter
+		doc.chapter.connectContainerTree();
+
+		ModelConverter converter = new ModelConverter(trans.templates);
+		ST outputST = converter.walk(doc);
+		return outputST.render();
+	}
+
+	public Pair<BookishParser.DocumentContext,Map<String,EntityDef>> parseChapter(String inputFilename) throws IOException {
 		CharStream input = CharStreams.fromFileName(inputFilename);
 		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		BookishParser parser = new BookishParser(tokens);
 		BookishParser.DocumentContext doctree = parser.document();
-
-		Chapter chapter = (Chapter)trans.visit(doctree); // get single chapter
-		chapter.connectContainerTree();
-		Document doc = new Document(chapter);
-
-		ModelConverter converter = new ModelConverter(trans.templates);
-		ST outputST = converter.walk(doc);
-		return new Pair<>(doc,outputST.render());
+		return new Pair<>(doctree,parser.entities);
 	}
 
 	/** Copy images/ subdir to outputDir/images */

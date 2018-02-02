@@ -12,16 +12,16 @@ options {
 }
 
 @members {
-	/** Global labels such as citations, figures, websites.
+	/** Global labeled entities such as citations, figures, websites.
 	 *  Collected from all input markdown files.
 	 *
-	 *  Track all labels in this file for inclusion in overall book.
+	 *  Track all labeled entities in this file for inclusion in overall book.
 	 *  Do during parse for speed, to avoid having to walk tree 2x.
 	 */
-	public Map<String,EntityDef> labels = new HashMap<>();
+	public Map<String,EntityDef> entities = new HashMap<>();
 
 	public void defEntity(EntityDef entity) {
-		labels.put(entity.label, entity);
+		entities.put(entity.label, entity);
 	}
 }
 
@@ -66,14 +66,32 @@ section_element
 	|	other
 	;
 
-site      : SITE REF ws? block {defEntity(new SiteDef($REF.text, $block.text));} ;
-citation  : CITATION REF ws? block ws? block ;
-chapquote : CHAPQUOTE block ws? block;
-sidequote : SIDEQUOTE (REF ws?)? block ws? block ;
-sidenote  : CHAPQUOTE (REF ws?)? block ;
+site      : SITE REF ws? block
+			{defEntity(new SiteDef($REF.text, $block.text));}
+		  ;
 
-sidefig   : SIDEFIG REF? ws? block (ws? block)? ;
-figure    : FIGURE REF? ws? block (ws? block)? ;
+citation  : CITATION REF ws? t=block ws? a=block
+			{defEntity(new CitationDef($REF.text, $t.text, $a.text));}
+		  ;
+
+chapquote : CHAPQUOTE q=block ws? a=block
+		  ;
+
+sidequote : SIDEQUOTE (REF ws?)? q=block ws? a=block
+			{if ($REF!=null) defEntity(new SideQuoteDef($REF.text, $q.text, $a.text));}
+		  ;
+
+sidenote  : CHAPQUOTE (REF ws?)? block
+			{if ($REF!=null) defEntity(new SideNoteDef($REF.text, $block.text));}
+		  ;
+
+sidefig   : SIDEFIG REF? ws? code=block (ws? caption=block)?
+			{if ($REF!=null) defEntity(new SideFigDef($REF.text, $code.text, $caption.text));}
+		  ;
+
+figure    : FIGURE REF? ws? code=block (ws? caption=block)?
+			{if ($REF!=null) defEntity(new FigureDef($REF.text, $code.text, $caption.text));}
+		  ;
 
 block : LCURLY paragraph_content? RCURLY ;
 
