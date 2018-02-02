@@ -16,11 +16,11 @@ document
 
 chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? (section_element|ws)* section* ;
 
-author : BLANK_LINE? AUTHOR paragraph ;
+author : (ws|BLANK_LINE)? AUTHOR LCURLY paragraph_optional_blank_line RCURLY ;
 
-abstract_ : BLANK_LINE? ABSTRACT paragraph+;
+abstract_ : (ws|BLANK_LINE)? ABSTRACT LCURLY paragraph_optional_blank_line paragraph* RCURLY;
 
-preabstract : BLANK_LINE? PREABSTRACT paragraph+;
+preabstract : (ws|BLANK_LINE)? PREABSTRACT LCURLY paragraph_optional_blank_line paragraph* RCURLY;
 
 section : BLANK_LINE sec=SECTION (section_element|ws)* subsection* ;
 
@@ -43,7 +43,15 @@ section_element
 	;
 
 paragraph
-	:	BLANK_LINE (paragraph_element|quoted|ws)+
+	:	BLANK_LINE paragraph_content
+	;
+
+paragraph_optional_blank_line
+	:	BLANK_LINE? paragraph_content
+	;
+
+paragraph_content
+	:	(paragraph_element|quoted|ws)+
 	;
 
 paragraph_element

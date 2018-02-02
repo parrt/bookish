@@ -1,19 +1,16 @@
 # The Matrix Calculus You Need For Deep Learning
 
-[author]
+\author{[Terence Parr](http://parrt.cs.usfca.edu) and [Jeremy Howard](http://www.fast.ai/about/#jeremy)}
 
-[Terence Parr](http://parrt.cs.usfca.edu) and [Jeremy Howard](http://www.fast.ai/about/#jeremy)
-
-[preabstract]
-
+\preabstract{
 (We teach in University of San Francisco's [MS in Data Science program](https://www.usfca.edu/arts-sciences/graduate-programs/data-science) and have other nefarious projects underway. You might know Terence as the creator of the [ANTLR parser generator](http://www.antlr.org). For more material, see Jeremy's [fast.ai courses](http://course.fast.ai) and University of San Francisco's Data Institute [in-person version of the deep learning course](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one).)
 
 [Printable version](http://parrt.cs.usfca.edu/doc/matrix-calculus.pdf) (This HTML was generated from markup using [bookish](https://github.com/parrt/bookish))
+}
 
-[abstract]
-
+\abstract{
 This paper is an attempt to explain all the matrix calculus you need in order to understand the training of deep neural networks. We assume no math knowledge beyond what you learned in calculus 1, and provide links to help you refresh the necessary math where needed. Note that you do **not** need to understand this material before you start learning to train and use deep learning in practice; rather, this material is for those who are already familiar with the basics of neural networks, and wish to deepen their understanding of the underlying math. Don't worry if you get stuck at some point along the way---just go back and reread the previous section, and try writing down and working through some examples. And if you're still stuck, we're happy to answer your questions in the [Theory category at forums.fast.ai](http://forums.fast.ai/c/theory). **Note**: There is a [reference section](#reference) at the end of the paper summarizing all the key matrix calculus rules and terminology discussed here.
-
+}
 
 ## Introduction (intro)
 

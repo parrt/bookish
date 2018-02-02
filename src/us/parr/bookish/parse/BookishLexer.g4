@@ -7,9 +7,13 @@ CHAPTER   : '#' ~'\n'+ {_tokenStartCharPositionInLine==0}? ;
 
 POUND	  : '#'+ {_tokenStartCharPositionInLine!=0}? ;
 
-AUTHOR	  : '[author]' ;
-PREABSTRACT  : '[preabstract]' ;
-ABSTRACT  : '[abstract]' ;
+SIDEQUOTE : '\\sidequote' ;
+CHAPQUOTE : '\\chapquote' ;
+SIDENOTE  : '\\sidenote' ;
+
+AUTHOR	  : '\\author' ;
+PREABSTRACT  : '\\preabstract' ;
+ABSTRACT  : '\\abstract' ;
 
 LINK	  : '[' ~']'+ ']' '(' ~')'+ ')' ;
 ITALICS	  : '*' ~' ' '*'
@@ -20,6 +24,11 @@ BOLD	  : '**' ~' ' '**'
           ;
 
 IMG		  : '<img ' -> pushMode(XML_MODE) ;
+
+REF : '[' ~']'+ ']' ; // like [1] or [chp.intro] or [Ng]
+
+LCURLY : '{' ;
+RCURLY : '}' ;
 
 QUOTE : '"' ;
 
@@ -58,7 +67,7 @@ NL : '\r'? '\n' ;
 OTHER : NOT_SPECIAL+ ;
 
 fragment
-NOT_SPECIAL : ~[$<#[*\\\n"] ;
+NOT_SPECIAL : ~[$<#[*\\\n"{}\]] ;
 
 mode XML_MODE ;           //e.g, <img src="images/neuron.png" alt="neuron.png" width="250">
 XML_ATTR : [a-zA-Z]+ ;
@@ -66,18 +75,3 @@ XML_EQ : '=' ;
 XML_ATTR_VALUE : '"' .*? '"' ;
 XML_WS : [ \t]+ -> skip ;
 END_OF_TAG : '>' -> popMode ;
-
-/*
-mode EQN_MODE ;
-EQN_UNDERSCORE : '_' ;
-EQN_NL : '\n' {System.err.println("newline in $...$ at line "+getLine());} ;
-END_EQN : '$' -> popMode ;
-EQN_OTHER : . ;
-
-mode BLOCK_EQN_MODE ;
-BLOCK_EQN_AMP : '&' ;
-BLOCK_EQN_UNDERSCORE : '_' ;
-BLOCK_EQN_END_ROW : '\\\\' ;
-END_BLOCK_EQN : '\\\\]' -> popMode ;
-BLOCK_EQN_OTHER : . ;
-*/
