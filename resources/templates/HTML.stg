@@ -62,7 +62,7 @@ header() ::= <<
 	clear: right;
 	margin-right: -35%;
 	width: 35%;
-	margin-top: 0;
+	margin-top: .2em;
 	margin-bottom: 0;
 	font-size: 11px;
 	line-height: 1.1;
@@ -226,18 +226,16 @@ Block(model,elements) ::= "$elements$"
 
 ChapQuoteDef(model) ::= "&ldquo;<i>$model.quote$</i>&rdquo; &mdash; $model.author$"
 
-SiteDef(model) ::= "<p class=sidenote>$model.website$</p>"
+SideQuote(model,quote,author) ::= "<span class=sidenote>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</span>"
 
-SideQuote(model,quote,author) ::= "<p class=sidenote>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
-
-Citation(model,title,bibinfo) ::= "<p class=sidenote>&ldquo;<i>$title$</i>&rdquo; &mdash; $bibinfo$</p>"
+Citation(model,title,bibinfo) ::= "<span class=sidenote>&ldquo;<i>$title$</i>&rdquo; &mdash; $bibinfo$</span>"
 
 ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
 
-Site(model) ::= "<p class=sidenote><tt>$model.def.website$</tt></p>"
+Site(model) ::= "<span class=sidenote><tt>$model.def.website$</tt></span>"
 
 SideFigure(model, code, caption) ::= <<
-<p class=sidenote>$code$<br>$caption$</p>
+<span class=sidenote>$code$<br>$caption$</span>
 >>
 
 EntityRef(model) ::= "ref to $model.def.template$"
