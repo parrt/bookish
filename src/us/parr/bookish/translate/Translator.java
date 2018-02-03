@@ -13,6 +13,7 @@ import us.parr.bookish.model.Bold;
 import us.parr.bookish.model.Book;
 import us.parr.bookish.model.ChapQuote;
 import us.parr.bookish.model.Chapter;
+import us.parr.bookish.model.Citation;
 import us.parr.bookish.model.ContainerWithTitle;
 import us.parr.bookish.model.Document;
 import us.parr.bookish.model.EntityRef;
@@ -546,6 +547,22 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			}
 		}
 		def.model = new Site((SiteDef)def);
+		return null;
+	}
+
+	@Override
+	public OutputModelObject visitCitation(BookishParser.CitationContext ctx) {
+		String label = null;
+		EntityDef def = null;
+		if ( ctx.REF()!=null ) {
+			label = stripQuotes(ctx.REF().getText());
+			def = document.getEntity(label);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
+				return null;
+			}
+		}
+		def.model = new Citation(label, (Block)visit(ctx.a), (Block) visit(ctx.t));
 		return null;
 	}
 
