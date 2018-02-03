@@ -44,6 +44,7 @@ public class ModelConverter {
 	}
 
 	public ST walk(OutputModelObject omo) {
+		if ( omo==null ) return null;
 		// CREATE TEMPLATE FOR THIS OUTPUT OBJECT
 		Class<? extends OutputModelObject> cl = omo.getClass();
 		String templateName = cl.getSimpleName();

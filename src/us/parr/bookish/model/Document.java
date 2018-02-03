@@ -10,6 +10,7 @@ public class Document extends OutputModelObject {
 	@ModelElement
 	public Chapter chapter;
 
+	public Book book; // parent
 	public String markdownFilename;
 	public String generatedFilename;
 
@@ -18,10 +19,19 @@ public class Document extends OutputModelObject {
 
 	public BookishParser.DocumentContext tree;
 
-	public Document() {
+	public Document(BookishParser.DocumentContext tree) {
+		this.tree = tree;
 	}
 
 	public Document(Chapter chapter) {
 		this.chapter = chapter;
+	}
+
+	public EntityDef getEntity(String label) {
+		EntityDef def = entities.get(label);
+		if ( def==null ) {
+			def = book.getEntity(label);
+		}
+		return def;
 	}
 }

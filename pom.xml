@@ -29,7 +29,7 @@
         <dependency>
             <groupId>us.parr</groupId>
             <artifactId>parrtlib</artifactId>
-            <version>0.5</version>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

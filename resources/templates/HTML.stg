@@ -230,6 +230,12 @@ SiteDef(model) ::= "<p class=sidenote>$model.website$</p>"
 
 SideQuote(model,quote,author) ::= "<p class=sidenote>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
 
+ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
+
+Site(model) ::= "<p class=sidenote><tt>$model.def.website$</tt></p>"
+
+EntityRef(model) ::= "ref to $model.def.template$"
+
 OrderedList(model, items) ::= <<
 <ol>
 $items; separator="\n"$

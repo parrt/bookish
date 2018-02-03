@@ -1,11 +1,15 @@
 package us.parr.bookish.model.entity;
 
+import org.stringtemplate.v4.ST;
 import us.parr.bookish.model.OutputModelObject;
 
 import static us.parr.lib.ParrtStrings.stripQuotes;
 
-public class EntityDef extends OutputModelObject {
+public class EntityDef {
 	public String label; // optional label
+
+	public OutputModelObject model;
+	public ST template;
 
 	public EntityDef(String label) {
 		this.label = stripCurlies(label);

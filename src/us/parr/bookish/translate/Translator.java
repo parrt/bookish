@@ -10,8 +10,12 @@ import us.parr.bookish.model.Block;
 import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
+import us.parr.bookish.model.Book;
+import us.parr.bookish.model.ChapQuote;
 import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.ContainerWithTitle;
+import us.parr.bookish.model.Document;
+import us.parr.bookish.model.EntityRef;
 import us.parr.bookish.model.EqnIndexedVar;
 import us.parr.bookish.model.EqnIndexedVecVar;
 import us.parr.bookish.model.EqnVar;
@@ -30,6 +34,7 @@ import us.parr.bookish.model.PreAbstract;
 import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SideQuote;
+import us.parr.bookish.model.Site;
 import us.parr.bookish.model.SubSection;
 import us.parr.bookish.model.SubSubSection;
 import us.parr.bookish.model.Table;
@@ -39,11 +44,10 @@ import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.XMLEndTag;
 import us.parr.bookish.model.XMLTag;
-import us.parr.bookish.model.entity.ChapQuoteDef;
+import us.parr.bookish.model.entity.EntityDef;
 import us.parr.bookish.model.entity.SiteDef;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
-import us.parr.lib.ParrtStrings;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,12 +57,15 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static us.parr.bookish.parse.BookishParser.END_TAG;
 import static us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN;
 import static us.parr.bookish.translate.Tex2SVG.LatexType.LATEX;
+import static us.parr.lib.ParrtStrings.stripQuotes;
+import static us.parr.lib.ParrtStrings.toHexString;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 13;
@@ -75,10 +82,15 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public String outputDir;
 	public Tool.Target target;
 
+	public Book book;
+	public Map<String, EntityDef> entities;
+	public Document document;
 	public Tex2SVG texConverter;
 
-	public Translator(Tool.Target target, String outputDir) {
+	public Translator(Book book, Map<String, EntityDef> entities, Tool.Target target, String outputDir) {
+		this.book = book;
 		this.target = target;
+		this.entities = entities;
 		String templateFileName = null;
 		switch ( target ) {
 			case HTML :
@@ -120,30 +132,12 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
-	public OutputModelObject visitAuthor(BookishParser.AuthorContext ctx) {
-		return new Author(visit(ctx.paragraph_optional_blank_line()));
-	}
-
-	@Override
-	public OutputModelObject visitPreabstract(BookishParser.PreabstractContext ctx) {
-		List<OutputModelObject> paras = new ArrayList<>();
-		paras.add(visit(ctx.paragraph_optional_blank_line()));
-		for (ParseTree p : ctx.paragraph()) {
-			Paragraph para = (Paragraph) visit(p);
-			paras.add(para);
-		}
-		return new PreAbstract(paras);
-	}
-
-	@Override
-	public OutputModelObject visitAbstract_(BookishParser.Abstract_Context ctx) {
-		List<OutputModelObject> paras = new ArrayList<>();
-		paras.add(visit(ctx.paragraph_optional_blank_line()));
-		for (ParseTree p : ctx.paragraph()) {
-			Paragraph para = (Paragraph) visit(p);
-			paras.add(para);
-		}
-		return new Abstract(paras);
+	public OutputModelObject visitDocument(BookishParser.DocumentContext ctx) {
+		this.document = new Document(ctx);
+		document.book = book;
+		document.entities = entities;
+		document.chapter = (Chapter)visit(ctx.chapter());
+		return document;
 	}
 
 	@Override
@@ -179,11 +173,38 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(m);
 			}
 		}
-		return new Chapter(title, null,
-		                   (Author)auth, (PreAbstract)preabs,
-		                   (Abstract)abs, elements, sections);
+		Chapter chapter = new Chapter(title, null,
+		                              (Author)auth, (PreAbstract)preabs,
+		                              (Abstract)abs, elements, sections);
+		return chapter;
 	}
 
+	@Override
+	public OutputModelObject visitAuthor(BookishParser.AuthorContext ctx) {
+		return new Author(visit(ctx.paragraph_optional_blank_line()));
+	}
+
+	@Override
+	public OutputModelObject visitPreabstract(BookishParser.PreabstractContext ctx) {
+		List<OutputModelObject> paras = new ArrayList<>();
+		paras.add(visit(ctx.paragraph_optional_blank_line()));
+		for (ParseTree p : ctx.paragraph()) {
+			Paragraph para = (Paragraph) visit(p);
+			paras.add(para);
+		}
+		return new PreAbstract(paras);
+	}
+
+	@Override
+	public OutputModelObject visitAbstract_(BookishParser.Abstract_Context ctx) {
+		List<OutputModelObject> paras = new ArrayList<>();
+		paras.add(visit(ctx.paragraph_optional_blank_line()));
+		for (ParseTree p : ctx.paragraph()) {
+			Paragraph para = (Paragraph) visit(p);
+			paras.add(para);
+		}
+		return new Abstract(paras);
+	}
 
 	@Override
 	public OutputModelObject visitSection(BookishParser.SectionContext ctx) {
@@ -330,7 +351,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitEqn(BookishParser.EqnContext ctx) {
-		String eqn = ParrtStrings.stripQuotes(ctx.getText());
+		String eqn = stripQuotes(ctx.getText());
 
 		if ( target==Tool.Target.LATEX ) {
 			return new InlineEquation(null, eqn, -1, -1);
@@ -504,30 +525,66 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitItalics(BookishParser.ItalicsContext ctx) {
-		return new Italics(ParrtStrings.stripQuotes(ctx.getText()));
+		return new Italics(stripQuotes(ctx.getText()));
 	}
 
 	@Override
 	public OutputModelObject visitChapquote(BookishParser.ChapquoteContext ctx) {
-		return new ChapQuoteDef(ctx.q.getText(), ctx.a.getText());
+		return new ChapQuote((Block) visit(ctx.q), (Block) visit(ctx.a));
 	}
 
 	@Override
 	public OutputModelObject visitSite(BookishParser.SiteContext ctx) {
-		return new SiteDef(ctx.REF.getText(), ctx.block.getText());
+		String label = null;
+		EntityDef def = null;
+		if ( ctx.REF()!=null ) {
+			label = stripQuotes(ctx.REF().getText());
+			def = document.getEntity(label);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
+				return null;
+			}
+		}
+		def.model = new Site((SiteDef)def);
+		return null;
 	}
 
 	@Override
 	public OutputModelObject visitSidequote(BookishParser.SidequoteContext ctx) {
-		return new SideQuote(ctx.REF.getText(),
-		                     (Block)visit(ctx.q),
-		                     (Block)visit(ctx.a));
+		String label = null;
+		EntityDef def = null;
+		if ( ctx.REF()!=null ) {
+			label = stripQuotes(ctx.REF().getText());
+			def = document.getEntity(label);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
+				return null;
+			}
+		}
+		SideQuote q = new SideQuote(label, (Block) visit(ctx.q), (Block) visit(ctx.a));
+		def.model = q;
+		if ( label==null ) {
+			return q; // if no label, insert inline here
+		}
+		return null;
 	}
 
 	@Override
 	public OutputModelObject visitBlock(BookishParser.BlockContext ctx) {
 		Paragraph content = (Paragraph)visit(ctx.paragraph_content());
 		return new Block(content.elements);
+	}
+
+	@Override
+	public OutputModelObject visitRef(BookishParser.RefContext ctx) {
+		String label = stripQuotes(ctx.REF().getText());
+		EntityDef def = document.getEntity(label);
+		if ( def==null ) {
+			System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
+			return null;
+		}
+
+		return new EntityRef(def);
 	}
 
 	// Support
@@ -543,10 +600,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return elements;
 	}
 
-	public static String stripQuotes(String quotedString, int n) {
-		return quotedString.substring(n, quotedString.length()-n);
-	}
-
 	public static String hash(String text) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -557,13 +610,5 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			e.printStackTrace(System.err);
 		}
 		return "bad-hash";
-	}
-
-	private static String toHexString(byte[] digest) {
-		StringBuilder buf = new StringBuilder();
-		for (byte b : digest) {
-			buf.append(String.format("%02X", b));
-		}
-		return buf.toString();
 	}
 }

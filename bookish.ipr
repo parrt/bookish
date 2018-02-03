@@ -359,15 +359,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/javax.json/1.0.4/javax.json-1.0.4-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: us.parr:parrtlib:0.5">
+    <library name="Maven: us.parr:parrtlib:0.5-SNAPSHOT">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/us/parr/parrtlib/0.5/parrtlib-0.5.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/us/parr/parrtlib/0.5-SNAPSHOT/parrtlib-0.5-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/us/parr/parrtlib/0.5/parrtlib-0.5-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/us/parr/parrtlib/0.5-SNAPSHOT/parrtlib-0.5-SNAPSHOT-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/us/parr/parrtlib/0.5/parrtlib-0.5-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/us/parr/parrtlib/0.5-SNAPSHOT/parrtlib-0.5-SNAPSHOT-sources.jar!/" />
       </SOURCES>
     </library>
   </component>
