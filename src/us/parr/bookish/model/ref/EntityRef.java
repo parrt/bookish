@@ -1,5 +1,6 @@
-package us.parr.bookish.model;
+package us.parr.bookish.model.ref;
 
+import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.entity.EntityDef;
 
 public class EntityRef extends OutputModelObject {

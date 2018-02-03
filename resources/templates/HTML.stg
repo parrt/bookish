@@ -224,21 +224,23 @@ $elements$
 
 Block(model,elements) ::= "$elements$"
 
-ChapQuoteDef(model) ::= "&ldquo;<i>$model.quote$</i>&rdquo; &mdash; $model.author$"
+SideQuote(model,quote,author) ::= "<span class=sidenote><sup>$model.def.index$</sup>&nbsp;&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</span>"
 
-SideQuote(model,quote,author) ::= "<span class=sidenote>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</span>"
-
-Citation(model,title,bibinfo) ::= "<span class=sidenote>&ldquo;<i>$title$</i>&rdquo; &mdash; $bibinfo$</span>"
+Citation(model,title,bibinfo) ::= "<span class=sidenote><sup>$model.def.index$</sup>&nbsp;&ldquo;<i>$title$</i>&rdquo; &mdash; $bibinfo$</span>"
 
 ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
 
-Site(model) ::= "<span class=sidenote><tt>$model.def.website$</tt></span>"
+Site(model) ::= "<span class=sidenote><sup>$model.def.index$</sup>&nbsp;<tt>$model.def.website$</tt></span>"
 
 SideFigure(model, code, caption) ::= <<
-<span class=sidenote>$code$<br>$caption$</span>
+<span class=sidenote><sup>$model.def.index$</sup>$code$<br>$caption$</span>
 >>
 
-EntityRef(model) ::= "ref to $model.def.template$"
+SiteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
+CitationRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
+FigureRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
+SideNoteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
+SideQuoteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
 
 OrderedList(model, items) ::= <<
 <ol>

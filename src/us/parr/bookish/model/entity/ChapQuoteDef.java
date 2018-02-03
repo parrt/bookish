@@ -5,7 +5,7 @@ public class ChapQuoteDef extends EntityDef {
 	public String author;
 
 	public ChapQuoteDef(String quote, String author) {
-		super(null);
+		super(0,null);
 		this.quote = stripCurlies(quote);
 		this.author = stripCurlies(author);
 	}

@@ -16,7 +16,6 @@ import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.Citation;
 import us.parr.bookish.model.ContainerWithTitle;
 import us.parr.bookish.model.Document;
-import us.parr.bookish.model.EntityRef;
 import us.parr.bookish.model.EqnIndexedVar;
 import us.parr.bookish.model.EqnIndexedVecVar;
 import us.parr.bookish.model.EqnVar;
@@ -47,18 +46,30 @@ import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.XMLEndTag;
 import us.parr.bookish.model.XMLTag;
+import us.parr.bookish.model.entity.CitationDef;
 import us.parr.bookish.model.entity.EntityDef;
+import us.parr.bookish.model.entity.FigureDef;
+import us.parr.bookish.model.entity.SideFigDef;
+import us.parr.bookish.model.entity.SideNoteDef;
+import us.parr.bookish.model.entity.SideQuoteDef;
 import us.parr.bookish.model.entity.SiteDef;
+import us.parr.bookish.model.ref.CitationRef;
+import us.parr.bookish.model.ref.EntityRef;
+import us.parr.bookish.model.ref.FigureRef;
+import us.parr.bookish.model.ref.SideNoteRef;
+import us.parr.bookish.model.ref.SiteRef;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -73,6 +84,16 @@ import static us.parr.lib.ParrtStrings.toHexString;
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 13;
 	public static int BLOCK_EQN_FONT_SIZE = 13;
+	public static Map<Class<? extends EntityDef>,Class<? extends EntityRef>> defToRefMap =
+		new HashMap<Class<? extends EntityDef>,Class<? extends EntityRef>>() {{
+			put(CitationDef.class, CitationRef.class);
+			put(FigureDef.class, FigureRef.class);
+			put(SideFigDef.class, FigureRef.class);
+			put(SideNoteDef.class, SideNoteRef.class);
+			put(SideQuoteDef.class, SideNoteRef.class);
+			put(SiteDef.class, SiteRef.class);
+		}};
+
 	public STGroupFile templates;
 
 	public Pattern eqnVarPattern;
@@ -569,7 +590,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				return null;
 			}
 		}
-		def.model = new Citation(label, (Block)visit(ctx.t), (Block) visit(ctx.a));
+		def.model = new Citation(def, label, (Block)visit(ctx.t), (Block) visit(ctx.a));
 		return null;
 	}
 
@@ -585,7 +606,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				return null;
 			}
 		}
-		SideQuote q = new SideQuote(label, (Block) visit(ctx.q), (Block) visit(ctx.a));
+		SideQuote q = new SideQuote(def, label, (Block) visit(ctx.q), (Block) visit(ctx.a));
 		def.model = q;
 		if ( label==null ) {
 			return q; // if no label, insert inline here
@@ -605,7 +626,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				return null;
 			}
 		}
-		SideFigure f = new SideFigure(label, (Block)visitBlock(ctx.code), (Block)visit(ctx.caption));
+		SideFigure f = new SideFigure(def, label, (Block)visitBlock(ctx.code), (Block)visit(ctx.caption));
 		def.model = f;
 		if ( label==null ) {
 			return f; // if no label, insert inline here
@@ -628,7 +649,16 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return null;
 		}
 
-		return new EntityRef(def);
+		Class<? extends EntityRef> refClass = defToRefMap.get(def.getClass());
+		try {
+			Constructor<? extends EntityRef> ctor = refClass.getConstructor(EntityDef.class);
+			EntityRef entityRef = ctor.newInstance(def);
+			return entityRef;
+		}
+		catch (Exception e) {
+			e.printStackTrace(System.err);
+		}
+		return null;
 	}
 
 	// Support

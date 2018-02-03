@@ -23,6 +23,9 @@ options {
 	public void defEntity(EntityDef entity) {
 		entities.put(entity.label, entity);
 	}
+
+	/** Each parser (usually per doc/chapter) keeps its own count of refs: 1, 2, ... */
+	public int defCounter = 1;
 }
 
 document
@@ -67,30 +70,30 @@ section_element
 	;
 
 site      : SITE REF ws? block
-			{defEntity(new SiteDef($REF.text, $block.text));}
+			{defEntity(new SiteDef(defCounter++, $REF.text, $block.text));}
 		  ;
 
 citation  : CITATION REF ws? t=block ws? a=block
-			{defEntity(new CitationDef($REF.text, $t.text, $a.text));}
+			{defEntity(new CitationDef(defCounter++, $REF.text, $t.text, $a.text));}
 		  ;
 
 chapquote : CHAPQUOTE q=block ws? a=block
 		  ;
 
 sidequote : SIDEQUOTE (REF ws?)? q=block ws? a=block
-			{if ($REF!=null) defEntity(new SideQuoteDef($REF.text, $q.text, $a.text));}
+			{if ($REF!=null) defEntity(new SideQuoteDef(defCounter++, $REF.text, $q.text, $a.text));}
 		  ;
 
 sidenote  : CHAPQUOTE (REF ws?)? block
-			{if ($REF!=null) defEntity(new SideNoteDef($REF.text, $block.text));}
+			{if ($REF!=null) defEntity(new SideNoteDef(defCounter++, $REF.text, $block.text));}
 		  ;
 
 sidefig   : SIDEFIG REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new SideFigDef($REF.text, $code.text, $caption.text));}
+			{if ($REF!=null) defEntity(new SideFigDef(defCounter++, $REF.text, $code.text, $caption.text));}
 		  ;
 
 figure    : FIGURE REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new FigureDef($REF.text, $code.text, $caption.text));}
+			{if ($REF!=null) defEntity(new FigureDef(defCounter++, $REF.text, $code.text, $caption.text));}
 		  ;
 
 block : LCURLY paragraph_content? RCURLY ;

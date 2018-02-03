@@ -1,7 +1,7 @@
 package us.parr.bookish.model.entity;
 
 public class SideFigDef extends FigureDef {
-	public SideFigDef(String label, String figure, String caption) {
-		super(label, figure, caption);
+	public SideFigDef(int index, String label, String figure, String caption) {
+		super(index, label, figure, caption);
 	}
 }

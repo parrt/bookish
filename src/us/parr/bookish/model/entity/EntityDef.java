@@ -7,11 +7,13 @@ import static us.parr.lib.ParrtStrings.stripQuotes;
 
 public class EntityDef {
 	public String label; // optional label
+	public int index;    // if label!=null; indexed from 1
 
 	public OutputModelObject model;
 	public ST template;
 
-	public EntityDef(String label) {
+	public EntityDef(int index, String label) {
+		this.index = index;
 		this.label = stripCurlies(label);
 	}
 
