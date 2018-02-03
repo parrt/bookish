@@ -22,6 +22,7 @@ import us.parr.bookish.model.EqnIndexedVecVar;
 import us.parr.bookish.model.EqnVar;
 import us.parr.bookish.model.EqnVecVar;
 import us.parr.bookish.model.HyperLink;
+import us.parr.bookish.model.Image;
 import us.parr.bookish.model.InlineEquation;
 import us.parr.bookish.model.Italics;
 import us.parr.bookish.model.Join;
@@ -34,6 +35,7 @@ import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.PreAbstract;
 import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
+import us.parr.bookish.model.SideFigure;
 import us.parr.bookish.model.SideQuote;
 import us.parr.bookish.model.Site;
 import us.parr.bookish.model.SubSection;
@@ -425,6 +427,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitImage(BookishParser.ImageContext ctx) {
+		return new Image(ctx.attrs().attrMap);
+	}
+
+	@Override
 	public OutputModelObject visitTable(BookishParser.TableContext ctx) {
 		List<TableRow> rows = new ArrayList<>();
 		TableRow headers = null;
@@ -562,7 +569,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				return null;
 			}
 		}
-		def.model = new Citation(label, (Block)visit(ctx.a), (Block) visit(ctx.t));
+		def.model = new Citation(label, (Block)visit(ctx.t), (Block) visit(ctx.a));
 		return null;
 	}
 
@@ -582,6 +589,26 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		def.model = q;
 		if ( label==null ) {
 			return q; // if no label, insert inline here
+		}
+		return null;
+	}
+
+	@Override
+	public OutputModelObject visitSidefig(BookishParser.SidefigContext ctx) {
+		String label = null;
+		EntityDef def = null;
+		if ( ctx.REF()!=null ) {
+			label = stripQuotes(ctx.REF().getText());
+			def = document.getEntity(label);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
+				return null;
+			}
+		}
+		SideFigure f = new SideFigure(label, (Block)visitBlock(ctx.code), (Block)visit(ctx.caption));
+		def.model = f;
+		if ( label==null ) {
+			return f; // if no label, insert inline here
 		}
 		return null;
 	}

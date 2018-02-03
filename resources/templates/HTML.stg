@@ -236,6 +236,10 @@ ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $auth
 
 Site(model) ::= "<p class=sidenote><tt>$model.def.website$</tt></p>"
 
+SideFigure(model, code, caption) ::= <<
+<p class=sidenote>$code$<br>$caption$</p>
+>>
+
 EntityRef(model) ::= "ref to $model.def.template$"
 
 OrderedList(model, items) ::= <<
@@ -287,12 +291,15 @@ InlineImage(model) ::= <<
 <img style="vertical-align: middle;" src="$model.src$">
 >>
 
-BlockImage(model) ::= <<
-
-<center>
+Image(model) ::= <<
 <img $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>
-</center>
+>>
 
+BlockImage(model) ::= <<$\n$
+<center>
+$Image(model)$
+</center>
+$\n$
 >>
 
 XMLTag(model) ::= <<
