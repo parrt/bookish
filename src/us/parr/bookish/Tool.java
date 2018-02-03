@@ -131,6 +131,10 @@ public class Tool {
 			doc.entities = results.b;
 			documents.add(doc);
 			book.addChapterDocument(doc);
+
+			for (String label : doc.entities.keySet()) {
+
+			}
 		}
 
 		// now walk all trees and translate

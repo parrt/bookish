@@ -6,6 +6,7 @@ import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.Tool;
 import us.parr.bookish.model.Abstract;
 import us.parr.bookish.model.Author;
+import us.parr.bookish.model.Block;
 import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
@@ -28,6 +29,7 @@ import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.PreAbstract;
 import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
+import us.parr.bookish.model.SideQuote;
 import us.parr.bookish.model.SubSection;
 import us.parr.bookish.model.SubSubSection;
 import us.parr.bookish.model.Table;
@@ -513,6 +515,19 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitSite(BookishParser.SiteContext ctx) {
 		return new SiteDef(ctx.REF.getText(), ctx.block.getText());
+	}
+
+	@Override
+	public OutputModelObject visitSidequote(BookishParser.SidequoteContext ctx) {
+		return new SideQuote(ctx.REF.getText(),
+		                     (Block)visit(ctx.q),
+		                     (Block)visit(ctx.a));
+	}
+
+	@Override
+	public OutputModelObject visitBlock(BookishParser.BlockContext ctx) {
+		Paragraph content = (Paragraph)visit(ctx.paragraph_content());
+		return new Block(content.elements);
 	}
 
 	// Support

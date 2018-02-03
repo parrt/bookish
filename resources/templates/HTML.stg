@@ -86,7 +86,7 @@ body {
 	-webkit-text-size-adjust: 100%;
 }
 p {
-        margin: 15px 5px 15px 5px;
+        margin: 15px 5px 15px 0px;
 }
 @media (max-width: 415px) {
         /* iphone 6+ 414x628 browser window, iphone 6 is 375 x 559 in browser */
@@ -222,9 +222,13 @@ $elements$
 
 >>
 
-ChapQuoteDef(model) ::= "<i>$model.quote$</i> &mdash; $model.author$"
+Block(model,elements) ::= "$elements$"
+
+ChapQuoteDef(model) ::= "&ldquo;<i>$model.quote$</i>&rdquo; &mdash; $model.author$"
 
 SiteDef(model) ::= "<p class=sidenote>$model.website$</p>"
+
+SideQuote(model,quote,author) ::= "<p class=sidenote>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
 
 OrderedList(model, items) ::= <<
 <ol>
