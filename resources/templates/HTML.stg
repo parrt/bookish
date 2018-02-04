@@ -61,7 +61,7 @@ header() ::= <<
 	float: right;
 	clear: right;
 	margin-right: -35%;
-	width: 35%;
+	width: 33%;
 	margin-top: .2em;
 	margin-bottom: 0;
 	font-size: 11px;
@@ -236,12 +236,12 @@ ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $auth
 Site(model) ::= "<span class=sidenote><sup>$model.def.index$</sup>&nbsp;<tt>$model.def.website$</tt></span>"
 
 SideFigure(model, code, caption) ::= <<
-<span class=sidenote><sup>$model.def.index$</sup>$code$<br>$caption$</span>
+<span class=sidenote>$code$<br>$caption$</span>
 >>
 
 SiteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
 CitationRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
-FigureRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
+FigureRef(model) ::= "$model.def.template$"
 SideNoteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
 SideQuoteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
 

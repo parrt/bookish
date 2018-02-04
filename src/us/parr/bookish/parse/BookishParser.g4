@@ -21,7 +21,13 @@ options {
 	public Map<String,EntityDef> entities = new HashMap<>();
 
 	public void defEntity(EntityDef entity) {
-		entities.put(entity.label, entity);
+		if ( entity.label!=null ) {
+			if ( entities.containsKey(entity.label) ) {
+				System.err.printf("line %d: redefinition of label %s\n",
+				 entity.getStartToken().getLine(), entity.label);
+			}
+			entities.put(entity.label, entity);
+		}
 	}
 
 	// Each parser (usually per doc/chapter) keeps its own counts for figures, sidenotes, web links, ...
@@ -35,7 +41,7 @@ document
 	;
 
 chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? (section_element|ws)* section*
-		  {defEntity(new ChapterDef($chap.text));}
+		  {defEntity(new ChapterDef($chap));}
 		;
 
 author : (ws|BLANK_LINE)? AUTHOR LCURLY paragraph_optional_blank_line RCURLY ;
@@ -45,15 +51,15 @@ abstract_ : (ws|BLANK_LINE)? ABSTRACT LCURLY paragraph_optional_blank_line parag
 preabstract : (ws|BLANK_LINE)? PREABSTRACT LCURLY paragraph_optional_blank_line paragraph* RCURLY;
 
 section : BLANK_LINE sec=SECTION (section_element|ws)* subsection*
-		  {defEntity(new SectionDef($sec.text));}
+		  {defEntity(new SectionDef($sec));}
 		;
 
 subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)* subsubsection*
-		  {defEntity(new SectionDef($sec.text));}
+		  {defEntity(new SectionDef($sec));}
 		;
 
 subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*
-		  {defEntity(new SectionDef($sec.text));}
+		  {defEntity(new SectionDef($sec));}
 		;
 
 section_element
@@ -80,30 +86,30 @@ section_element
 	;
 
 site      : SITE REF ws? block
-			{defEntity(new SiteDef(defCounter++, $REF.text, $block.text));}
+			{defEntity(new SiteDef(defCounter++, $REF, $block.text));}
 		  ;
 
 citation  : CITATION REF ws? t=block ws? a=block
-			{defEntity(new CitationDef(defCounter++, $REF.text, $t.text, $a.text));}
+			{defEntity(new CitationDef(defCounter++, $REF, $t.text, $a.text));}
 		  ;
 
 chapquote : CHAPQUOTE q=block ws? a=block
 		  ;
 
 sidequote : SIDEQUOTE (REF ws?)? q=block ws? a=block
-			{if ($REF!=null) defEntity(new SideQuoteDef(defCounter++, $REF.text, $q.text, $a.text));}
+			{if ($REF!=null) defEntity(new SideQuoteDef(defCounter++, $REF, $q.text, $a.text));}
 		  ;
 
 sidenote  : CHAPQUOTE (REF ws?)? block
-			{if ($REF!=null) defEntity(new SideNoteDef(defCounter++, $REF.text, $block.text));}
+			{if ($REF!=null) defEntity(new SideNoteDef(defCounter++, $REF, $block.text));}
 		  ;
 
 sidefig   : SIDEFIG REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new SideFigDef(figCounter++, $REF.text, $code.text, $caption.text));}
+			{if ($REF!=null) defEntity(new SideFigDef(figCounter++, $REF, $code.text, $caption.text));}
 		  ;
 
 figure    : FIGURE REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new FigureDef(figCounter++, $REF.text, $code.text, $caption.text));}
+			{if ($REF!=null) defEntity(new FigureDef(figCounter++, $REF, $code.text, $caption.text));}
 		  ;
 
 block : LCURLY paragraph_content? RCURLY ;
