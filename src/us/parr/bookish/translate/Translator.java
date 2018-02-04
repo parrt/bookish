@@ -675,6 +675,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitRef(BookishParser.RefContext ctx) {
 		String label = stripQuotes(ctx.REF().getText());
 		EntityDef def = document.getEntity(label);
+		System.out.println("Ref to "+def);
 		if ( def==null ) {
 			System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
 			return null;

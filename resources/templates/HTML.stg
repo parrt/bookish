@@ -236,12 +236,12 @@ ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $auth
 Site(model) ::= "<span class=sidenote><sup>$model.def.index$</sup>&nbsp;<tt>$model.def.website$</tt></span>"
 
 SideFigure(model, code, caption) ::= <<
-<span class=sidenote>$code$<br>$caption$</span>
+<span class=sidenote>$code$<br><b>Figure $model.def.index$</b>. $caption$</span>
 >>
 
 SiteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
 CitationRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
-FigureRef(model) ::= "$model.def.template$"
+FigureRef(model) ::= "Figure $model.def.index$$model.def.template$"
 SideNoteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
 SideQuoteRef(model) ::= "<sup>$model.def.index$</sup>$model.def.template$"
 

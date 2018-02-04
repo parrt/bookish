@@ -28,4 +28,9 @@ public class EntityDef {
 	public boolean isGloballyVisible() { return false; }
 
 	public Token getStartToken() { return startToken; }
+
+	@Override
+	public String toString() {
+		return '<'+label+":"+this.getClass().getSimpleName()+'>';
+	}
 }
