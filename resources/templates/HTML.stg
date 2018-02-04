@@ -65,7 +65,7 @@ header() ::= <<
 	margin-top: .2em;
 	margin-bottom: 0;
 	font-size: 11px;
-	line-height: 1.1;
+	line-height: 1.3em;
 	vertical-align: baseline;
 	position: relative;
 }

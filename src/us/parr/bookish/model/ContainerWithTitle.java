@@ -1,5 +1,7 @@
 package us.parr.bookish.model;
 
+import us.parr.bookish.model.entity.EntityDef;
+
 import java.util.List;
 
 public abstract class ContainerWithTitle extends OutputModelObject {
@@ -12,9 +14,15 @@ public abstract class ContainerWithTitle extends OutputModelObject {
 	public String title;
 	public String anchor;
 
+	public EntityDef def;
+
 	public int sectionNumber;
 
-	public ContainerWithTitle(String title, String anchor, List<OutputModelObject> elements) {
+	public ContainerWithTitle(EntityDef def, String title, String anchor, List<OutputModelObject> elements) {
+		this.def = def;
+		if ( def!=null ) {
+			def.model = this;
+		}
 		this.elements = elements;
 		this.title = title;
 		this.anchor = anchor;

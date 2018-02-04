@@ -1,7 +1,9 @@
 package us.parr.bookish.translate;
 
+import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.misc.Triple;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.Tool;
 import us.parr.bookish.model.Abstract;
@@ -96,12 +98,12 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	public STGroupFile templates;
 
-	public Pattern eqnVarPattern;
-	public Pattern eqnVecVarPattern;
-	public Pattern eqnIndexedVarPattern;
-	public Pattern eqnIndexedVecVarPattern;
-	public Pattern sectionAnchorPattern;
-	public Pattern latexPattern;
+	public static Pattern eqnVarPattern;
+	public static Pattern eqnVecVarPattern;
+	public static Pattern eqnIndexedVarPattern;
+	public static Pattern eqnIndexedVecVarPattern;
+	public static Pattern sectionAnchorPattern;
+	public static Pattern latexPattern;
 
 	public String outputDir;
 	public Tool.Target target;
@@ -167,7 +169,20 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitChapter(BookishParser.ChapterContext ctx) {
 		String title = ctx.chap.getText();
-		title = title.substring(1).trim();
+		title = title.substring(title.indexOf(' ')+1).trim();
+
+		Pair<String, String> results = splitSectionTitle(title);
+		title = results.a;
+		String anchor = results.b;
+		EntityDef def = null;
+		if ( anchor!=null ) {
+			def = document.getEntity(anchor);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), anchor);
+				return null;
+			}
+		}
+
 		OutputModelObject auth = null;
 		if ( ctx.author()!=null ) {
 			auth = visit(ctx.author());
@@ -197,7 +212,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(m);
 			}
 		}
-		Chapter chapter = new Chapter(title, null,
+		Chapter chapter = new Chapter(def,
+		                              title, null,
 		                              (Author)auth, (PreAbstract)preabs,
 		                              (Abstract)abs, elements, sections);
 		return chapter;
@@ -234,14 +250,19 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitSection(BookishParser.SectionContext ctx) {
 		List<ParseTree> children = ctx.children;
 		String title = ctx.sec.getText();
-		title = title.substring(2).trim();
+		title = title.substring(title.indexOf(' ')+1).trim();
 
-		List<String> anchors = extract(sectionAnchorPattern, title);
-		String anchor = null;
-		if ( anchors.size()>0 ) {
-			anchor = anchors.get(0);
-			int lparent = title.indexOf('(');
-			title = title.substring(0, lparent);
+		Pair<String, String> results = splitSectionTitle(title);
+		title = results.a;
+		String anchor = results.b;
+
+		EntityDef def = null;
+		if ( anchor!=null ) {
+			def = document.getEntity(anchor);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), anchor);
+				return null;
+			}
 		}
 
 		List<OutputModelObject> elements = new ArrayList<>();
@@ -255,21 +276,26 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(m);
 			}
 		}
-		return new Section(title, anchor, elements, subsections);
+		return new Section(def, title, anchor, elements, subsections);
 	}
 
 	@Override
 	public OutputModelObject visitSubsection(BookishParser.SubsectionContext ctx) {
 		List<ParseTree> children = ctx.children;
 		String title = ctx.sec.getText();
-		title = title.substring(3).trim();
+		title = title.substring(title.indexOf(' ')+1).trim();
 
-		List<String> anchors = extract(sectionAnchorPattern, title);
-		String anchor = null;
-		if ( anchors.size()>0 ) {
-			anchor = anchors.get(0);
-			int lparent = title.indexOf('(');
-			title = title.substring(0, lparent);
+		Pair<String, String> results = splitSectionTitle(title);
+		title = results.a;
+		String anchor = results.b;
+
+		EntityDef def = null;
+		if ( anchor!=null ) {
+			def = document.getEntity(anchor);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), anchor);
+				return null;
+			}
 		}
 
 		List<OutputModelObject> elements = new ArrayList<>();
@@ -283,21 +309,26 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(m);
 			}
 		}
-		return new SubSection(title, anchor, elements, subsubsections);
+		return new SubSection(def, title, anchor, elements, subsubsections);
 	}
 
 	@Override
 	public OutputModelObject visitSubsubsection(BookishParser.SubsubsectionContext ctx) {
 		List<ParseTree> children = ctx.children;
 		String title = ctx.sec.getText();
-		title = title.substring(4).trim();
+		title = title.substring(title.indexOf(' ')+1).trim();
 
-		List<String> anchors = extract(sectionAnchorPattern, title);
-		String anchor = null;
-		if ( anchors.size()>0 ) {
-			anchor = anchors.get(0);
-			int lparent = title.indexOf('(');
-			title = title.substring(0, lparent);
+		Pair<String, String> results = splitSectionTitle(title);
+		title = results.a;
+		String anchor = results.b;
+
+		EntityDef def = null;
+		if ( anchor!=null ) {
+			def = document.getEntity(anchor);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), anchor);
+				return null;
+			}
 		}
 
 		List<OutputModelObject> elements = new ArrayList<>();
@@ -305,7 +336,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			OutputModelObject m = visit(el);
 			elements.add(m);
 		}
-		return new SubSubSection(title, anchor, elements);
+		return new SubSubSection(def, title, anchor, elements);
 	}
 
 	@Override
@@ -684,5 +715,35 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			e.printStackTrace(System.err);
 		}
 		return "bad-hash";
+	}
+
+	public static Pair<String,String> splitSectionTitle(String title) {
+		List<String> anchors = extract(sectionAnchorPattern, title);
+		String anchor = null;
+		if ( anchors.size()>0 ) {
+			anchor = anchors.get(0);
+			int lparent = title.indexOf('(');
+			title = title.substring(0, lparent);
+		}
+		return new Pair<>(title,anchor);
+	}
+
+	public EntityDef lookupEntity(TerminalNode refNode) {
+		EntityDef def = null;
+		if ( refNode!=null ) {
+			String label = stripQuotes(refNode.getText());
+			def = document.getEntity(label);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", refNode.getSymbol().getLine(), label);
+			}
+		}
+		return def;
+	}
+
+	public static String stripCurlies(String s) {
+		if ( s!=null && (s.startsWith("{") || s.startsWith("[")) ) {
+			return stripQuotes(s);
+		}
+		return s;
 	}
 }

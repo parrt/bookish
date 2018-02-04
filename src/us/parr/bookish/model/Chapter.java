@@ -1,5 +1,7 @@
 package us.parr.bookish.model;
 
+import us.parr.bookish.model.entity.EntityDef;
+
 import java.util.List;
 
 public class Chapter extends ContainerWithTitle {
@@ -10,7 +12,8 @@ public class Chapter extends ContainerWithTitle {
 	@ModelElement
 	public Abstract abstract_;
 
-	public Chapter(String title,
+	public Chapter(EntityDef def,
+	               String title,
 	               String anchor,
 	               Author author,
 	               PreAbstract preabstract,
@@ -18,7 +21,7 @@ public class Chapter extends ContainerWithTitle {
 	               List<OutputModelObject> elements,
 	               List<ContainerWithTitle> sections)
 	{
-		super(title, anchor, elements);
+		super(def, title, anchor, elements);
 		this.author = author;
 		this.abstract_ = abstract_;
 		this.preabstract = preabstract;

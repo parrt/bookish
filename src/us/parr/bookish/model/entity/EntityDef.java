@@ -2,26 +2,24 @@ package us.parr.bookish.model.entity;
 
 import org.stringtemplate.v4.ST;
 import us.parr.bookish.model.OutputModelObject;
-
-import static us.parr.lib.ParrtStrings.stripQuotes;
+import us.parr.bookish.translate.Translator;
 
 public class EntityDef {
 	public String label; // optional label
-	public int index;    // if label!=null; indexed from 1
+
+	/** indexed from 1; fig, citation, sidenote number.
+	 *  Does not track chp/sec numbers. Those are done via
+	 *  ContainerWithTitle.connectContainerTree().
+	 */
+	public int index;
 
 	public OutputModelObject model;
 	public ST template;
 
 	public EntityDef(int index, String label) {
 		this.index = index;
-		this.label = stripCurlies(label);
+		this.label = Translator.stripCurlies(label);
 	}
 
-	public static String stripCurlies(String s) {
-		if ( s!=null && (s.startsWith("{") || s.startsWith("[")) ) {
-			return stripQuotes(s);
-		}
-		return s;
-	}
+	public boolean isGloballyVisible() { return false; }
 }
-

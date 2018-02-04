@@ -222,10 +222,10 @@ The Jacobian of the identity function $\mathbf{f(x)} = \mathbf{x}$, with $f_i(\m
 \latex{{
 \begin{eqnarray*}
 	\frac{\partial \mathbf{y}}{\partial \mathbf{x}} = \begin{bmatrix}
-	\frac{\partial}{\partial {x}} f_1(\mathbf{x}) \\
-	\frac{\partial}{\partial {x}} f_2(\mathbf{x})\\
+	\frac{\partial}{\partial \mathbf{x}} f_1(\mathbf{x}) \\
+	\frac{\partial}{\partial \mathbf{x}} f_2(\mathbf{x})\\
 	\ldots\\
-	\frac{\partial}{\partial {x}} f_m(\mathbf{x})
+	\frac{\partial}{\partial \mathbf{x}} f_m(\mathbf{x})
 	\end{bmatrix} &=& \begin{bmatrix}
 	\frac{\partial}{\partial {x_1}} f_1(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_1(\mathbf{x}) ~\ldots~  \frac{\partial}{\partial {x_n}} f_1(\mathbf{x}) \\
 	\frac{\partial}{\partial {x_1}} f_2(\mathbf{x})~ \frac{\partial}{\partial {x_2}} f_2(\mathbf{x}) ~\ldots~  \frac{\partial}{\partial {x_n}} f_2(\mathbf{x}) \\

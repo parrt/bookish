@@ -27,6 +27,11 @@ public class Document extends OutputModelObject {
 		this.chapter = chapter;
 	}
 
+	/** Look in this doc scope first, which has locally-visible symbols only.
+	 *  If not found, look in global scope, which has chap,sec,figures,citations.
+	 *  Symbols initial defined in this scope during the parse then moved
+	 *  to global scope in Book.
+	 */
 	public EntityDef getEntity(String label) {
 		EntityDef def = entities.get(label);
 		if ( def==null ) {

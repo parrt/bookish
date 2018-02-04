@@ -141,9 +141,14 @@ public class Tool {
 
 			// walk all OutputModelObjects created as labeled entities to convert those entities
 			// unlabeled entities are done in-line
-			for (String label : thisDocsEntities.keySet()) {
-				EntityDef entityDef = thisDocsEntities.get(label);
-				entityDef.template = converter.walk(entityDef.model);
+			ArrayList<String> labels = new ArrayList<>(thisDocsEntities.keySet());
+			for (String label : labels) {
+				EntityDef def = thisDocsEntities.get(label);
+				def.template = converter.walk(def.model);
+				if ( def.isGloballyVisible() ) { // move to global space
+					book.entities.put(label, def);
+					thisDocsEntities.remove(label);
+				}
 			}
 
 			String output = outputST.render();

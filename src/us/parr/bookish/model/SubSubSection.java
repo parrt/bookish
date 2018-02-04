@@ -1,10 +1,16 @@
 package us.parr.bookish.model;
 
+import us.parr.bookish.model.entity.EntityDef;
+
 import java.util.List;
 
 public class SubSubSection extends SubSection {
-	public SubSubSection(String title, String anchor, List<OutputModelObject> elements) {
-		super(title, anchor, elements, null);
+	public SubSubSection(EntityDef def,
+	                     String title,
+	                     String anchor,
+	                     List<OutputModelObject> elements)
+	{
+		super(def, title, anchor, elements, null);
 	}
 
 	@Override

@@ -24,15 +24,19 @@ options {
 		entities.put(entity.label, entity);
 	}
 
-	/** Each parser (usually per doc/chapter) keeps its own count of refs: 1, 2, ... */
+	// Each parser (usually per doc/chapter) keeps its own counts for figures, sidenotes, web links, ...
+
 	public int defCounter = 1;
+	public int figCounter = 1; // track 1..n for whole chapter.
 }
 
 document
 	:	chapter BLANK_LINE? EOF
 	;
 
-chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? (section_element|ws)* section* ;
+chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? (section_element|ws)* section*
+		  {defEntity(new ChapterDef($chap.text));}
+		;
 
 author : (ws|BLANK_LINE)? AUTHOR LCURLY paragraph_optional_blank_line RCURLY ;
 
@@ -40,11 +44,17 @@ abstract_ : (ws|BLANK_LINE)? ABSTRACT LCURLY paragraph_optional_blank_line parag
 
 preabstract : (ws|BLANK_LINE)? PREABSTRACT LCURLY paragraph_optional_blank_line paragraph* RCURLY;
 
-section : BLANK_LINE sec=SECTION (section_element|ws)* subsection* ;
+section : BLANK_LINE sec=SECTION (section_element|ws)* subsection*
+		  {defEntity(new SectionDef($sec.text));}
+		;
 
-subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)* subsubsection*;
+subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)* subsubsection*
+		  {defEntity(new SectionDef($sec.text));}
+		;
 
-subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*;
+subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*
+		  {defEntity(new SectionDef($sec.text));}
+		;
 
 section_element
 	:	paragraph
@@ -89,11 +99,11 @@ sidenote  : CHAPQUOTE (REF ws?)? block
 		  ;
 
 sidefig   : SIDEFIG REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new SideFigDef(defCounter++, $REF.text, $code.text, $caption.text));}
+			{if ($REF!=null) defEntity(new SideFigDef(figCounter++, $REF.text, $code.text, $caption.text));}
 		  ;
 
 figure    : FIGURE REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new FigureDef(defCounter++, $REF.text, $code.text, $caption.text));}
+			{if ($REF!=null) defEntity(new FigureDef(figCounter++, $REF.text, $code.text, $caption.text));}
 		  ;
 
 block : LCURLY paragraph_content? RCURLY ;
