@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.ST;
 import us.parr.bookish.model.Book;
-import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.Document;
 import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.entity.EntityDef;
@@ -196,9 +195,8 @@ public class Tool {
 	// legacy single-doc translation
 	public Pair<Document,String> legacy_translate(Translator trans, String inputFilename) throws IOException {
 		Pair<BookishParser.DocumentContext,Map<String,EntityDef>> results = parseChapter(inputFilename);
-		Chapter chapter = (Chapter)trans.visit(results.a); // get single chapter
-		chapter.connectContainerTree();
-		Document doc = new Document(chapter);
+		Document doc = (Document)trans.visit(results.a); // get single chapter
+		doc.chapter.connectContainerTree();
 		doc.entities = results.b;
 
 		ModelConverter converter = new ModelConverter(trans.templates);

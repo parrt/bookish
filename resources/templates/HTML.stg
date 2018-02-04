@@ -108,6 +108,9 @@ p {
                 font-size: 14px;
         }
 }
+h1 {
+        line-height: 1.2em;
+}
 </style>
 </head>
 </head>

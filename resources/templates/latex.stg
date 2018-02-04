@@ -131,6 +131,13 @@ InlineImage(model) ::= <<
 \includegraphics{<model.src>}
 >>
 
+
+Image(model) ::= <<
+\begin{center}
+\includegraphics{<model.attrs.src>}
+\end{center}
+>>
+
 BlockImage(model) ::= <<
 
 \begin{center}
