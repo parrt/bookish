@@ -136,7 +136,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
 		eqnIndexedVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
-		sectionAnchorPattern = Pattern.compile(".*\\(([a-zA-Z_][a-zA-Z0-9\\-_]*?)\\)");
+		sectionAnchorPattern = Pattern.compile(".*\\(([a-zA-Z_][a-zA-Z0-9\\-_:]*?)\\)");
 		latexPattern = Pattern.compile("\\\\latex\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
 	}
 
