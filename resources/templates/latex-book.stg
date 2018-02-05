@@ -2,7 +2,7 @@ delimiters "<",">"
 
 header() ::= <<
 \documentclass[paper=7.5in:9.25in,pagesize=pdftex,
-               headinclude=on,footinclude=on,11pt,twoside]{book}
+               headinclude=on,footinclude=on,10pt,twoside]{book}
 \usepackage{xparse}
 \usepackage{subfiles}
 \usepackage[pdftex,final]{graphicx}
@@ -102,22 +102,19 @@ urlcolor=blue,
 
 >>
 
+Book(model) ::= <<
+<header()>
+\title{<model.title>}
+
+\author{<model.author>}
+<footer()>
+>>
+
+
 footer() ::= <<
 <\n>
 \end{document}
 >>
-
-Book(model) ::= <<
-<header()>
-\tableofcontents
-
-\title{<model.title>}
-
-\author{<model.author>}
-
-<footer()>
->>
-
 
 Document(model, chapter) ::= <<
 <header()>
@@ -177,25 +174,31 @@ SubSubSection(model, elements, subcontainers) ::= <<
 
 Block(model,elements) ::= "<elements>"
 
-SideQuote(model,quote,author) ::= "<model.def.index>\,``<quote>'' --- <author>"
+SideQuote(model,quote,author) ::= "\\mysidenote{``<quote>'' --- <author>}"
 
-Citation(model,title,bibinfo) ::= "<model.def.index>\,``<title>'' --- <bibinfo>"
+Citation(model,title,bibinfo) ::= "\\mysidenote{``<title>'' --- <bibinfo>}"
 
 ChapQuote(model,quote,author) ::= "``<quote>'' --- <author>"
 
-Site(model) ::= "<model.def.index> <model.def.website>"
+Site(model) ::= "\\footnote{<model.def.website>}"
 
 SideFigure(model, code, caption) ::= <<
-<code>Figure <model.def.index>. <caption>
+\begin{marginfigure}
+\centering
+<code>
+\vspace{-2mm}
+\caption{\footnotesize <caption>}
+\label{fig:pyth}
+\end{marginfigure}
 >>
 
-SiteRef(model) ::= "<model.def.index><model.def.template>"
-CitationRef(model) ::= "<model.def.index><model.def.template>"
-FigureRef(model) ::= "Figure <model.def.index><model.def.template>"
-SideNoteRef(model) ::= "<model.def.index><model.def.template>"
-SideQuoteRef(model) ::= "<model.def.index><model.def.template>"
-SectionRef(model) ::= "Section <model.def.containerNumber> <model.def.model.title>"
-ChapterRef(model) ::= "Chapter <model.def.containerNumber> <model.def.model.title>"
+SiteRef(model) ::= "<model.def.template>"
+CitationRef(model) ::= "<model.def.template>"
+FigureRef(model) ::= "Figure <model.def.index>{\em <model.def.template>}"
+SideNoteRef(model) ::= "<model.def.template>"
+SideQuoteRef(model) ::= "<model.def.template>"
+SectionRef(model) ::= "Section <model.def.containerNumber> {\em <model.def.model.title>}"
+ChapterRef(model) ::= "Chapter <model.def.containerNumber> {\em <model.def.model.title>}"
 
 OrderedList(model, items) ::= <<
 \begin{enumerate}
@@ -237,14 +240,14 @@ InlineImage(model) ::= <<
 
 Image(model) ::= <<
 \begin{center}
-\includegraphics{<model.attrs.src>}
+\includegraphics[width=<model.attrs.width>]{<model.attrs.src>}
 \end{center}
 >>
 
 BlockImage(model) ::= <<
 
 \begin{center}
-\includegraphics{<model.attrs.src>}
+\includegraphics[width=<model.attrs.width>]{<model.attrs.src>}
 \end{center}
 
 >>

@@ -1,12 +1,5 @@
 delimiters "<",">"
 
-Book(model) ::= <<
-<header()>
-\title{<model.title>}
-
-\author{<model.author>}
-<footer()>
->>
 
 header() ::= <<
 \documentclass[11pt]{article}
@@ -53,6 +46,18 @@ footer() ::= <<
 <\n>
 \end{document}
 >>
+
+Book(model) ::= <<
+<header()>
+\tableofcontents
+
+\title{<model.title>}
+
+\author{<model.author>}
+
+<footer()>
+>>
+
 
 Document(model, chapter) ::= <<
 <header()>
