@@ -172,7 +172,7 @@ EqnVecVar(model) ::= "$\mathbf{<model.varname>}$"
 EqnIndexedVecVar(model) ::= "$\mathbf{<model.varname>}_<model.indexname>$"
 
 HyperLink(model) ::= <<
-\href{<model.href; format="tex-encode">}{<model.title; format="tex-encode">}
+\href{<model.href; format="url-title-escape">}{<model.title; format="url-escape">}
 >>
 
 Quoted(model, elements) ::= "``<elements>''"

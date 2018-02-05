@@ -77,7 +77,8 @@ public class Tool {
 
 		if ( metadataFilename.endsWith(".md") ) { // just one file (legacy stuff)
 			Book book = new Book("","");
-			trans = new Translator(book, null, target, outputDir);
+			book.entities = new HashMap<>();
+			trans = new Translator(book, book.entities, target, outputDir);
 			if ( target==Target.HTML ) {
 				outFilename = "index.html";
 			}
