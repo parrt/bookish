@@ -242,9 +242,11 @@ SideFigure(model, code, caption) ::= <<
 
 SiteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
 CitationRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
-FigureRef(model) ::= "Figure $model.def.index$$model.def.template$"
+FigureRef(model) ::= "<b>Figure $model.def.index$</b>$model.def.template$"
 SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
 SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
+SectionRef(model) ::= "<b>Section $model.def.containerNumber$</b> <i>$model.def.model.title$</i>"
+ChapterRef(model) ::= "<b>Chapter $model.def.containerNumber$</b> <i>$model.def.model.title$</i>"
 
 OrderedList(model, items) ::= <<
 <ol>

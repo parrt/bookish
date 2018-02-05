@@ -20,6 +20,8 @@ public class Book extends OutputModelObject {
 	 */
 	public Map<String,EntityDef> entities = new HashMap<>();
 
+	public int chapCounter = 1;
+
 	public Book(String title, String author) {
 		this.author = author;
 		this.title = title;

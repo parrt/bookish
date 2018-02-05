@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 import us.parr.lib.ParrtStrings;
 import us.parr.bookish.model.entity.*;
+import static us.parr.bookish.translate.Translator.splitSectionTitle;
 }
 
 options {
@@ -27,13 +28,29 @@ options {
 				 entity.getStartToken().getLine(), entity.label);
 			}
 			entities.put(entity.label, entity);
+			System.out.println("Def "+entity);
 		}
 	}
 
-	// Each parser (usually per doc/chapter) keeps its own counts for figures, sidenotes, web links, ...
+	// Each parser (usually per doc/chapter) keeps its own counts for sections, figures, sidenotes, web links, ...
 
 	public int defCounter = 1;
 	public int figCounter = 1; // track 1..n for whole chapter.
+	public int secCounter = 1;
+	public int subSecCounter = 1;
+	public int subSubSecCounter = 1;
+
+	public int chapNumber;
+
+	public ChapterDef currentChap;
+	public SectionDef currentSec;
+	public SubSectionDef currentSubSec;
+	public SubSubSectionDef currentSubSubSec;
+
+	public BookishParser(TokenStream input, int chapNumber) {
+		this(input);
+		this.chapNumber = chapNumber;
+	}
 }
 
 document
@@ -41,7 +58,10 @@ document
 	;
 
 chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? (section_element|ws)* section*
-		  {defEntity(new ChapterDef($chap));}
+		  {
+		  currentChap = new ChapterDef(chapNumber, $chap, null);
+		  defEntity(currentChap);
+		  }
 		;
 
 author : (ws|BLANK_LINE)? AUTHOR LCURLY paragraph_optional_blank_line RCURLY ;
@@ -51,15 +71,32 @@ abstract_ : (ws|BLANK_LINE)? ABSTRACT LCURLY paragraph_optional_blank_line parag
 preabstract : (ws|BLANK_LINE)? PREABSTRACT LCURLY paragraph_optional_blank_line paragraph* RCURLY;
 
 section : BLANK_LINE sec=SECTION (section_element|ws)* subsection*
-		  {defEntity(new SectionDef($sec));}
+		  {
+		  subSecCounter = 1;
+		  subSubSecCounter = 1;
+		  currentSubSec = null;
+		  currentSubSubSec = null;
+		  currentSec = new SectionDef(secCounter, $sec, currentChap);
+		  defEntity(currentSec);
+		  secCounter++;
+		  }
 		;
 
 subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)* subsubsection*
-		  {defEntity(new SectionDef($sec));}
+		  {
+		  subSubSecCounter = 1;
+		  currentSubSubSec = null;
+		  currentSubSec = new SubSectionDef(subSecCounter, $sec, currentSec);
+		  defEntity(currentSubSec);
+		  subSecCounter++;
+		  }
 		;
 
 subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*
-		  {defEntity(new SectionDef($sec));}
+		  {
+		  currentSubSubSec = new SubSubSectionDef(subSubSecCounter, $sec, currentSubSec);
+		  defEntity(currentSubSubSec);
+		  }
 		;
 
 section_element

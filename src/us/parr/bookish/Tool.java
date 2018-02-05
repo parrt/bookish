@@ -122,7 +122,8 @@ public class Tool {
 			String fname = stripQuotes(f.toString());
 			filenames.add(fname);
 			Pair<BookishParser.DocumentContext, Map<String, EntityDef>> results =
-				parseChapter(inputDir+"/"+fname);
+				parseChapter(inputDir+"/"+fname, book.chapCounter);
+			book.chapCounter++;
 			trees.add(results.a);
 			entities.add(results.b);
 		}
@@ -134,7 +135,8 @@ public class Tool {
 			BookishParser.DocumentContext tree = trees.get(i);
 			Map<String, EntityDef> thisDocsEntities = entities.get(i);
 			trans = new Translator(book, thisDocsEntities, target, outputDir);
-			Document doc = (Document) trans.visit(tree); // get doc for single chapter
+			Document doc = (Document)trans.visit(tree); // get doc for single chapter
+			book.addChapterDocument(doc);
 			doc.chapter.connectContainerTree();
 
 			ModelConverter converter = new ModelConverter(trans.templates);
@@ -155,7 +157,6 @@ public class Tool {
 			String output = outputST.render();
 			doc.markdownFilename = fname;
 			documents.add(doc);
-			book.addChapterDocument(doc);
 			if ( target==Target.HTML ) {
 				outFilename = stripFileExtension(fname)+".html";
 			}
@@ -178,7 +179,7 @@ public class Tool {
 		CharStream input = CharStreams.fromString(markdown);
 		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		BookishParser parser = new BookishParser(tokens);
+		BookishParser parser = new BookishParser(tokens,0);
 		Method startMethod = BookishParser.class.getMethod(startRule, (Class[])null);
 		ParseTree doctree = (ParseTree)startMethod.invoke(parser, (Object[])null);
 
@@ -189,18 +190,18 @@ public class Tool {
 		return outputST.render();
 	}
 
-	public Pair<BookishParser.DocumentContext,Map<String,EntityDef>> parseChapter(String inputFilename) throws IOException {
+	public Pair<BookishParser.DocumentContext,Map<String,EntityDef>> parseChapter(String inputFilename, int chapNumber) throws IOException {
 		CharStream input = CharStreams.fromFileName(inputFilename);
 		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		BookishParser parser = new BookishParser(tokens);
+		BookishParser parser = new BookishParser(tokens, chapNumber);
 		BookishParser.DocumentContext doctree = parser.document();
 		return new Pair<>(doctree,parser.entities);
 	}
 
 	// legacy single-doc translation
 	public Pair<Document,String> legacy_translate(Translator trans, String inputFilename) throws IOException {
-		Pair<BookishParser.DocumentContext,Map<String,EntityDef>> results = parseChapter(inputFilename);
+		Pair<BookishParser.DocumentContext,Map<String,EntityDef>> results = parseChapter(inputFilename,0);
 		Document doc = (Document)trans.visit(results.a); // get single chapter
 		doc.chapter.connectContainerTree();
 		doc.entities = results.b;

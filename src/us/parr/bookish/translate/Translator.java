@@ -48,16 +48,22 @@ import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.XMLEndTag;
 import us.parr.bookish.model.XMLTag;
+import us.parr.bookish.model.entity.ChapterDef;
 import us.parr.bookish.model.entity.CitationDef;
 import us.parr.bookish.model.entity.EntityDef;
 import us.parr.bookish.model.entity.FigureDef;
+import us.parr.bookish.model.entity.SectionDef;
 import us.parr.bookish.model.entity.SideFigDef;
 import us.parr.bookish.model.entity.SideNoteDef;
 import us.parr.bookish.model.entity.SideQuoteDef;
 import us.parr.bookish.model.entity.SiteDef;
+import us.parr.bookish.model.entity.SubSectionDef;
+import us.parr.bookish.model.entity.SubSubSectionDef;
+import us.parr.bookish.model.ref.ChapterRef;
 import us.parr.bookish.model.ref.CitationRef;
 import us.parr.bookish.model.ref.EntityRef;
 import us.parr.bookish.model.ref.FigureRef;
+import us.parr.bookish.model.ref.SectionRef;
 import us.parr.bookish.model.ref.SideNoteRef;
 import us.parr.bookish.model.ref.SiteRef;
 import us.parr.bookish.parse.BookishParser;
@@ -94,6 +100,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			put(SideNoteDef.class, SideNoteRef.class);
 			put(SideQuoteDef.class, SideNoteRef.class);
 			put(SiteDef.class, SiteRef.class);
+			put(SectionDef.class, SectionRef.class);
+			put(SubSectionDef.class, SectionRef.class);
+			put(SubSubSectionDef.class, SectionRef.class);
+			put(ChapterDef.class, ChapterRef.class);
 		}};
 
 	public STGroupFile templates;
@@ -724,7 +734,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		if ( anchors.size()>0 ) {
 			anchor = anchors.get(0);
 			int lparent = title.indexOf('(');
-			title = title.substring(0, lparent);
+			title = title.substring(0, lparent).trim();
 		}
 		return new Pair<>(title,anchor);
 	}
