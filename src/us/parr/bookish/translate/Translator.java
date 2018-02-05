@@ -135,6 +135,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			case LATEX :
 				templateFileName = "templates/latex.stg";
 				break;
+			case LATEX_BOOK :
+				templateFileName = "templates/latex-book.stg";
+				break;
 		}
 		templates = new STGroupFile(templateFileName);
 		templates.registerRenderer(String.class, new us.parr.bookish.translate.LatexEscaper());
@@ -369,7 +372,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		List<String> stuff = extract(latexPattern, text); // \latex{{...}}
 		text = stuff.get(0);
 
-		if ( target==Tool.Target.LATEX ) {
+		if ( target==Tool.Target.LATEX || target==Tool.Target.LATEX_BOOK ) {
 			return new Latex(null, text, text);
 		}
 
@@ -393,7 +396,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitBlock_eqn(BookishParser.Block_eqnContext ctx) {
 		String eqn = stripQuotes(ctx.getText(), 3);
 
-		if ( target==Tool.Target.LATEX ) {
+		if ( target==Tool.Target.LATEX || target==Tool.Target.LATEX_BOOK ) {
 			return new BlockEquation(null, eqn);
 		}
 
@@ -418,7 +421,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitEqn(BookishParser.EqnContext ctx) {
 		String eqn = stripQuotes(ctx.getText());
 
-		if ( target==Tool.Target.LATEX ) {
+		if ( target==Tool.Target.LATEX || target==Tool.Target.LATEX_BOOK ) {
 			return new InlineEquation(null, eqn, -1, -1);
 		}
 

@@ -1250,7 +1250,7 @@ For $y = sum(\mathbf{x})$:
 For $y = sum(\mathbf{x}z)$ and $n = |x|$, we get:
 
 \\[\nabla_\mathbf{x} y = [z, z, \ldots, z]\\]
-\\[\nabla_z y = n \\]
+\\[\nabla_z y = sum(\mathbf{x}) \\]
 
 Vector dot product $y = \mathbf{f(w)} \cdot \mathbf{g(x)} = \sum_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$.  Substituting $\mathbf{u} = \mathbf{w} \otimes \mathbf{x}$ and using the vector chain rule, we get:
 
@@ -1293,7 +1293,7 @@ Notation $f(x)$ refers to a function called $f$ with an argument of $x$.
 
 $I$ represents the square "identity matrix" of appropriate dimensions that is zero everywhere but the diagonal, which contains all ones.
 
-$diag(\mathbf{x})$  constructs a matrix whose diagonal elements are taken from vector $\mathbf{x}$: $diag(\mathbf{x}) = \mathbf{x}^T I$.
+$diag(\mathbf{x})$  constructs a matrix whose diagonal elements are taken from vector $\mathbf{x}$.
 
 The dot product $\mathbf{w} \cdot \mathbf{x}$ is the summation of the element-wise multiplication of the elements: $\sum_i^n (w_i x_i) = sum(\mathbf{w} \otimes \mathbf{x})$. Or, you can look at it  as $w^T x$.
 

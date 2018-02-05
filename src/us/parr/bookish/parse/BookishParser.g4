@@ -96,6 +96,7 @@ subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*
 		  {
 		  currentSubSubSec = new SubSubSectionDef(subSubSecCounter, $sec, currentSubSec);
 		  defEntity(currentSubSubSec);
+		  subSubSecCounter++;
 		  }
 		;
 

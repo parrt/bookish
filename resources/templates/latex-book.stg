@@ -1,37 +1,90 @@
 delimiters "<",">"
 
-Book(model) ::= <<
-<header()>
-\title{<model.title>}
-
-\author{<model.author>}
-<footer()>
->>
-
 header() ::= <<
-\documentclass[11pt]{article}
-\usepackage{hyperref}
-\usepackage{graphicx}
-\usepackage{amssymb}
-\usepackage[fleqn]{amsmath}
+\documentclass[paper=7.5in:9.25in,pagesize=pdftex,
+               headinclude=on,footinclude=on,11pt,twoside]{book}
+\usepackage{xparse}
+\usepackage{subfiles}
+\usepackage[pdftex,final]{graphicx}
 \usepackage{epstopdf}
-\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage[tikz]{bclogo}
+\usepackage{tikz}
+\usepackage{tikzscale}
+\usetikzlibrary{shapes, calc, shapes, arrows, positioning,shapes,backgrounds}
+\usepackage{geometry}
 
-\textwidth = 6.5 in
-\textheight = 9 in
-\oddsidemargin = 0.0 in
-\evensidemargin = 0.0 in
-\topmargin = 0.0 in
-\headheight = 0.0 in
-\headsep = 0.0 in
-\parskip = 0.2in
-\parindent = 0.0in
+\geometry{includehead,
+          includefoot,
+          paperheight=9.25in,
+          paperwidth=7.5in,
+          textwidth=4.0in, % 7.5 - .5 margin - 1.5in on left - 1.5in margin
+          marginparwidth=1.5in,
+                  headheight=17pt, % as per the warning by fancyhdr
+          textheight=7.25in
+          , marginparsep=3mm
+}
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}{Definition}
+\usepackage{array}
+
+\usepackage{amsmath}
+\usepackage{sidenotes}
+\usepackage[usefamily=python, pygments=true]{pythontex}
+\setpythontexlistingenv{ParrtPythonTex}
+\usepackage{minted}
+%\usepackage{showframe}
+\usepackage{sparklines}
+\usepackage{color}
+\usepackage{fancyhdr}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\hypersetup{
+urlcolor=blue,
+}
+
+\newcommand{\degree}[0]{$^{\circ}$}
+
+\newcommand{\figref}[1]{Figure~\ref{#1} on page~\pageref{#1}}
+
+\pagestyle{fancy}
+\addtolength{\headwidth}{\marginparsep}
+\addtolength{\headwidth}{\marginparwidth}
 
 \newcommand{\cut}[1]{}
+
+\fancyfoot{}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+%\renewcommand{\sectionmark}[1]{\markright{#1}} % remove section number
+
+\fancyhead[LE,RO]{\fontsize{9}{11}\selectfont \textbf{\thepage}}
+\fancyhead[LO]{\fontsize{9}{11}\selectfont \textbf{\rightmark}}
+\fancyhead[RE]{\fontsize{9}{11}\selectfont \textbf{\leftmark}}
+
+\newminted[pcode]{python}{mathescape, baselinestretch=.8, fontsize=\footnotesize, escapeinside=||}
+
+\newmintinline[pinline]{python}{fontsize=\footnotesize}
+
+\DeclareDocumentCommand \mysidenote { O{0pt} m } {%
+\addtocounter{footnote}{1}\sidenotemark[\number\value{footnote}]\begin{marginfigure}\vspace{#1}
+\sidenotemark[\number\value{footnote}]\footnotesize #2
+\end{marginfigure}
+}
+
+\newcommand{\todo}[1]{\textcolor{red}{#1}}
+
+\newenvironment{callout}[1]{
+\[
+  \left[
+      \begin{tabular}{@{\quad}m{.05\textwidth}@{\qquad}m{.75\textwidth}@{\quad}}
+        \scalebox{1.5}{#1} &
+          \raggedright%
+}
+{
+      \end{tabular}
+    \right]
+\]
+}
 
 \allowdisplaybreaks
 
@@ -53,6 +106,18 @@ footer() ::= <<
 <\n>
 \end{document}
 >>
+
+Book(model) ::= <<
+<header()>
+\tableofcontents
+
+\title{<model.title>}
+
+\author{<model.author>}
+
+<footer()>
+>>
+
 
 Document(model, chapter) ::= <<
 <header()>

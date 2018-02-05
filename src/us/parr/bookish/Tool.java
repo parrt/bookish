@@ -48,7 +48,7 @@ import static us.parr.lib.ParrtStrings.stripQuotes;
  *      https://github.com/parrt/bookish/blob/master/examples/matrix-calculus/matrix-calculus.json
  */
 public class Tool {
-	public enum Target { HTML, LATEX }
+	public enum Target { HTML, LATEX, LATEX_BOOK }
 
 	public Map<String,Object> options = new HashMap<>();
 
@@ -202,9 +202,9 @@ public class Tool {
 	// legacy single-doc translation
 	public Pair<Document,String> legacy_translate(Translator trans, String inputFilename) throws IOException {
 		Pair<BookishParser.DocumentContext,Map<String,EntityDef>> results = parseChapter(inputFilename,0);
+		trans.entities = results.b;
 		Document doc = (Document)trans.visit(results.a); // get single chapter
 		doc.chapter.connectContainerTree();
-		doc.entities = results.b;
 
 		ModelConverter converter = new ModelConverter(trans.templates);
 		ST outputST = converter.walk(doc);
@@ -257,6 +257,10 @@ public class Tool {
 						break;
 					case "latex" :
 						value = Target.LATEX;
+						break;
+					case "latex-book" :
+						value = Target.LATEX_BOOK;
+						break;
 				}
 			}
 			arg = arg.substring(1); // strip '-'
