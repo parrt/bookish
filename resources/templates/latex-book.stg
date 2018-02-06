@@ -1,6 +1,6 @@
 delimiters "<",">"
 
-header() ::= <<
+header(author) ::= <<
 \documentclass[paper=7.5in:9.25in,pagesize=pdftex,
                headinclude=on,footinclude=on,10pt,twoside]{book}
 \usepackage{xparse}
@@ -103,10 +103,8 @@ urlcolor=blue,
 >>
 
 Book(model) ::= <<
-<header()>
-\title{<model.title>}
-
-\author{<model.author>}
+<header(model.author)>
+<model.chapterDocuments:{doc| \\input{<doc.generatedFilename>\}<\n>}>
 <footer()>
 >>
 
@@ -117,9 +115,7 @@ footer() ::= <<
 >>
 
 Document(model, chapter) ::= <<
-<header()>
 <chapter>
-<footer()>
 >>
 
 Chapter(model, author, preabstract, abstract_, elements, subcontainers) ::= <<
