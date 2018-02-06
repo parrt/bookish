@@ -281,6 +281,8 @@ HyperLink(model) ::= <<
 
 Quoted(model, elements) ::= "``<elements>''"
 
+InlineCode(model, elements) ::= "{\texttt\small <elements>}"
+
 Bold(model) ::= "{\bf <model.text>}"
 
 Italics(model) ::= "{\em <model.text>}"

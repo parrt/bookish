@@ -24,6 +24,7 @@ import us.parr.bookish.model.EqnVar;
 import us.parr.bookish.model.EqnVecVar;
 import us.parr.bookish.model.HyperLink;
 import us.parr.bookish.model.Image;
+import us.parr.bookish.model.InlineCode;
 import us.parr.bookish.model.InlineEquation;
 import us.parr.bookish.model.Italics;
 import us.parr.bookish.model.Join;
@@ -589,6 +590,15 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			elements.add( visit(el) );
 		}
 		return new Quoted(elements);
+	}
+
+	@Override
+	public OutputModelObject visitInline_code(BookishParser.Inline_codeContext ctx) {
+		List<OutputModelObject> elements = new ArrayList<>();
+		for (ParseTree el : ctx.children) {
+			elements.add( visit(el) );
+		}
+		return new InlineCode(elements);
 	}
 
 	@Override

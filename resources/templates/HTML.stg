@@ -340,6 +340,8 @@ HyperLink(model) ::= <<
 
 Quoted(model, elements) ::= "&ldquo;$elements$&rdquo;"
 
+InlineCode(model, elements) ::= "<tt>$elements$</tt>"
+
 Bold(model) ::= "<b>$model.text$</b>"
 Italics(model) ::= "<i>$model.text$</i>"
 

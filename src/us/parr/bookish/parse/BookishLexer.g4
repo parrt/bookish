@@ -38,6 +38,8 @@ RCURLY : '}' ;
 
 QUOTE : '"' ;
 
+BACKTICK : '`' ;
+
 OL : '<ol>' ;
 LI : '<li>' ;
 OL_ : '</ol>' ;
@@ -73,7 +75,7 @@ NL : '\r'? '\n' ;
 OTHER : NOT_SPECIAL+ ;
 
 fragment
-NOT_SPECIAL : ~[$<#[*\\\n"{}\]] ;
+NOT_SPECIAL : ~[$<#[*\\\n"{}\]`] ;
 
 mode XML_MODE ;           //e.g, <img src="images/neuron.png" alt="neuron.png" width="250">
 XML_ATTR : [a-zA-Z]+ ;
