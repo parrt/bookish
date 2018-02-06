@@ -25,6 +25,7 @@ header(author) ::= <<
 }
 
 \usepackage{array}
+\usepackage{tocloft}
 
 \usepackage{amsmath}
 \usepackage{sidenotes}
@@ -100,6 +101,15 @@ urlcolor=blue,
 \begin{document}
 \maketitle
 
+\pagebreak
+
+\setlength\cftbeforechapskip{2pt}
+\setlength\cftbeforesecskip{2pt}
+\setlength\cftbeforesubsecskip{2pt}
+{\small \tableofcontents}
+\pagebreak
+
+
 >>
 
 Book(model) ::= <<
@@ -119,15 +129,7 @@ Document(model, chapter) ::= <<
 >>
 
 Chapter(model, author, preabstract, abstract_, elements, subcontainers) ::= <<
-
-<preabstract>
-
-<abstract_>
-
-\pagebreak
-{\small \setlength{\parskip}{0pt} \tableofcontents}
-\pagebreak
-
+\chapter{<model.title>}
 <elements>
 
 <subcontainers>
@@ -190,7 +192,7 @@ SideFigure(model, code, caption) ::= <<
 
 SiteRef(model) ::= "<model.def.template>"
 CitationRef(model) ::= "<model.def.template>"
-FigureRef(model) ::= "Figure <model.def.index>{\em <model.def.template>}"
+FigureRef(model) ::= "Figure <model.def.index><model.def.template>"
 SideNoteRef(model) ::= "<model.def.template>"
 SideQuoteRef(model) ::= "<model.def.template>"
 SectionRef(model) ::= "Section <model.def.containerNumber> {\em <model.def.model.title>}"
