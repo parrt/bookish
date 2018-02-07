@@ -15,6 +15,8 @@ SIDENOTE  : '\\sidenote' ;
 SIDEFIG   : '\\sidefig' ;
 FIGURE    : '\\figure' ;
 
+FIRSTUSE  : '\\first' ;
+
 AUTHOR	  : '\\author' ;
 PREABSTRACT  : '\\preabstract' ;
 ABSTRACT  : '\\abstract' ;

@@ -161,7 +161,7 @@ paragraph_optional_blank_line
 	;
 
 paragraph_content
-	:	(paragraph_element|quoted|inline_code|ws)+
+	:	(paragraph_element|quoted|firstuse|inline_code|ws)+
 	;
 
 paragraph_element
@@ -183,6 +183,8 @@ symbol : SYMBOL REF ; // e.g., \symbol[degree], \symbol[tm]
 quoted : QUOTE (paragraph_element|ws)+ QUOTE ;
 
 inline_code : BACKTICK (paragraph_element|ws)+ BACKTICK ;
+
+firstuse : FIRSTUSE block ;
 
 latex : LATEX ;
 
@@ -209,9 +211,9 @@ table
 table_header : TR ws? (TH attrs END_OF_TAG table_item)+ ;
 table_row : TR ws? (TD table_item)+ ;
 
-list_item : (section_element|paragraph_element|quoted|inline_code|ws|BLANK_LINE)* ;
+list_item : (section_element|paragraph_element|quoted|firstuse|inline_code|ws|BLANK_LINE)* ;
 
-table_item : (section_element|paragraph_element|quoted|inline_code|ws|BLANK_LINE)* ;
+table_item : (section_element|paragraph_element|quoted|firstuse|inline_code|ws|BLANK_LINE)* ;
 
 block_image : image ;
 

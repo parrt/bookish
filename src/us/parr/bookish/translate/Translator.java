@@ -602,6 +602,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitFirstuse(BookishParser.FirstuseContext ctx) {
+		return new Italics(stripQuotes(ctx.block().getText())); // can't have markup inside
+	}
+
+	@Override
 	public OutputModelObject visitBold(BookishParser.BoldContext ctx) {
 		return new Bold(stripQuotes(ctx.getText(),2));
 	}
