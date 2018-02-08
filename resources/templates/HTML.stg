@@ -247,6 +247,9 @@ SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.templ
 SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
 SectionRef(model) ::= "<b>Section $model.def.containerNumber$</b> <i>$model.def.model.title$</i>"
 ChapterRef(model) ::= "<b>Chapter $model.def.containerNumber$</b> <i>$model.def.model.title$</i>"
+UnknownRef(model) ::= <<
+<span style="color: red">[$model.def.label$]</span>
+>>
 
 OrderedList(model, items) ::= <<
 <ol>

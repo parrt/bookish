@@ -161,7 +161,7 @@ paragraph_optional_blank_line
 	;
 
 paragraph_content
-	:	(paragraph_element|quoted|firstuse|inline_code|ws)+
+	:	(paragraph_element|quoted|ws)+
 	;
 
 paragraph_element
@@ -173,6 +173,8 @@ paragraph_element
 	|	xml
 	|	ref
 	|	symbol
+	|	firstuse
+	|	inline_code
 	|	other
 	;
 
@@ -211,9 +213,9 @@ table
 table_header : TR ws? (TH attrs END_OF_TAG table_item)+ ;
 table_row : TR ws? (TD table_item)+ ;
 
-list_item : (section_element|paragraph_element|quoted|firstuse|inline_code|ws|BLANK_LINE)* ;
+list_item : (section_element|paragraph_element|quoted|ws|BLANK_LINE)* ;
 
-table_item : (section_element|paragraph_element|quoted|firstuse|inline_code|ws|BLANK_LINE)* ;
+table_item : (section_element|paragraph_element|quoted|ws|BLANK_LINE)* ;
 
 block_image : image ;
 

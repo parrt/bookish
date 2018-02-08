@@ -142,6 +142,7 @@ SideNoteRef(model) ::= "<model.def.template>"
 SideQuoteRef(model) ::= "<model.def.template>"
 SectionRef(model) ::= "Section <model.def.containerNumber> {\em <model.def.model.title>}"
 ChapterRef(model) ::= "Chapter <model.def.containerNumber> {\em <model.def.model.title>}"
+UnknownRef(model) ::= "\textcolor{red}{[<model.def.label>]}"
 
 OrderedList(model, items) ::= <<
 \begin{enumerate}

@@ -67,6 +67,7 @@ import us.parr.bookish.model.ref.FigureRef;
 import us.parr.bookish.model.ref.SectionRef;
 import us.parr.bookish.model.ref.SideNoteRef;
 import us.parr.bookish.model.ref.SiteRef;
+import us.parr.bookish.model.ref.UnknownRef;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
 
@@ -706,7 +707,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		System.out.println("Ref to "+def);
 		if ( def==null ) {
 			System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
-			return null;
+			return new UnknownRef(ctx.REF().getSymbol());
 		}
 
 		Class<? extends EntityRef> refClass = defToRefMap.get(def.getClass());
