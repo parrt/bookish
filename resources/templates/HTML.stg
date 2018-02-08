@@ -348,6 +348,10 @@ InlineCode(model, elements) ::= "<tt>$elements$</tt>"
 Bold(model) ::= "<b>$model.text$</b>"
 Italics(model) ::= "<i>$model.text$</i>"
 
+TODO(model) ::= <<
+<span style="color: red">{TODO: $model.text$}</span>
+>>
+
 Other(model) ::= "$model.text$"
 
 Join(model, elements) ::= "$elements$"

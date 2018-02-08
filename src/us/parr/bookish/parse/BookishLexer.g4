@@ -17,6 +17,8 @@ FIGURE    : '\\figure' ;
 
 FIRSTUSE  : '\\first' ;
 
+TODO	  : '\\todo' | '\\TODO' ;
+
 AUTHOR	  : '\\author' ;
 PREABSTRACT  : '\\preabstract' ;
 ABSTRACT  : '\\abstract' ;

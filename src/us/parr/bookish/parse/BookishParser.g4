@@ -174,6 +174,7 @@ paragraph_element
 	|	ref
 	|	symbol
 	|	firstuse
+	|	todo
 	|	inline_code
 	|	other
 	;
@@ -187,6 +188,8 @@ quoted : QUOTE (paragraph_element|ws)+ QUOTE ;
 inline_code : BACKTICK (paragraph_element|ws)+ BACKTICK ;
 
 firstuse : FIRSTUSE block ;
+
+todo : TODO block ;
 
 latex : LATEX ;
 

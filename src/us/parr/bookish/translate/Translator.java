@@ -42,6 +42,7 @@ import us.parr.bookish.model.SideQuote;
 import us.parr.bookish.model.Site;
 import us.parr.bookish.model.SubSection;
 import us.parr.bookish.model.SubSubSection;
+import us.parr.bookish.model.TODO;
 import us.parr.bookish.model.Table;
 import us.parr.bookish.model.TableHeaderItem;
 import us.parr.bookish.model.TableItem;
@@ -605,6 +606,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitFirstuse(BookishParser.FirstuseContext ctx) {
 		return new Italics(stripQuotes(ctx.block().getText())); // can't have markup inside
+	}
+
+	@Override
+	public OutputModelObject visitTodo(BookishParser.TodoContext ctx) {
+		return new TODO(stripQuotes(ctx.block().getText())); // can't have markup inside
 	}
 
 	@Override

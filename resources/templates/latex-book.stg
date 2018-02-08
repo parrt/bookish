@@ -285,8 +285,9 @@ Quoted(model, elements) ::= "``<elements>''"
 InlineCode(model, elements) ::= "{\texttt\small <elements>}"
 
 Bold(model) ::= "{\bf <model.text>}"
-
 Italics(model) ::= "{\em <model.text>}"
+
+TODO(model) ::= "\textcolor{red}{{TODO: <model.text>\}}"
 
 Other(model) ::= <<
 <model.text; format="url-title-escape">
