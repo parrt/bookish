@@ -181,7 +181,7 @@ paragraph_element
 
 ref : REF ;
 
-symbol : SYMBOL REF ; // e.g., \symbol[degree], \symbol[tm]
+symbol : SYMBOL block ; // e.g., \symbol{degree}, \symbol{tm}
 
 quoted : QUOTE (paragraph_element|ws)+ QUOTE ;
 
