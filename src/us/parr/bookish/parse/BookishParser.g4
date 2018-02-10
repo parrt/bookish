@@ -191,7 +191,6 @@ pyeval returns [ExecutableCodeDef codeDef]
 			if ( $b.ctx!=null ) {
 				outputExpr = $b.ctx.paragraph_content().getText();
 			}
-			System.out.println("EXPR: "+outputExpr);
 			$codeDef = new ExecutableCodeDef(fname, codeCounter, $CODE_BLOCK_LABEL, py, outputExpr);
 			codeBlocks.add($codeDef);
 		}

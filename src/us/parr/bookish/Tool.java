@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static us.parr.bookish.translate.Tex2SVG.runProcess;
 import static us.parr.lib.ParrtIO.basename;
 import static us.parr.lib.ParrtIO.stripFileExtension;
 import static us.parr.lib.ParrtStrings.stripQuotes;
@@ -143,19 +144,20 @@ public class Tool {
 			List<ExecutableCodeDef> codeDefs = codeBlocks.get(i);
 			// get mapping from label (or index if no label) to list of snippets
 			MultiMap<String, ExecutableCodeDef> labelToDefs = new MultiMap<>();
+			List<String> labels = new ArrayList<>();
 			for (ExecutableCodeDef codeDef : codeDefs) {
 				String label = codeDef.label!=null ? codeDef.label : String.valueOf(codeDef.index);
+				if ( !labels.contains(label) ) labels.add(label);
 				labelToDefs.map(label, codeDef);
 			}
-			System.out.println(labelToDefs);
 			// combine list of code snippets for each label into file
 			STGroup pycodeTemplates = new STGroupFile("templates/pyeval.stg");
 
-			for (String label : labelToDefs.keySet()) {
+			// track snippet label order
+			for (String label : labels) {
 				List<ExecutableCodeDef> defs = labelToDefs.get(label);
 				String basename = stripFileExtension(defs.get(0).inputFilename);
 				String snippetFilename = basename+"_"+label+".py";
-				System.out.println(snippetFilename);
 				List<ST> snippets = new ArrayList<>();
 				for (ExecutableCodeDef def : defs) {
 					String tname = def.isOutputVisible ? "pyeval" : "pydo";
@@ -165,11 +167,27 @@ public class Tool {
 				}
 				ST file = pycodeTemplates.getInstanceOf("pyfile");
 				file.add("snippets", snippets);
-				file.add("buildDir", snippetsDir);
+				file.add("buildDir", snippetsDir+"/"+basename);
+				file.add("basename", basename+"_"+label);
 				String pycode = file.render();
-				System.out.println(pycode);
 				ParrtIO.mkdir(snippetsDir+"/"+basename);
 				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
+
+				// execute!
+				runProcess(snippetsDir+"/"+basename,"python3", snippetFilename);
+				for (ExecutableCodeDef def : defs) {
+					if ( def.isOutputVisible ) {
+						String stdout = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".out");
+						String stderr = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".err");
+//						System.out.println("stdout: "+stdout);
+//						System.out.println("stderr: "+stderr);
+					}
+					if ( def.displayExpr!=null ) {
+						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
+						String displayData = ParrtIO.load(snippetsDir+"/"+basename+"/"+dataFilename);
+//						System.out.println("data: "+displayData);
+					}
+				}
 			}
 		}
 
