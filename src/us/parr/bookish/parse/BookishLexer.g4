@@ -20,8 +20,8 @@ FIRSTUSE  : '\\first' ;
 
 TODO	  : '\\todo' | '\\TODO' ;
 
+PYDO	  : '\\pydo' -> pushMode(CODE_BLOCK_START_MODE) ;
 PYEVAL	  : '\\pyeval' -> pushMode(CODE_BLOCK_START_MODE) ;
-PYCELL	  : '\\pycell' -> pushMode(CODE_BLOCK_START_MODE) ;
 
 AUTHOR	  : '\\author' ;
 PREABSTRACT  : '\\preabstract' ;

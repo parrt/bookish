@@ -2,12 +2,12 @@ package us.parr.bookish.model;
 
 public class ChapQuote extends OutputModelObject {
 	@ModelElement
-	public Block quote;
+	public TextBlock quote;
 
 	@ModelElement
-	public Block author;
+	public TextBlock author;
 
-	public ChapQuote(Block quote, Block author) {
+	public ChapQuote(TextBlock quote, TextBlock author) {
 		this.quote = quote;
 		this.author = author;
 	}

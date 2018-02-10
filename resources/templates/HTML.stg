@@ -57,6 +57,10 @@ header() ::= <<
 	padding: 10px;
 	margin-left: 100px;
 }
+.codeblk {
+	font-family: Monaco;
+	font-size: 12px;
+}
 .sidenote {
 	/* Adapted from https://github.com/edwardtufte/tufte-css/blob/gh-pages/tufte.css MIT license */
 	float: right;
@@ -226,13 +230,21 @@ $elements$
 
 >>
 
-Block(model,elements) ::= "$elements$"
+TextBlock(model,elements) ::= "$elements$"
 
 SideQuote(model,quote,author) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</span>"
 
 Citation(model,title,bibinfo) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$title$</i>&rdquo; &mdash; $bibinfo$</span>"
 
 ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
+
+BlockCode(model) ::= <<
+$\n$
+<div class="codeblk">
+$model.code$
+</div>
+$\n$
+>>
 
 Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"
 

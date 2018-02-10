@@ -47,7 +47,7 @@ options {
 	public SubSectionDef currentSubSec;
 	public SubSubSectionDef currentSubSubSec;
 
-	public List<CodeDef> codeBlocks = new ArrayList<>();
+	public List<ExecutableCodeDef> codeBlocks = new ArrayList<>();
 	public int codeCounter = 1;
 
 	public BookishParser(TokenStream input, int chapNumber) {
@@ -123,8 +123,8 @@ section_element
 		|	sidefig
 		|	figure
 		|	pycode
+		|	pydo
 		|	pyeval
-		|	pycell
 		)
 	|	other
 	;
@@ -158,17 +158,22 @@ figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 
 pycode    : CODEBLOCK ;
 
-pyeval    : PYEVAL CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
-			{
-			CodeDef c = new CodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text);
-			c.isCell=false;
-			codeBlocks.add(c);
-			}
-		  ;
+pydo returns [ExecutableCodeDef codeDef]
+	:	PYDO CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
+		{
+		$codeDef = new ExecutableCodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text);
+		$codeDef.isCell=false;
+		codeBlocks.add($codeDef);
+		}
+	;
 
-pycell    : PYCELL CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
-			{codeBlocks.add(new CodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text));}
-		  ;
+pyeval returns [ExecutableCodeDef codeDef]
+    :	PYEVAL CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
+		{
+		$codeDef = new ExecutableCodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text);
+		codeBlocks.add($codeDef);
+		}
+	;
 
 block : LCURLY paragraph_content? RCURLY ;
 

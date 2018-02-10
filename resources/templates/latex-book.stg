@@ -170,7 +170,7 @@ SubSubSection(model, elements, subcontainers) ::= <<
 <subcontainers>
 >>
 
-Block(model,elements) ::= "<elements>"
+TextBlock(model,elements) ::= "<elements>"
 
 SideQuote(model,quote,author) ::= "\\mysidenote{``<quote>'' --- <author>}"
 

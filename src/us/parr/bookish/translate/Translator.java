@@ -8,7 +8,7 @@ import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.Tool;
 import us.parr.bookish.model.Abstract;
 import us.parr.bookish.model.Author;
-import us.parr.bookish.model.Block;
+import us.parr.bookish.model.BlockCode;
 import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
@@ -47,6 +47,7 @@ import us.parr.bookish.model.Table;
 import us.parr.bookish.model.TableHeaderItem;
 import us.parr.bookish.model.TableItem;
 import us.parr.bookish.model.TableRow;
+import us.parr.bookish.model.TextBlock;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.XMLEndTag;
 import us.parr.bookish.model.XMLTag;
@@ -625,7 +626,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitChapquote(BookishParser.ChapquoteContext ctx) {
-		return new ChapQuote((Block) visit(ctx.q), (Block) visit(ctx.a));
+		return new ChapQuote((TextBlock) visit(ctx.q), (TextBlock) visit(ctx.a));
 	}
 
 	@Override
@@ -656,7 +657,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				return null;
 			}
 		}
-		def.model = new Citation(def, label, (Block)visit(ctx.t), (Block) visit(ctx.a));
+		def.model = new Citation(def, label, (TextBlock)visit(ctx.t), (TextBlock) visit(ctx.a));
 		return null;
 	}
 
@@ -672,7 +673,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				return null;
 			}
 		}
-		SideQuote q = new SideQuote(def, label, (Block) visit(ctx.q), (Block) visit(ctx.a));
+		SideQuote q = new SideQuote(def, label, (TextBlock) visit(ctx.q), (TextBlock) visit(ctx.a));
 		def.model = q;
 		if ( label==null ) {
 			return q; // if no label, insert inline here
@@ -692,7 +693,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				return null;
 			}
 		}
-		SideFigure f = new SideFigure(def, label, (Block)visitBlock(ctx.code), (Block)visit(ctx.caption));
+		SideFigure f = new SideFigure(def, label, (TextBlock)visitBlock(ctx.code), (TextBlock)visit(ctx.caption));
 		def.model = f;
 		if ( label==null ) {
 			return f; // if no label, insert inline here
@@ -703,7 +704,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitBlock(BookishParser.BlockContext ctx) {
 		Paragraph content = (Paragraph)visit(ctx.paragraph_content());
-		return new Block(content.elements);
+		return new TextBlock(content.elements);
 	}
 
 	@Override
@@ -726,6 +727,26 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			e.printStackTrace(System.err);
 		}
 		return null;
+	}
+
+	/** ```foo``` Just show it */
+	@Override
+	public OutputModelObject visitPycode(BookishParser.PycodeContext ctx) {
+		return new BlockCode(stripQuotes(ctx.getText(),3).trim());
+	}
+
+	/** \pydo{import re} Just do it; no output, don't show code} */
+	@Override
+	public OutputModelObject visitPydo(BookishParser.PydoContext ctx) {
+		return super.visitPydo(ctx);
+	}
+
+	/** \pyeval{notebook cell} Do it, show stdout/stderr, last line is
+	 *  expression to display as output.
+	 */
+	@Override
+	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
+		return super.visitPyeval(ctx);
 	}
 
 	// Support

@@ -2,11 +2,12 @@ package us.parr.bookish.model;
 
 import java.util.List;
 
-public class Block extends OutputModelObject {
+/** A block of {...} text in curlies */
+public class TextBlock extends OutputModelObject {
 	@ModelElement
 	public List<OutputModelObject> elements;
 
-	public Block(List<OutputModelObject> elements) {
+	public TextBlock(List<OutputModelObject> elements) {
 		this.elements = elements;
 	}
 }

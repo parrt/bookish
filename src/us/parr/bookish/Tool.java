@@ -9,8 +9,8 @@ import org.stringtemplate.v4.ST;
 import us.parr.bookish.model.Book;
 import us.parr.bookish.model.Document;
 import us.parr.bookish.model.OutputModelObject;
-import us.parr.bookish.model.entity.CodeDef;
 import us.parr.bookish.model.entity.EntityDef;
+import us.parr.bookish.model.entity.ExecutableCodeDef;
 import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
@@ -120,7 +120,7 @@ public class Tool {
 		List<BookishParser.DocumentContext> trees = new ArrayList<>();
 		List<String> filenames = new ArrayList<>();
 		List<Map<String, EntityDef>> entities = new ArrayList<>();
-		List<List<CodeDef>> codeBlocks = new ArrayList<>();
+		List<List<ExecutableCodeDef>> codeBlocks = new ArrayList<>();
 		JsonArray markdownFilenames = metadata.getJsonArray("chapters");
 		for (JsonValue f : markdownFilenames) {
 			String fname = stripQuotes(f.toString());
