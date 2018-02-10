@@ -14,6 +14,7 @@ import us.parr.bookish.model.Document;
 import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.entity.EntityDef;
 import us.parr.bookish.model.entity.ExecutableCodeDef;
+import us.parr.bookish.model.entity.PyEvalDef;
 import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
@@ -139,57 +140,7 @@ public class Tool {
 			codeBlocks.add(results.b.codeBlocks);
 		}
 
-		// generate python files to execute \pydo, \pyeval blocks
-		for (int i = 0; i<book.filenames.size(); i++) {
-			List<ExecutableCodeDef> codeDefs = codeBlocks.get(i);
-			// get mapping from label (or index if no label) to list of snippets
-			MultiMap<String, ExecutableCodeDef> labelToDefs = new MultiMap<>();
-			List<String> labels = new ArrayList<>();
-			for (ExecutableCodeDef codeDef : codeDefs) {
-				String label = codeDef.label!=null ? codeDef.label : String.valueOf(codeDef.index);
-				if ( !labels.contains(label) ) labels.add(label);
-				labelToDefs.map(label, codeDef);
-			}
-			// combine list of code snippets for each label into file
-			STGroup pycodeTemplates = new STGroupFile("templates/pyeval.stg");
-
-			// track snippet label order
-			for (String label : labels) {
-				List<ExecutableCodeDef> defs = labelToDefs.get(label);
-				String basename = stripFileExtension(defs.get(0).inputFilename);
-				String snippetFilename = basename+"_"+label+".py";
-				List<ST> snippets = new ArrayList<>();
-				for (ExecutableCodeDef def : defs) {
-					String tname = def.isOutputVisible ? "pyeval" : "pydo";
-					ST snippet = pycodeTemplates.getInstanceOf(tname);
-					snippet.add("def",def);
-					snippets.add(snippet);
-				}
-				ST file = pycodeTemplates.getInstanceOf("pyfile");
-				file.add("snippets", snippets);
-				file.add("buildDir", snippetsDir+"/"+basename);
-				file.add("basename", basename+"_"+label);
-				String pycode = file.render();
-				ParrtIO.mkdir(snippetsDir+"/"+basename);
-				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
-
-				// execute!
-				runProcess(snippetsDir+"/"+basename,"python3", snippetFilename);
-				for (ExecutableCodeDef def : defs) {
-					if ( def.isOutputVisible ) {
-						String stdout = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".out");
-						String stderr = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".err");
-//						System.out.println("stdout: "+stdout);
-//						System.out.println("stderr: "+stderr);
-					}
-					if ( def.displayExpr!=null ) {
-						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
-						String displayData = ParrtIO.load(snippetsDir+"/"+basename+"/"+dataFilename);
-//						System.out.println("data: "+displayData);
-					}
-				}
-			}
-		}
+		executeCodeSnippets(book, snippetsDir, codeBlocks);
 
 		// now walk all trees and translate
 		List<Document> documents = new ArrayList<>();
@@ -236,6 +187,65 @@ public class Tool {
 		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
 		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
 		copyImages(inputDir, outputDir);
+	}
+
+	/** generate python files to execute \pydo, \pyeval blocks */
+	public void executeCodeSnippets(Book book, String snippetsDir,
+	                                List<List<ExecutableCodeDef>> codeBlocks)
+		throws Exception
+	{
+		for (int i = 0; i<book.filenames.size(); i++) {
+			List<ExecutableCodeDef> codeDefs = codeBlocks.get(i);
+			// get mapping from label (or index if no label) to list of snippets
+			MultiMap<String, ExecutableCodeDef> labelToDefs = new MultiMap<>();
+			List<String> labels = new ArrayList<>();
+			for (ExecutableCodeDef codeDef : codeDefs) {
+				String label = codeDef.label!=null ? codeDef.label : String.valueOf(codeDef.index);
+				if ( !labels.contains(label) ) labels.add(label);
+				labelToDefs.map(label, codeDef);
+			}
+			// combine list of code snippets for each label into file
+			STGroup pycodeTemplates = new STGroupFile("templates/pyeval.stg");
+
+			// track snippet label order
+			for (String label : labels) {
+				List<ExecutableCodeDef> defs = labelToDefs.get(label);
+				String basename = stripFileExtension(defs.get(0).inputFilename);
+				String snippetFilename = basename+"_"+label+".py";
+				List<ST> snippets = new ArrayList<>();
+				for (ExecutableCodeDef def : defs) {
+					String tname = def.isOutputVisible() ? "pyeval" : "pydo";
+					ST snippet = pycodeTemplates.getInstanceOf(tname);
+					snippet.add("def",def);
+					snippets.add(snippet);
+				}
+				ST file = pycodeTemplates.getInstanceOf("pyfile");
+				file.add("snippets", snippets);
+				file.add("buildDir", snippetsDir+"/"+basename);
+				file.add("basename", basename+"_"+label);
+				String pycode = file.render();
+				ParrtIO.mkdir(snippetsDir+"/"+basename);
+				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
+
+				// execute!
+				runProcess(snippetsDir+"/"+basename,"python3", snippetFilename);
+				for (ExecutableCodeDef def : defs) {
+					if ( def.isOutputVisible() ) {
+						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
+						tree.stdout = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".out");
+						tree.stderr = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".err");
+//						System.out.println("stdout: "+stdout);
+//						System.out.println("stderr: "+stderr);
+					}
+					if ( def.displayExpr!=null ) {
+						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
+						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
+						tree.displayData = ParrtIO.load(snippetsDir+"/"+basename+"/"+dataFilename);
+//						System.out.println("data: "+displayData);
+					}
+				}
+			}
+		}
 	}
 
 	public String translateString(Translator trans, String markdown, String startRule) throws Exception {

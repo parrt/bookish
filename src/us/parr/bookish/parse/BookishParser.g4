@@ -171,8 +171,6 @@ pydo returns [ExecutableCodeDef codeDef]
 		String py = $code.text.trim();
 		if ( py.length()>0 ) {
 			$codeDef = new ExecutableCodeDef(fname, codeCounter, $CODE_BLOCK_LABEL, py);
-			$codeDef.isOutputVisible=false;
-			$codeDef.isCodeVisible=false;
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;
@@ -180,7 +178,7 @@ pydo returns [ExecutableCodeDef codeDef]
 	;
 
 /** \pyeval[env]{code to exec}{expr to display} */
-pyeval returns [ExecutableCodeDef codeDef]
+pyeval returns [ExecutableCodeDef codeDef, String stdout, String stderr, String displayData]
     :	PYEVAL CODE_BLOCK_LABEL? ws? code=CODE_BLOCK END_CODE_BLOCK ws? b=block?
 		{
 		String fname = ParrtIO.basename(inputFilename);
@@ -191,7 +189,7 @@ pyeval returns [ExecutableCodeDef codeDef]
 			if ( $b.ctx!=null ) {
 				outputExpr = $b.ctx.paragraph_content().getText();
 			}
-			$codeDef = new ExecutableCodeDef(fname, codeCounter, $CODE_BLOCK_LABEL, py, outputExpr);
+			$codeDef = new PyEvalDef($ctx, fname, codeCounter, $CODE_BLOCK_LABEL, py, outputExpr);
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;
