@@ -35,6 +35,7 @@ import us.parr.bookish.model.Other;
 import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.PreAbstract;
+import us.parr.bookish.model.PyEval;
 import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SideFigure;
@@ -738,7 +739,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** \pydo{import re} Just do it; no output, don't show code} */
 	@Override
 	public OutputModelObject visitPydo(BookishParser.PydoContext ctx) {
-		return super.visitPydo(ctx);
+		return null; // nothing to display in this case
 	}
 
 	/** \pyeval{notebook cell} Do it, show stdout/stderr, last line is
@@ -746,7 +747,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	 */
 	@Override
 	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
-		return super.visitPyeval(ctx);
+		return new PyEval(ctx.codeDef);
 	}
 
 	// Support

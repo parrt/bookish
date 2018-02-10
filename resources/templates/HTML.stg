@@ -238,12 +238,20 @@ Citation(model,title,bibinfo) ::= "<span class=sidenote><span class=sup>$model.d
 
 ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
 
-BlockCode(model) ::= <<
+dumpCode(code) ::= <<
 $\n$
 <div class="codeblk">
-$model.code$
+$code$
 </div>
 $\n$
+>>
+
+BlockCode(model) ::= <<
+$dumpCode(model.code)$
+>>
+
+PyEval(model) ::= <<
+$dumpCode(model.codeDef.code)$
 >>
 
 Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"

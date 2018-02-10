@@ -178,6 +178,22 @@ Citation(model,title,bibinfo) ::= "\\mysidenote{``<title>'' --- <bibinfo>}"
 
 ChapQuote(model,quote,author) ::= "``<quote>'' --- <author>"
 
+dumpCode(code) ::= <<
+<\n>
+\begin{pcode}
+<code>
+\end{pcode}
+<\n>
+>>
+
+BlockCode(model) ::= <<
+<dumpCode(model.code)>
+>>
+
+PyEval(model) ::= <<
+<dumpCode(model.codeDef.code)>
+>>
+
 Site(model) ::= "\\footnote{<model.def.website>}"
 
 SideFigure(model, code, caption) ::= <<

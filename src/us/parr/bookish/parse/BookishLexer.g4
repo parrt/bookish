@@ -92,7 +92,7 @@ mode CODE_BLOCK_START_MODE;
 
 CODE_BLOCK_LABEL : '[' ~']'+ ']' ;
 
-CODE_BLOCK_OTHER : . -> mode(CODE_BLOCK_MODE), more ;
+CODE_BLOCK_START : '{' -> mode(CODE_BLOCK_MODE), skip ;
 
 mode CODE_BLOCK_MODE;
 
