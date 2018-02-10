@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.Token;
 
 public class ExecutableCodeDef extends EntityDef {
 	public String code;
+	public String outputExpr;
+
 	public boolean isOutputVisible = true;  // default: run, show output
 	public boolean isCodeVisible = true;    // default: display code in document
 
@@ -13,5 +15,10 @@ public class ExecutableCodeDef extends EntityDef {
 		super(index, refOrStartToken);
 		this.inputFilename = inputFilename;
 		this.code = code;
+	}
+
+	public ExecutableCodeDef(String inputFilename, int index, Token refOrStartToken, String code, String outputExpr) {
+		this(inputFilename, index, refOrStartToken, code);
+		this.outputExpr = outputExpr;
 	}
 }

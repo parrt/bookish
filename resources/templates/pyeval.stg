@@ -1,0 +1,28 @@
+delimiters "<",">"
+
+pyfile(snippets, buildDir) ::= <<
+import sys
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
+
+def dump(o):
+	"""Given df, col, ndarray, value return csv formatted data"""
+	# write to <buildDir>
+	return None
+
+<snippets; separator="\n\n">
+>>
+
+pydo(def) ::= <<
+# <def.inputFilename> snippet <def.index>
+<def.code>
+>>
+
+pyeval(def) ::= <<
+# <def.inputFilename> snippet <def.index>
+<def.code>
+<if(def.outputExpr)>dump(<def.outputExpr>)<endif>
+>>

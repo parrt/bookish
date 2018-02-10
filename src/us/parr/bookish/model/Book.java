@@ -1,5 +1,6 @@
 package us.parr.bookish.model;
 
+import us.parr.bookish.Tool;
 import us.parr.bookish.model.entity.EntityDef;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Book extends OutputModelObject {
+	public Tool tool;
 	public String author;
 	public String title;
 
@@ -24,7 +26,8 @@ public class Book extends OutputModelObject {
 
 	public int chapCounter = 1;
 
-	public Book(String title, String author) {
+	public Book(Tool tool, String title, String author) {
+		this.tool = tool;
 		this.author = author;
 		this.title = title;
 	}

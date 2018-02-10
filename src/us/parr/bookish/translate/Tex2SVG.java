@@ -26,7 +26,7 @@ public class Tex2SVG {
 	public Triple<String,Float,Float> tex2svg(String latex, LatexType type, int fontsize) {
 		try {
 			latex = latex.trim();
-			String tmpdir = new File(System.getProperty("java.io.tmpdir")+"/bookish").getAbsolutePath();
+			String tmpdir = new File(outputDir).getAbsolutePath();
 
 			if ( !Files.exists(Paths.get(tmpdir)) ) {
 				Files.createDirectories(Paths.get(tmpdir));

@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.misc.MultiMap;
 import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STGroupFile;
 import us.parr.bookish.model.Book;
 import us.parr.bookish.model.Document;
 import us.parr.bookish.model.OutputModelObject;
@@ -35,8 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static us.parr.lib.ParrtCollections.join;
-import static us.parr.lib.ParrtCollections.map;
 import static us.parr.lib.ParrtIO.basename;
 import static us.parr.lib.ParrtIO.stripFileExtension;
 import static us.parr.lib.ParrtStrings.stripQuotes;
@@ -85,7 +85,7 @@ public class Tool {
 
 		if ( metadataFilename.endsWith(".md") ) { // just one file (legacy stuff)
 			String inputFilename = metadataFilename;
-			Book book = new Book("","");
+			Book book = new Book(this, "","");
 			book.entities = new HashMap<>();
 			trans = new Translator(book, book.entities, target, outputDir);
 			if ( target==Target.HTML ) {
@@ -108,7 +108,7 @@ public class Tool {
 //		System.out.println(metadata);
 
 		String title = metadata.getString("title");
-		Book book = new Book(title, null);
+		Book book = new Book(this, title, null);
 		String author = metadata.getString("author");
 		author = "\n\n"+author; // Rule paragraph needs blank line on the front
 		trans = new Translator(book, null, target, outputDir);
@@ -149,14 +149,27 @@ public class Tool {
 			}
 			System.out.println(labelToDefs);
 			// combine list of code snippets for each label into file
+			STGroup pycodeTemplates = new STGroupFile("templates/pyeval.stg");
+
 			for (String label : labelToDefs.keySet()) {
 				List<ExecutableCodeDef> defs = labelToDefs.get(label);
 				String basename = stripFileExtension(defs.get(0).inputFilename);
 				String snippetFilename = basename+"_"+label+".py";
 				System.out.println(snippetFilename);
-				String pycode = join(map(defs, def -> def.code),"");
+				List<ST> snippets = new ArrayList<>();
+				for (ExecutableCodeDef def : defs) {
+					String tname = def.isOutputVisible ? "pyeval" : "pydo";
+					ST snippet = pycodeTemplates.getInstanceOf(tname);
+					snippet.add("def",def);
+					snippets.add(snippet);
+				}
+				ST file = pycodeTemplates.getInstanceOf("pyfile");
+				file.add("snippets", snippets);
+				file.add("buildDir", snippetsDir);
+				String pycode = file.render();
 				System.out.println(pycode);
-				ParrtIO.save(snippetsDir+"/"+snippetFilename, pycode);
+				ParrtIO.mkdir(snippetsDir+"/"+basename);
+				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
 			}
 		}
 

@@ -3,7 +3,10 @@ parser grammar BookishParser;
 @header {
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Arrays;
+
 import us.parr.lib.ParrtStrings;
+import us.parr.lib.ParrtCollections;
 import us.parr.lib.ParrtIO;
 import us.parr.bookish.model.entity.*;
 import static us.parr.bookish.translate.Translator.splitSectionTitle;
@@ -165,19 +168,34 @@ pydo returns [ExecutableCodeDef codeDef]
 	:	PYDO CODE_BLOCK_LABEL ws? code=CODE_BLOCK END_CODE_BLOCK
 		{
 		String fname = ParrtIO.basename(inputFilename);
-		$codeDef = new ExecutableCodeDef(fname, codeCounter++, $CODE_BLOCK_LABEL, $code.text);
-		$codeDef.isOutputVisible=false;
-		$codeDef.isCodeVisible=false;
-		codeBlocks.add($codeDef);
+		String py = $code.text.trim();
+		if ( py.length()>0 ) {
+			$codeDef = new ExecutableCodeDef(fname, codeCounter, $CODE_BLOCK_LABEL, py);
+			$codeDef.isOutputVisible=false;
+			$codeDef.isCodeVisible=false;
+			codeBlocks.add($codeDef);
+		}
+		codeCounter++;
 		}
 	;
 
+/** \pyeval[env]{code to exec}{expr to display} */
 pyeval returns [ExecutableCodeDef codeDef]
-    :	PYEVAL CODE_BLOCK_LABEL? ws? code=CODE_BLOCK END_CODE_BLOCK
+    :	PYEVAL CODE_BLOCK_LABEL? ws? code=CODE_BLOCK END_CODE_BLOCK ws? b=block?
 		{
 		String fname = ParrtIO.basename(inputFilename);
-		$codeDef = new ExecutableCodeDef(fname, codeCounter++, $CODE_BLOCK_LABEL, $code.text);
-		codeBlocks.add($codeDef);
+		// last line is expression to get output or blank line or comment
+		String py = $code.text.trim();
+		if ( py.length()>0 ) {
+			String outputExpr = null;
+			if ( $b.ctx!=null ) {
+				outputExpr = $b.ctx.paragraph_content().getText();
+			}
+			System.out.println("EXPR: "+outputExpr);
+			$codeDef = new ExecutableCodeDef(fname, codeCounter, $CODE_BLOCK_LABEL, py, outputExpr);
+			codeBlocks.add($codeDef);
+		}
+		codeCounter++;
 		}
 	;
 
