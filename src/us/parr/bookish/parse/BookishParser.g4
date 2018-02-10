@@ -4,6 +4,7 @@ parser grammar BookishParser;
 import java.util.Map;
 import java.util.HashMap;
 import us.parr.lib.ParrtStrings;
+import us.parr.lib.ParrtIO;
 import us.parr.bookish.model.entity.*;
 import static us.parr.bookish.translate.Translator.splitSectionTitle;
 }
@@ -40,8 +41,6 @@ options {
 	public int subSecCounter = 1;
 	public int subSubSecCounter = 1;
 
-	public int chapNumber;
-
 	public ChapterDef currentChap;
 	public SectionDef currentSec;
 	public SubSectionDef currentSubSec;
@@ -50,8 +49,12 @@ options {
 	public List<ExecutableCodeDef> codeBlocks = new ArrayList<>();
 	public int codeCounter = 1;
 
-	public BookishParser(TokenStream input, int chapNumber) {
+	public String inputFilename;
+	public int chapNumber;
+
+	public BookishParser(TokenStream input, String inputFilename, int chapNumber) {
 		this(input);
+		this.inputFilename = inputFilename;
 		this.chapNumber = chapNumber;
 	}
 }
@@ -159,18 +162,21 @@ figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 pycode    : CODEBLOCK ;
 
 pydo returns [ExecutableCodeDef codeDef]
-	:	PYDO CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
+	:	PYDO CODE_BLOCK_LABEL ws? code=CODE_BLOCK END_CODE_BLOCK
 		{
-		$codeDef = new ExecutableCodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text);
-		$codeDef.isCell=false;
+		String fname = ParrtIO.basename(inputFilename);
+		$codeDef = new ExecutableCodeDef(fname, codeCounter++, $CODE_BLOCK_LABEL, $code.text);
+		$codeDef.isOutputVisible=false;
+		$codeDef.isCodeVisible=false;
 		codeBlocks.add($codeDef);
 		}
 	;
 
 pyeval returns [ExecutableCodeDef codeDef]
-    :	PYEVAL CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
+    :	PYEVAL CODE_BLOCK_LABEL? ws? code=CODE_BLOCK END_CODE_BLOCK
 		{
-		$codeDef = new ExecutableCodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text);
+		String fname = ParrtIO.basename(inputFilename);
+		$codeDef = new ExecutableCodeDef(fname, codeCounter++, $CODE_BLOCK_LABEL, $code.text);
 		codeBlocks.add($codeDef);
 		}
 	;

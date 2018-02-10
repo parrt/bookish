@@ -11,6 +11,8 @@ public class Book extends OutputModelObject {
 	public String author;
 	public String title;
 
+	public List<String> filenames = new ArrayList<>();
+
 	/** The chapter model objects (not templates) */
 	public List<Document> chapterDocuments = new ArrayList<>();
 

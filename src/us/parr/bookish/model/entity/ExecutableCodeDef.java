@@ -4,10 +4,14 @@ import org.antlr.v4.runtime.Token;
 
 public class ExecutableCodeDef extends EntityDef {
 	public String code;
-	public boolean isCell = true; // default: display, run, show output
+	public boolean isOutputVisible = true;  // default: run, show output
+	public boolean isCodeVisible = true;    // default: display code in document
 
-	public ExecutableCodeDef(int index, Token refOrStartToken, String code) {
+	public String inputFilename;
+
+	public ExecutableCodeDef(String inputFilename, int index, Token refOrStartToken, String code) {
 		super(index, refOrStartToken);
+		this.inputFilename = inputFilename;
 		this.code = code;
 	}
 }

@@ -3,6 +3,7 @@ package us.parr.bookish;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.MultiMap;
 import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.stringtemplate.v4.ST;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static us.parr.lib.ParrtCollections.join;
+import static us.parr.lib.ParrtCollections.map;
 import static us.parr.lib.ParrtIO.basename;
 import static us.parr.lib.ParrtIO.stripFileExtension;
 import static us.parr.lib.ParrtStrings.stripQuotes;
@@ -77,8 +80,11 @@ public class Tool {
 		Target target = (Target)optionO("target");
 
 		ParrtIO.mkdir(outputDir+"/images");
+		String snippetsDir = BUILD_DIR+"/snippets";
+		ParrtIO.mkdir(snippetsDir);
 
 		if ( metadataFilename.endsWith(".md") ) { // just one file (legacy stuff)
+			String inputFilename = metadataFilename;
 			Book book = new Book("","");
 			book.entities = new HashMap<>();
 			trans = new Translator(book, book.entities, target, outputDir);
@@ -86,9 +92,9 @@ public class Tool {
 				outFilename = "index.html";
 			}
 			else {
-				outFilename = stripFileExtension(basename(metadataFilename))+".tex";
+				outFilename = stripFileExtension(basename(inputFilename))+".tex";
 			}
-			Pair<Document, String> results = legacy_translate(trans, metadataFilename);
+			Pair<Document, String> results = legacy_translate(trans, inputDir, basename(inputFilename));
 			String output = results.b;
 			ParrtIO.save(outputDir+"/"+outFilename, output);
 			System.out.println("Wrote "+outputDir+"/"+outFilename);
@@ -118,26 +124,46 @@ public class Tool {
 
 		// parse all documents first to get entity defs
 		List<BookishParser.DocumentContext> trees = new ArrayList<>();
-		List<String> filenames = new ArrayList<>();
 		List<Map<String, EntityDef>> entities = new ArrayList<>();
 		List<List<ExecutableCodeDef>> codeBlocks = new ArrayList<>();
 		JsonArray markdownFilenames = metadata.getJsonArray("chapters");
 		for (JsonValue f : markdownFilenames) {
 			String fname = stripQuotes(f.toString());
-			filenames.add(fname);
+			book.filenames.add(fname);
 			Pair<BookishParser.DocumentContext, BookishParser> results =
-				parseChapter(inputDir+"/"+fname, book.chapCounter);
+				parseChapter(inputDir, fname, book.chapCounter);
 			book.chapCounter++;
 			trees.add(results.a);
 			entities.add(results.b.entities);
 			codeBlocks.add(results.b.codeBlocks);
-			System.out.println(results.b.codeBlocks);
+		}
+
+		// generate python files to execute \pydo, \pyeval blocks
+		for (int i = 0; i<book.filenames.size(); i++) {
+			List<ExecutableCodeDef> codeDefs = codeBlocks.get(i);
+			// get mapping from label (or index if no label) to list of snippets
+			MultiMap<String, ExecutableCodeDef> labelToDefs = new MultiMap<>();
+			for (ExecutableCodeDef codeDef : codeDefs) {
+				String label = codeDef.label!=null ? codeDef.label : String.valueOf(codeDef.index);
+				labelToDefs.map(label, codeDef);
+			}
+			System.out.println(labelToDefs);
+			// combine list of code snippets for each label into file
+			for (String label : labelToDefs.keySet()) {
+				List<ExecutableCodeDef> defs = labelToDefs.get(label);
+				String basename = stripFileExtension(defs.get(0).inputFilename);
+				String snippetFilename = basename+"_"+label+".py";
+				System.out.println(snippetFilename);
+				String pycode = join(map(defs, def -> def.code),"");
+				System.out.println(pycode);
+				ParrtIO.save(snippetsDir+"/"+snippetFilename, pycode);
+			}
 		}
 
 		// now walk all trees and translate
 		List<Document> documents = new ArrayList<>();
-		for (int i = 0; i<filenames.size(); i++) {
-			String fname = filenames.get(i);
+		for (int i = 0; i<book.filenames.size(); i++) {
+			String fname = book.filenames.get(i);
 			BookishParser.DocumentContext tree = trees.get(i);
 			Map<String, EntityDef> thisDocsEntities = entities.get(i);
 			trans = new Translator(book, thisDocsEntities, target, outputDir);
@@ -185,7 +211,7 @@ public class Tool {
 		CharStream input = CharStreams.fromString(markdown);
 		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		BookishParser parser = new BookishParser(tokens,0);
+		BookishParser parser = new BookishParser(tokens,null, 0);
 		Method startMethod = BookishParser.class.getMethod(startRule, (Class[])null);
 		ParseTree doctree = (ParseTree)startMethod.invoke(parser, (Object[])null);
 
@@ -196,18 +222,27 @@ public class Tool {
 		return outputST.render();
 	}
 
-	public Pair<BookishParser.DocumentContext,BookishParser> parseChapter(String inputFilename, int chapNumber) throws IOException {
-		CharStream input = CharStreams.fromFileName(inputFilename);
+	public Pair<BookishParser.DocumentContext,BookishParser> parseChapter(String inputDir,
+	                                                                      String inputFilename,
+	                                                                      int chapNumber)
+		throws IOException
+	{
+		CharStream input = CharStreams.fromFileName(inputDir+"/"+inputFilename);
 		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		BookishParser parser = new BookishParser(tokens, chapNumber);
+		BookishParser parser = new BookishParser(tokens, inputFilename, chapNumber);
 		BookishParser.DocumentContext doctree = parser.document();
 		return new Pair<>(doctree, parser);
 	}
 
 	// legacy single-doc translation
-	public Pair<Document,String> legacy_translate(Translator trans, String inputFilename) throws IOException {
-		Pair<BookishParser.DocumentContext,BookishParser> results = parseChapter(inputFilename,0);
+	public Pair<Document,String> legacy_translate(Translator trans,
+	                                              String inputDir,
+	                                              String inputFilename)
+		throws IOException
+	{
+		Pair<BookishParser.DocumentContext,BookishParser> results =
+			parseChapter(inputDir, inputFilename,0);
 		trans.entities = results.b.entities;
 		Document doc = (Document)trans.visit(results.a); // get single chapter
 		doc.chapter.connectContainerTree();
