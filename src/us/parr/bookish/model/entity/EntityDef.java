@@ -19,10 +19,12 @@ public class EntityDef {
 	public OutputModelObject model;
 	public ST template;
 
-	public EntityDef(int index, Token startToken) {
+	public EntityDef(int index, Token refOrStartToken) {
 		this.index = index;
-		this.startToken = startToken;
-		this.label = stripQuotes(startToken.getText());
+		this.startToken = refOrStartToken;
+		if ( startToken!=null ) {
+			this.label = stripQuotes(refOrStartToken.getText());
+		}
 	}
 
 	public boolean isGloballyVisible() { return false; }

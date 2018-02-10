@@ -47,6 +47,9 @@ options {
 	public SubSectionDef currentSubSec;
 	public SubSubSectionDef currentSubSubSec;
 
+	public List<CodeDef> codeBlocks = new ArrayList<>();
+	public int codeCounter = 1;
+
 	public BookishParser(TokenStream input, int chapNumber) {
 		this(input);
 		this.chapNumber = chapNumber;
@@ -119,6 +122,9 @@ section_element
 		|	chapquote
 		|	sidefig
 		|	figure
+		|	pycode
+		|	pyeval
+		|	pycell
 		)
 	|	other
 	;
@@ -148,6 +154,20 @@ sidefig   : SIDEFIG REF? ws? code=block (ws? caption=block)?
 
 figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 			{if ($REF!=null) defEntity(new FigureDef(figCounter++, $REF, $code.text, $caption.text));}
+		  ;
+
+pycode    : CODEBLOCK ;
+
+pyeval    : PYEVAL CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
+			{
+			CodeDef c = new CodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text);
+			c.isCell=false;
+			codeBlocks.add(c);
+			}
+		  ;
+
+pycell    : PYCELL CODE_BLOCK_LABEL? code=CODE_BLOCK END_CODE_BLOCK
+			{codeBlocks.add(new CodeDef(codeCounter++, $CODE_BLOCK_LABEL, $code.text));}
 		  ;
 
 block : LCURLY paragraph_content? RCURLY ;
