@@ -30,7 +30,7 @@ with redirect_stderr(fstderr):
 		import traceback
 		traceback.print_exc(file=sys.stderr)
 	finally:
-		with open("<buildDir>/<basename>/<basename>_<label>_<def.index>.err", "w") as f:
+		with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.err", "w") as f:
 			f.write(fstderr.getvalue())
 <\n>
 >>
@@ -43,16 +43,16 @@ with redirect_stderr(fstderr):
 	with redirect_stdout(fstdout):
 		try:
 			<def.code>
-			with open("<buildDir>/<basename>/<basename>_<label>_<def.index>.out", "w") as f:
+			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.out", "w") as f:
 				f.write(fstdout.getvalue())
 			<if(def.displayExpr)>
-			with open("<buildDir>/<basename>/<basename>_<label>_<def.index>.csv", "w") as f:
+			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.csv", "w") as f:
 				f.write(dump(<def.displayExpr>))
 			<endif>
 		except:
 			import traceback
 			traceback.print_exc(file=sys.stderr)
 		finally:
-			with open("<buildDir>/<basename>/<basename>_<label>_<def.index>.err", "w") as f:
+			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.err", "w") as f:
 				f.write(fstderr.getvalue())
 >>

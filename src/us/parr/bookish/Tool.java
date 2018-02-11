@@ -144,7 +144,7 @@ public class Tool {
 			codeBlocks.add(results.b.codeBlocks);
 		}
 
-		executeCodeSnippets(book, snippetsDir, codeBlocks);
+		executeCodeSnippets(book, BUILD_DIR, codeBlocks);
 
 		// now walk all trees and translate
 		List<Document> documents = new ArrayList<>();
@@ -194,10 +194,11 @@ public class Tool {
 	}
 
 	/** generate python files to execute \pydo, \pyeval blocks */
-	public void executeCodeSnippets(Book book, String snippetsDir,
+	public void executeCodeSnippets(Book book, String buildDir,
 	                                List<List<ExecutableCodeDef>> codeBlocks)
 		throws Exception
 	{
+		String snippetsDir = buildDir+"/snippets";
 		for (int i = 0; i<book.filenames.size(); i++) {
 			List<ExecutableCodeDef> codeDefs = codeBlocks.get(i);
 			// get mapping from label (or index if no label) to list of snippets
@@ -225,13 +226,13 @@ public class Tool {
 				}
 				ST file = pycodeTemplates.getInstanceOf("pyfile");
 				file.add("snippets", snippets);
-				file.add("buildDir", snippetsDir);
+				file.add("buildDir", buildDir);
 //				file.add("imagesDir", inputDir+"/images");
 				file.add("basename", basename);
 				file.add("label", label);
 				String pycode = file.render();
 				ParrtIO.mkdir(snippetsDir+"/"+basename);
-				ParrtIO.mkdir(snippetsDir+"/images/"+basename);
+				ParrtIO.mkdir(buildDir+"/images/"+basename);
 				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
 
 				// execute!
