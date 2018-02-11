@@ -14,7 +14,10 @@ from sklearn.model_selection import cross_val_score
 def dump(o):
 	"""Given df, col, ndarray, value return csv formatted data"""
 	# write to <buildDir>
-	return repr(o)
+	if type(o)==pd.DataFrame:
+		return o.to_csv(index=False)
+	else:
+		return repr(o)
 
 <snippets; separator="\n">
 >>
@@ -47,7 +50,10 @@ with redirect_stderr(fstderr):
 				f.write(fstdout.getvalue())
 			<if(def.displayExpr)>
 			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.csv", "w") as f:
-				f.write(dump(<def.displayExpr>))
+				v = <def.displayExpr>
+				f.write(type(v).__name__)
+				f.write('\n')
+				f.write(dump(v))
 			<endif>
 		except:
 			import traceback

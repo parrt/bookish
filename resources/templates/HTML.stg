@@ -155,6 +155,26 @@ $endif$
 $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 >>
 
+PyEvalDataFrame(model) ::= <<
+$if(model.codeDef.isCodeVisible)$
+$dumpCode(model.codeDef.code)$
+$endif$
+$if(model.stdout)$<p class="stdout">$model.stdout$</p>$endif$
+$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
+$dataTable(model.dataTable)$
+>>
+
+dataTable(dt) ::= <<
+<table class="dataframe">
+<thead>
+	<tr>$dt.colNames:{c | <th>$c$</th>}$</tr>
+</thead>
+<tbody>
+	$dt.rows:{r | <tr>$r:{c| <td>$c$</td>}$</tr>}; separator="\n"$
+</tbody>
+</table>
+>>
+
 PyFig(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode(model.codeDef.code)$

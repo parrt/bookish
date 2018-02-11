@@ -165,7 +165,7 @@ figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 pycode    : CODEBLOCK ;
 
 pyfig returns [PyFigDef codeDef, String stdout, String stderr]
-	:	PYFIG CODE_BLOCK_LABEL ws? code=CODE_BLOCK END_CODE_BLOCK
+	:	PYFIG CODE_BLOCK_LABEL ws? code=codeblock END_CODE_BLOCK
 		{
 		String fname = ParrtIO.basename(inputFilename);
 		String py = $code.text.trim();
@@ -180,7 +180,7 @@ pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 
 /** \pyeval[env]{code to exec}{expr to display} */
 pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayData]
-    :	PYEVAL CODE_BLOCK_LABEL? ws? code=CODE_BLOCK END_CODE_BLOCK ws? b=block?
+    :	PYEVAL CODE_BLOCK_LABEL? ws? code=codeblock END_CODE_BLOCK ws? b=block?
 		{
 		String fname = ParrtIO.basename(inputFilename);
 		// last line is expression to get output or blank line or comment
@@ -196,6 +196,10 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 		}
 		codeCounter++;
 		}
+	;
+
+codeblock
+	:	(CODE_BLOCK_STUFF|CODE_BLOCK_OTHER)+
 	;
 
 block : LCURLY paragraph_content? RCURLY ;

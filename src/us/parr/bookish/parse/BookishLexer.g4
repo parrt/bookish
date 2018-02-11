@@ -92,14 +92,13 @@ NOT_SPECIAL : ~[$<#[*\\\n"{}\]`] ;
 mode CODE_BLOCK_START_MODE;
 
 CODE_BLOCK_LABEL : '[' ~']'+ ']' ;
-
 CODE_BLOCK_START : '{' -> mode(CODE_BLOCK_MODE), skip ;
 
 mode CODE_BLOCK_MODE;
 
-CODE_BLOCK : ~'}'+ ;
-
-END_CODE_BLOCK : '}' -> popMode ;
+END_CODE_BLOCK : '\r'? '\n' '}' -> popMode ;
+CODE_BLOCK_STUFF : ~[\r\n}]+ ;
+CODE_BLOCK_OTHER : [\r\n}] ; // match curly when not on left edge
 
 mode XML_MODE;           //e.g, <img src="images/neuron.png" alt="neuron.png" width="250">
 XML_ATTR : [a-zA-Z]+ ;

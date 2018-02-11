@@ -36,6 +36,7 @@ import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.PreAbstract;
 import us.parr.bookish.model.PyEval;
+import us.parr.bookish.model.PyEvalDataFrame;
 import us.parr.bookish.model.PyFig;
 import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
@@ -74,6 +75,7 @@ import us.parr.bookish.model.ref.SiteRef;
 import us.parr.bookish.model.ref.UnknownRef;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
+import us.parr.bookish.util.DataTable;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,6 +85,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +95,7 @@ import java.util.regex.Pattern;
 import static us.parr.bookish.parse.BookishParser.END_TAG;
 import static us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN;
 import static us.parr.bookish.translate.Tex2SVG.LatexType.LATEX;
+import static us.parr.lib.ParrtCollections.join;
 import static us.parr.lib.ParrtStrings.stripQuotes;
 import static us.parr.lib.ParrtStrings.toHexString;
 
@@ -746,7 +750,23 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** \pyeval[label,hide]{notebook cell} */
 	@Override
 	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
-		return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.displayData);
+		if ( ctx.displayData!=null ) {
+			String[] dataA = ctx.displayData.split("\n");
+			String type = dataA[0];
+			String data = null;
+			if ( dataA.length>1 ) {
+				data = join(Arrays.copyOfRange(dataA, 1, dataA.length), "\n");
+			}
+			if ( type.equals("DataFrame") ) {
+				return new PyEvalDataFrame(ctx.codeDef, ctx.stdout, ctx.stderr, type, new DataTable(dataA, 2));
+			}
+			else {
+				return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, type, data);
+			}
+		}
+		else {
+			return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, null, null);
+		}
 	}
 
 	// Support
