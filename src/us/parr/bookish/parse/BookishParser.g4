@@ -129,7 +129,7 @@ section_element
 		|	sidefig
 		|	figure
 		|	pycode
-		|	pydo
+		|	pyfig
 		|	pyeval
 		)
 	|	other
@@ -164,13 +164,14 @@ figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 
 pycode    : CODEBLOCK ;
 
-pydo returns [ExecutableCodeDef codeDef]
-	:	PYDO CODE_BLOCK_LABEL ws? code=CODE_BLOCK END_CODE_BLOCK
+pyfig returns [PyFigDef codeDef]
+	:	PYFIG CODE_BLOCK_LABEL ws? code=CODE_BLOCK END_CODE_BLOCK
 		{
 		String fname = ParrtIO.basename(inputFilename);
 		String py = $code.text.trim();
 		if ( py.length()>0 ) {
-			$codeDef = new ExecutableCodeDef(fname, codeCounter, $CODE_BLOCK_LABEL, py);
+			$codeDef = new PyFigDef($ctx, fname, codeCounter, $CODE_BLOCK_LABEL, py);
+			if ( $PYFIG.text.endsWith("*") ) $codeDef.isCodeVisible = false;
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;
@@ -178,7 +179,7 @@ pydo returns [ExecutableCodeDef codeDef]
 	;
 
 /** \pyeval[env]{code to exec}{expr to display} */
-pyeval returns [ExecutableCodeDef codeDef, String stdout, String stderr, String displayData]
+pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayData]
     :	PYEVAL CODE_BLOCK_LABEL? ws? code=CODE_BLOCK END_CODE_BLOCK ws? b=block?
 		{
 		String fname = ParrtIO.basename(inputFilename);
@@ -190,6 +191,7 @@ pyeval returns [ExecutableCodeDef codeDef, String stdout, String stderr, String 
 				outputExpr = $b.ctx.paragraph_content().getText();
 			}
 			$codeDef = new PyEvalDef($ctx, fname, codeCounter, $CODE_BLOCK_LABEL, py, outputExpr);
+			if ( $PYEVAL.text.endsWith("*") ) $codeDef.isCodeVisible = false;
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;

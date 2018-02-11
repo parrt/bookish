@@ -15,6 +15,7 @@ import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.entity.EntityDef;
 import us.parr.bookish.model.entity.ExecutableCodeDef;
 import us.parr.bookish.model.entity.PyEvalDef;
+import us.parr.bookish.model.entity.PyFigDef;
 import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
@@ -66,6 +67,9 @@ public class Tool {
 			add("-target");     // html or latex
 		}};
 
+	public String inputDir;
+	public String outputDir;
+
 	public static void main(String[] args) throws Exception {
 		Tool tool = new Tool();
 		tool.process(args);
@@ -74,8 +78,8 @@ public class Tool {
 	public void process(String[] args) throws Exception {
 		options = handleArgs(args);
 		String metadataFilename = option("metadataFilename");
-		String inputDir = new File(metadataFilename).getParent();
-		String outputDir = option("o");
+		inputDir = new File(metadataFilename).getParent();
+		outputDir = option("o");
 
 		String outFilename;
 		Translator trans;
@@ -214,26 +218,33 @@ public class Tool {
 				String snippetFilename = basename+"_"+label+".py";
 				List<ST> snippets = new ArrayList<>();
 				for (ExecutableCodeDef def : defs) {
-					String tname = def.isOutputVisible() ? "pyeval" : "pydo";
+					String tname = def.isOutputVisible ? "pyeval" : "pyfig";
 					ST snippet = pycodeTemplates.getInstanceOf(tname);
 					snippet.add("def",def);
 					snippets.add(snippet);
 				}
 				ST file = pycodeTemplates.getInstanceOf("pyfile");
 				file.add("snippets", snippets);
-				file.add("buildDir", snippetsDir+"/"+basename);
-				file.add("basename", basename+"_"+label);
+				file.add("buildDir", snippetsDir);
+//				file.add("imagesDir", inputDir+"/images");
+				file.add("basename", basename);
+				file.add("label", label);
 				String pycode = file.render();
 				ParrtIO.mkdir(snippetsDir+"/"+basename);
+				ParrtIO.mkdir(snippetsDir+"/images/"+basename);
 				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
 
 				// execute!
 				runProcess(snippetsDir+"/"+basename,"python3", snippetFilename);
 				for (ExecutableCodeDef def : defs) {
-					if ( def.isOutputVisible() ) {
+					String stderr = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".err");
+					if ( def instanceof PyFigDef && stderr.trim().length()>0 ) {
+						System.err.println(stderr);
+					}
+					if ( def.isOutputVisible ) {
 						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
 						tree.stdout = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".out");
-						tree.stderr = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".err");
+						tree.stderr = stderr;
 //						System.out.println("stdout: "+stdout);
 //						System.out.println("stderr: "+stderr);
 					}
@@ -300,7 +311,7 @@ public class Tool {
 		String src = inputDir+"/images";
 		String trg = outputDir+"/images";
 		for (File f : new File(src).listFiles()) {
-			String cmd = String.format("cp %s/%s %s", src, f.getName(), trg);
+			String cmd = String.format("cp -r %s/%s %s", src, f.getName(), trg);
 			String[] exec = ParrtSys.exec(cmd);
 			if ( exec[2]!=null && exec[2].length()>0 ) {
 				System.err.println(exec[2]);

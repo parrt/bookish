@@ -8,14 +8,11 @@ public class PyEvalDef extends ExecutableCodeDef {
 
 	public PyEvalDef(BookishParser.PyevalContext tree, String inputFilename,
 	                 int index,
-	                 Token refOrStartToken,
+	                 Token startOrRefToken,
 	                 String code,
 	                 String displayExpr)
 	{
-		super(inputFilename, index, refOrStartToken, code, displayExpr);
+		super(inputFilename, index, startOrRefToken, code, displayExpr);
 		this.tree = tree;
 	}
-
-	public boolean isOutputVisible() { return true; }
-	public boolean isCodeVisible() { return true; }
 }

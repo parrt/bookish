@@ -20,8 +20,9 @@ FIRSTUSE  : '\\first' ;
 
 TODO	  : '\\todo' | '\\TODO' ;
 
-PYDO	  : '\\pydo' -> pushMode(CODE_BLOCK_START_MODE) ;
-PYEVAL	  : '\\pyeval' -> pushMode(CODE_BLOCK_START_MODE) ;
+/** \pyfig* means hide code */
+PYFIG	  : '\\pyfig' '*'? -> pushMode(CODE_BLOCK_START_MODE) ;
+PYEVAL	  : '\\pyeval' '*'? -> pushMode(CODE_BLOCK_START_MODE) ;
 
 AUTHOR	  : '\\author' ;
 PREABSTRACT  : '\\preabstract' ;

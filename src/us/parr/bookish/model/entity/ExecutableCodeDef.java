@@ -2,14 +2,16 @@ package us.parr.bookish.model.entity;
 
 import org.antlr.v4.runtime.Token;
 
-public class ExecutableCodeDef extends EntityDef {
+public abstract class ExecutableCodeDef extends EntityDef {
 	public String code;
 	public String displayExpr;
-
 	public String inputFilename;
 
-	public ExecutableCodeDef(String inputFilename, int index, Token refOrStartToken, String code) {
-		super(index, refOrStartToken);
+	public boolean isCodeVisible = true;
+	public boolean isOutputVisible = true;
+
+	public ExecutableCodeDef(String inputFilename, int index, Token startOrRefToken, String code) {
+		super(index, startOrRefToken);
 		this.inputFilename = inputFilename;
 		this.code = code;
 	}
@@ -18,7 +20,4 @@ public class ExecutableCodeDef extends EntityDef {
 		this(inputFilename, index, refOrStartToken, code);
 		this.displayExpr = displayExpr;
 	}
-
-	public boolean isOutputVisible() { return false; }  // default: run, don't show output
-	public boolean isCodeVisible() { return false; }    // default: don't display code in document
 }

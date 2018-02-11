@@ -194,6 +194,9 @@ PyEval(model) ::= <<
 <dumpCode(model.codeDef.code)>
 >>
 
+PyFig(model) ::= <<
+>>
+
 Site(model) ::= "\\footnote{<model.def.website>}"
 
 SideFigure(model, code, caption) ::= <<

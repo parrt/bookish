@@ -254,6 +254,10 @@ PyEval(model) ::= <<
 $dumpCode(model.codeDef.code)$
 >>
 
+PyFig(model) ::= <<
+<img src="MISSING">
+>>
+
 Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"
 
 SideFigure(model, code, caption) ::= <<

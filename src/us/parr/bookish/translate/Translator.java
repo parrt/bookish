@@ -36,6 +36,7 @@ import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.Paragraph;
 import us.parr.bookish.model.PreAbstract;
 import us.parr.bookish.model.PyEval;
+import us.parr.bookish.model.PyFig;
 import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SideFigure;
@@ -736,15 +737,13 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return new BlockCode(stripQuotes(ctx.getText(),3).trim());
 	}
 
-	/** \pydo{import re} Just do it; no output, don't show code} */
+	/** \pyfig[label]{draw some stuff} */
 	@Override
-	public OutputModelObject visitPydo(BookishParser.PydoContext ctx) {
-		return null; // nothing to display in this case
+	public OutputModelObject visitPyfig(BookishParser.PyfigContext ctx) {
+		return new PyFig(ctx.codeDef);
 	}
 
-	/** \pyeval{notebook cell} Do it, show stdout/stderr, last line is
-	 *  expression to display as output.
-	 */
+	/** \pyeval[label,hide]{notebook cell} */
 	@Override
 	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
 		return new PyEval(ctx.codeDef);
