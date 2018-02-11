@@ -1,6 +1,6 @@
 delimiters "<",">"
 
-pyfile(snippets, buildDir, basename, label) ::= <<
+pyfile(snippets, buildDir, outputDir, basename, label) ::= <<
 import io
 import sys
 from contextlib import redirect_stdout, redirect_stderr
@@ -25,7 +25,7 @@ fstderr = io.StringIO()
 with redirect_stderr(fstderr):
 	try:
 		<def.code>
-		plt.savefig("<buildDir>/images/<basename>/<basename>_<label>_<def.index>.svg", format="svg", pad_inches=0.0)
+		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.svg", format="svg", pad_inches=0.0)
 	except:
 		import traceback
 		traceback.print_exc(file=sys.stderr)

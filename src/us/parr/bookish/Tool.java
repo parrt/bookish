@@ -191,7 +191,7 @@ public class Tool {
 		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
 		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
 		copyImages(inputDir, outputDir);
-		copyImages(BUILD_DIR, outputDir);
+//		copyImages(BUILD_DIR, outputDir);
 	}
 
 	/** generate python files to execute \pydo, \pyeval blocks */
@@ -228,12 +228,13 @@ public class Tool {
 				ST file = pycodeTemplates.getInstanceOf("pyfile");
 				file.add("snippets", snippets);
 				file.add("buildDir", buildDir);
+				file.add("outputDir", outputDir);
 //				file.add("imagesDir", inputDir+"/images");
 				file.add("basename", basename);
 				file.add("label", label);
 				String pycode = file.render();
 				ParrtIO.mkdir(snippetsDir+"/"+basename);
-				ParrtIO.mkdir(buildDir+"/images/"+basename);
+				ParrtIO.mkdir(outputDir+"/images/"+basename);
 				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
 
 				// execute!
