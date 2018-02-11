@@ -191,6 +191,7 @@ public class Tool {
 		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
 		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
 		copyImages(inputDir, outputDir);
+		copyImages(BUILD_DIR, outputDir);
 	}
 
 	/** generate python files to execute \pydo, \pyeval blocks */
