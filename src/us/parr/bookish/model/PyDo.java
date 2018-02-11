@@ -17,8 +17,12 @@ public abstract class PyDo extends OutputModelObject {
 
 	public PyDo(ExecutableCodeDef codeDef, String stdout, String stderr, String displayData) {
 		this.codeDef = codeDef;
-		this.stdout = stdout;
-		this.stderr = stderr;
+		if ( stdout!=null ) {
+			this.stdout = stdout.trim().length()>0 ? stdout : null;
+		}
+		if ( stderr!=null ) {
+			this.stderr = stderr.trim().length()>0 ? stderr : null;
+		}
 		this.displayData = displayData;
 	}
 }

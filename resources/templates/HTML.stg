@@ -141,23 +141,29 @@ $\n$
 <div class="codeblk">
 $code$
 </div>
-$\n$
 >>
 
 BlockCode(model) ::= <<
 $dumpCode(model.code)$
+$\n$
 >>
 
 PyEval(model) ::= <<
+$if(model.codeDef.isCodeVisible)$
 $dumpCode(model.codeDef.code)$
+$endif$
 
-$model.stdout$
-$model.stderr$
+<p class="stdout">$model.stdout$</p>
+$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 $model.displayData$
 >>
 
 PyFig(model) ::= <<
+$if(model.codeDef.isCodeVisible)$
+$dumpCode(model.codeDef.code)$
+$endif$
 <img src="MISSING">
+$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 >>
 
 Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"
