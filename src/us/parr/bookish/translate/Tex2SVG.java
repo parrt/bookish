@@ -1,16 +1,16 @@
 package us.parr.bookish.translate;
 
-import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.misc.Triple;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
-import us.parr.bookish.util.StreamVacuum;
 import us.parr.lib.ParrtIO;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
+
+import static us.parr.lib.ParrtSys.execInDir;
 
 public class Tex2SVG {
 	public static STGroupFile templates = new STGroupFile("templates/eqntex.stg");
@@ -54,7 +54,7 @@ public class Tex2SVG {
 
 //			System.out.println("wrote "+texfilename);
 
-			Pair<String, String> results = runProcess(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex");
+			String[] results = execInDir(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex");
 //    println(results.a)
 
 			String metricsRegex = "// bookish metrics: ([0-9]*[.][0-9]+)pt, ([0-9]*[.][0-9]+)pt";
@@ -63,7 +63,7 @@ public class Tex2SVG {
 
 			float height=0, depth=0;
 
-			for (String line : results.a.split("\n")) {
+			for (String line : results[0].split("\n")) {
 				String prefix = "// bookish metrics: ";
 				if ( line.startsWith(prefix) ) {
 					int first = prefix.length();
@@ -78,18 +78,18 @@ public class Tex2SVG {
 					System.err.println(latex);
 				}
 			}
-			if ( results.b.length()>0 ) {
-				System.err.println(results.b);
+			if ( results[1].length()>0 ) {
+				System.err.println(results[1]);
 			}
 
-			results = runProcess(tmpdir, "pdfcrop", "temp.pdf");
-			if ( results.b.length()>0 ) {
-				System.err.println(results.b);
+			results = execInDir(tmpdir, "pdfcrop", "temp.pdf");
+			if ( results[1].length()>0 ) {
+				System.err.println(results[1]);
 			}
 
-			results = runProcess(tmpdir, "pdf2svg", "temp-crop.pdf", "temp.svg");
-			if ( results.b.length()>0 ) {
-				System.err.println(results.b);
+			results = execInDir(tmpdir, "pdf2svg", "temp-crop.pdf", "temp.svg");
+			if ( results[1].length()>0 ) {
+				System.err.println(results[1]);
 			}
 
 			String svgfilename = tmpdir+"/temp.svg";
@@ -99,17 +99,5 @@ public class Tex2SVG {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public static Pair<String, String> runProcess(String execPath, String... args) throws Exception {
-		Process process = Runtime.getRuntime().exec(args, null, new File(execPath));
-		StreamVacuum stdoutVacuum = new StreamVacuum(process.getInputStream());
-		StreamVacuum stderrVacuum = new StreamVacuum(process.getErrorStream());
-		stdoutVacuum.start();
-		stderrVacuum.start();
-		process.waitFor();
-		stdoutVacuum.join();
-		stderrVacuum.join();
-		return new Pair<>(stdoutVacuum.toString(), stderrVacuum.toString());
 	}
 }

@@ -164,7 +164,7 @@ figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 
 pycode    : CODEBLOCK ;
 
-pyfig returns [PyFigDef codeDef]
+pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 	:	PYFIG CODE_BLOCK_LABEL ws? code=CODE_BLOCK END_CODE_BLOCK
 		{
 		String fname = ParrtIO.basename(inputFilename);

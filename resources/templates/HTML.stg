@@ -15,109 +15,7 @@ header() ::= <<
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
-<style>
-#toc {
-    background: #f9f9f9 none repeat scroll 0 0;
-    border: 1px solid #aaa;
-    display: table;
-    font-size: 83%;
-    padding: 10px;
-    width: auto;
-}
-.toc_title {
-    font-weight: 700;
-    text-align: center;
-}
-#toc li, #toc ul, #toc ul li{
-    list-style: outside none none !important;
-}
-#toc a {
-	color: #3A4145;
-	text-decoration: none;
-}
-#toc a:hover {
-	text-decoration: underline;
-}
-#author {
-	font-size: 16px;
-}
-.sup { position: relative; top: -0.5em; font-size: 80%; }
-.eqnvec {
-	font-family: Merriweather, serif;
-	font-weight: bold;
-	font-size: 14px;
-}
-.eqn {
-	font-family:  Merriweather, serif;
-	font-weight: normal;
-	font-style: italic;
-	font-size: 14px;
-}
-.blkeqn {
-	padding: 10px;
-	margin-left: 100px;
-}
-.codeblk {
-	font-family: Monaco;
-	font-size: 12px;
-}
-.sidenote {
-	/* Adapted from https://github.com/edwardtufte/tufte-css/blob/gh-pages/tufte.css MIT license */
-	float: right;
-	clear: right;
-	margin-right: -35%;
-	width: 33%;
-	margin-top: .2em;
-	margin-bottom: 0;
-	font-size: 11px;
-	line-height: 1.3em;
-	vertical-align: baseline;
-	position: relative;
-}
-table {
-	border-spacing: 15px 0px
-}
-body {
-	margin-left: 5%;
-	margin-right: auto;
-	width: 65%;
-	font-family: "Merriweather", serif;
-	font-size: 14px;
-	letter-spacing: 0.01rem;
-	line-height: 1.5em;
-	color: #3A4145;
-	background: #FFFFFF;
-	max-width: 800px;
-	-webkit-text-size-adjust: 100%;
-}
-p {
-        margin: 15px 5px 15px 0px;
-}
-@media (max-width: 415px) {
-        /* iphone 6+ 414x628 browser window, iphone 6 is 375 x 559 in browser */
-        .blkeqn {
-                padding: 0px;
-                margin-left: 0px;
-        }
-        body {
-                font-size: 14px;
-        }
-}
-@media (max-width: 736px) {
-        /* iphone7+ 736 wide */
-        .blkeqn {
-                padding: 0px;
-                margin-left: 0px;
-        }
-        body {
-                font-size: 14px;
-        }
-}
-h1 {
-        line-height: 1.2em;
-}
-</style>
-</head>
+<link rel="stylesheet" type="text/css" href="css/book.css"/>
 </head>
 <body>
 >>
@@ -252,6 +150,10 @@ $dumpCode(model.code)$
 
 PyEval(model) ::= <<
 $dumpCode(model.codeDef.code)$
+
+$model.stdout$
+$model.stderr$
+$model.displayData$
 >>
 
 PyFig(model) ::= <<

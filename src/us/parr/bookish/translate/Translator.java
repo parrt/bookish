@@ -740,13 +740,13 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** \pyfig[label]{draw some stuff} */
 	@Override
 	public OutputModelObject visitPyfig(BookishParser.PyfigContext ctx) {
-		return new PyFig(ctx.codeDef);
+		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr);
 	}
 
 	/** \pyeval[label,hide]{notebook cell} */
 	@Override
 	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
-		return new PyEval(ctx.codeDef);
+		return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.displayData);
 	}
 
 	// Support

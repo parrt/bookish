@@ -39,10 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static us.parr.bookish.translate.Tex2SVG.runProcess;
 import static us.parr.lib.ParrtIO.basename;
 import static us.parr.lib.ParrtIO.stripFileExtension;
 import static us.parr.lib.ParrtStrings.stripQuotes;
+import static us.parr.lib.ParrtSys.execCommandLine;
 
 /**
  * java us.parr.bookish.Tool -target latex -o /tmp/mybook book.json
@@ -191,6 +191,7 @@ public class Tool {
 		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
 		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
 		copyImages(inputDir, outputDir);
+		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 //		copyImages(BUILD_DIR, outputDir);
 	}
 
@@ -238,7 +239,7 @@ public class Tool {
 				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
 
 				// execute!
-				runProcess(snippetsDir+"/"+basename,"python3", snippetFilename);
+				ParrtSys.execInDir(snippetsDir+"/"+basename, "python3", snippetFilename);
 				for (ExecutableCodeDef def : defs) {
 					String stderr = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".err");
 					if ( def instanceof PyFigDef && stderr.trim().length()>0 ) {
@@ -311,16 +312,7 @@ public class Tool {
 
 	/** Copy images/ subdir to outputDir/images */
 	public void copyImages(String inputDir, String outputDir) {
-		String src = inputDir+"/images";
-		String trg = outputDir+"/images";
-		for (File f : new File(src).listFiles()) {
-			String cmd = String.format("cp -r %s/%s %s", src, f.getName(), trg);
-			String[] exec = ParrtSys.exec(cmd);
-			if ( exec[2]!=null && exec[2].length()>0 ) {
-				System.err.println(exec[2]);
-			}
-		}
-		System.out.printf("Copied %s to %s\n", src, trg);
+		execCommandLine(String.format("cp -r %s %s", inputDir+"/images", outputDir));
 	}
 
 	public String option(String name) { return (String)options.get(name); }
