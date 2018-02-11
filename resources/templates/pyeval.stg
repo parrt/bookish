@@ -14,7 +14,7 @@ from sklearn.model_selection import cross_val_score
 def dump(o):
 	"""Given df, col, ndarray, value return csv formatted data"""
 	# write to <buildDir>
-	return ""
+	return repr(o)
 
 <snippets; separator="\n">
 >>

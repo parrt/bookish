@@ -138,8 +138,7 @@ ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $auth
 
 dumpCode(code) ::= <<
 $\n$
-<div class="codeblk">
-$code$
+<div class="codeblk">$code$
 </div>
 >>
 
@@ -152,17 +151,18 @@ PyEval(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode(model.codeDef.code)$
 $endif$
-
-<p class="stdout">$model.stdout$</p>
-$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
+<p class="stdout">
+$model.stdout$
 $model.displayData$
+</p>
+$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 >>
 
 PyFig(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode(model.codeDef.code)$
 $endif$
-<img src="MISSING">
+<img src="$model.codeDef.generatedFilename$">
 $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 >>
 

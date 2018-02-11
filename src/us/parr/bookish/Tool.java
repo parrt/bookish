@@ -242,13 +242,16 @@ public class Tool {
 				ParrtSys.execInDir(snippetsDir+"/"+basename, "python3", snippetFilename);
 				for (ExecutableCodeDef def : defs) {
 					String stderr = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".err");
+					if ( def instanceof PyFigDef ) {
+						((PyFigDef) def).generatedFilename = outputDir+"/images/"+basename+"/"+basename+"_"+label+"_"+def.index+".svg";
+					}
 					if ( def instanceof PyFigDef && stderr.trim().length()>0 ) {
 						System.err.println(stderr);
 					}
 					if ( def.isOutputVisible ) {
 						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
-						tree.stdout = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".out");
-						tree.stderr = stderr;
+						tree.stdout = ParrtIO.load(snippetsDir+"/"+basename+"/"+basename+"_"+label+"_"+def.index+".out").trim();
+						tree.stderr = stderr.trim();
 //						System.out.println("stdout: "+stdout);
 //						System.out.println("stderr: "+stderr);
 					}
@@ -256,7 +259,7 @@ public class Tool {
 						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
 						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
 						tree.displayData = ParrtIO.load(snippetsDir+"/"+basename+"/"+dataFilename);
-//						System.out.println("data: "+displayData);
+						System.out.println("data: "+tree.displayData);
 					}
 				}
 			}
