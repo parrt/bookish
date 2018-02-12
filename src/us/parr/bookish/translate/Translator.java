@@ -747,7 +747,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap);
 	}
 
-	/** \pyeval[label,hide]{notebook cell} */
+	/** \pyeval[label,hide]{notebook cell}{displayExpr} */
 	@Override
 	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
 		if ( ctx.displayData!=null ) {

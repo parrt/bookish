@@ -149,7 +149,7 @@ $\n$
 
 PyEval(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
-$dumpCode(model.codeDef.code)$
+$dumpCode({$model.codeDef.code$$if(model.codeDef.displayExpr)$$\n$$model.codeDef.displayExpr$$endif$})$
 $endif$
 <p class="stdout">$[model.stdout,model.displayData]:{d | $d$}; separator="\n"$</p>
 $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
@@ -157,7 +157,7 @@ $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 
 PyEvalDataFrame(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
-$dumpCode(model.codeDef.code)$
+$dumpCode({$model.codeDef.code$$if(model.codeDef.displayExpr)$$\n$$model.codeDef.displayExpr$$endif$})$
 $endif$
 $if(model.stdout)$<p class="stdout">$model.stdout$</p>$endif$
 $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
