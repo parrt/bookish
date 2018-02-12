@@ -22,7 +22,7 @@ public class EntityDef {
 	public EntityDef(int index, Token refOrStartToken) {
 		this.index = index;
 		this.startToken = refOrStartToken;
-		if ( startToken!=null ) {
+		if ( startToken!=null && startToken.getText().startsWith("[") ) {
 			this.label = stripQuotes(refOrStartToken.getText());
 		}
 	}

@@ -181,7 +181,7 @@ PyFig(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode(model.codeDef.code)$
 $endif$
-<img src="$model.codeDef.generatedFilename$">
+<img src="$model.codeDef.generatedFilename$" $if(model.args.width)$width="$model.args.width$"$endif$>
 $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 >>
 

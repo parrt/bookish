@@ -3,6 +3,7 @@ parser grammar BookishParser;
 @header {
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Arrays;
 
 import us.parr.lib.ParrtStrings;
@@ -165,13 +166,12 @@ figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 pycode    : CODEBLOCK ;
 
 pyfig returns [PyFigDef codeDef, String stdout, String stderr]
-	:	PYFIG CODE_BLOCK_LABEL ws? code=codeblock END_CODE_BLOCK
+	:	PYFIG codeblock_args? ws? code=codeblock END_CODE_BLOCK
 		{
 		String fname = ParrtIO.basename(inputFilename);
 		String py = $code.text.trim();
 		if ( py.length()>0 ) {
-			$codeDef = new PyFigDef($ctx, fname, codeCounter, $CODE_BLOCK_LABEL, py);
-			if ( $PYFIG.text.endsWith("*") ) $codeDef.isCodeVisible = false;
+			$codeDef = new PyFigDef($ctx, fname, codeCounter, $codeblock_args.argMap, py);
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;
@@ -180,7 +180,7 @@ pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 
 /** \pyeval[env]{code to exec}{expr to display} */
 pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayData]
-    :	PYEVAL CODE_BLOCK_LABEL? ws? code=codeblock END_CODE_BLOCK ws? b=block?
+    :	PYEVAL codeblock_args? ws? code=codeblock END_CODE_BLOCK ws? b=block?
 		{
 		String fname = ParrtIO.basename(inputFilename);
 		// last line is expression to get output or blank line or comment
@@ -190,8 +190,7 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 			if ( $b.ctx!=null ) {
 				outputExpr = $b.ctx.paragraph_content().getText();
 			}
-			$codeDef = new PyEvalDef($ctx, fname, codeCounter, $CODE_BLOCK_LABEL, py, outputExpr);
-			if ( $PYEVAL.text.endsWith("*") ) $codeDef.isCodeVisible = false;
+			$codeDef = new PyEvalDef($ctx, fname, codeCounter, $codeblock_args.argMap, py, outputExpr);
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;
@@ -201,6 +200,33 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 codeblock
 	:	(CODE_BLOCK_STUFF|CODE_BLOCK_OTHER)+
 	;
+
+/** \pyfig[label,hide=true,width="20em"]{...}
+ *  \pyfig[width="20em"]{...}
+ *  \pyfig[label]{...}
+ */
+codeblock_args returns [Map<String,String> argMap = new LinkedHashMap<>()]
+	:	START_CODE_BLOCK_ARGS
+		(	l=CODE_BLOCK_ATTR CODE_BLOCK_COMMA
+			codeblock_arglist[$argMap] ( CODE_BLOCK_COMMA codeblock_arglist[$argMap] )*
+			{$argMap.put("label", $l.text.trim());}
+
+		|	l=CODE_BLOCK_ATTR
+			{$argMap.put("label", $l.text.trim());}
+
+   		|	codeblock_arglist[$argMap] ( CODE_BLOCK_COMMA codeblock_arglist[$argMap] )*
+		)
+		END_CODE_BLOCK_ARGS
+	;
+
+codeblock_arglist[Map<String,String> argMap]
+	:	name=CODE_BLOCK_ATTR CODE_BLOCK_EQ (value=CODE_BLOCK_ATTR_VALUE|value=CODE_BLOCK_ATTR)
+    	{
+    	String v = $value.text;
+    	if ( v.startsWith("\"") ) v = ParrtStrings.stripQuotes(v);
+    	$argMap.put($name.text,v);
+    	}
+    ;
 
 block : LCURLY paragraph_content? RCURLY ;
 
@@ -276,7 +302,7 @@ block_image : image ;
 
 image : IMG attrs END_OF_TAG ;
 
-attrs returns [Map<String,String> attrMap = new HashMap<>()] : attr_assignment[$attrMap]* ;
+attrs returns [Map<String,String> attrMap = new LinkedHashMap<>()] : attr_assignment[$attrMap]* ;
 
 attr_assignment[Map<String,String> attrMap]
 	:	name=XML_ATTR XML_EQ value=XML_ATTR_VALUE

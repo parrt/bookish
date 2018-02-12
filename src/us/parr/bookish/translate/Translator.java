@@ -744,7 +744,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** \pyfig[label]{draw some stuff} */
 	@Override
 	public OutputModelObject visitPyfig(BookishParser.PyfigContext ctx) {
-		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr);
+		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap);
 	}
 
 	/** \pyeval[label,hide]{notebook cell} */
@@ -759,14 +759,14 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			}
 			if ( type.equals("DataFrame") ) {
 				DataTable dataTable = new DataTable(data);
-				return new PyEvalDataFrame(ctx.codeDef, ctx.stdout, ctx.stderr, type, dataTable);
+				return new PyEvalDataFrame(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap, type, dataTable);
 			}
 			else {
-				return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, type, data);
+				return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap, type, data);
 			}
 		}
 		else {
-			return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, null, null);
+			return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap, null, null);
 		}
 	}
 

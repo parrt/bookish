@@ -20,9 +20,8 @@ FIRSTUSE  : '\\first' ;
 
 TODO	  : '\\todo' | '\\TODO' ;
 
-/** \pyfig* means hide code */
-PYFIG	  : '\\pyfig' '*'? -> pushMode(CODE_BLOCK_START_MODE) ;
-PYEVAL	  : '\\pyeval' '*'? -> pushMode(CODE_BLOCK_START_MODE) ;
+PYFIG	  : '\\pyfig' -> pushMode(CODE_BLOCK_START_MODE) ;
+PYEVAL	  : '\\pyeval' -> pushMode(CODE_BLOCK_START_MODE) ;
 
 AUTHOR	  : '\\author' ;
 PREABSTRACT  : '\\preabstract' ;
@@ -90,12 +89,17 @@ fragment
 NOT_SPECIAL : ~[$<#[*\\\n"{}\]`] ;
 
 mode CODE_BLOCK_START_MODE;
+START_CODE_BLOCK_ARGS : '[' -> pushMode(CODE_BLOCK_ARGS) ;
+START_CODE_BLOCK      : '{' -> mode(CODE_BLOCK_MODE), skip ;
 
-CODE_BLOCK_LABEL : '[' ~']'+ ']' ;
-CODE_BLOCK_START : '{' -> mode(CODE_BLOCK_MODE), skip ;
+mode CODE_BLOCK_ARGS;
+CODE_BLOCK_ATTR : [a-zA-Z]+ ;
+CODE_BLOCK_EQ : '=' ;
+CODE_BLOCK_ATTR_VALUE : '"' .*? '"' ;
+CODE_BLOCK_COMMA : ',' ;
+END_CODE_BLOCK_ARGS : ']' -> popMode ;
 
 mode CODE_BLOCK_MODE;
-
 END_CODE_BLOCK : '\r'? '\n' '}' -> popMode ;
 CODE_BLOCK_STUFF : ~[\r\n}]+ ;
 CODE_BLOCK_OTHER : [\r\n}] ; // match curly when not on left edge
