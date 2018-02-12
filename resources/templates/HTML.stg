@@ -165,6 +165,7 @@ $dataTable(model.dataTable)$
 >>
 
 dataTable(dt) ::= <<
+<div class="scrollbar_wrapper">
 <table class="dataframe">
 <thead>
 	<tr>$dt.colNames:{c | <th>$c$</th>}$</tr>
@@ -173,6 +174,7 @@ dataTable(dt) ::= <<
 	$dt.rows:{r | <tr>$r:{c| <td>$c$</td>}$</tr>}; separator="\n"$
 </tbody>
 </table>
+</div>
 >>
 
 PyFig(model) ::= <<

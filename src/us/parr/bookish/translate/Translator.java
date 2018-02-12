@@ -758,7 +758,8 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				data = join(Arrays.copyOfRange(dataA, 1, dataA.length), "\n");
 			}
 			if ( type.equals("DataFrame") ) {
-				return new PyEvalDataFrame(ctx.codeDef, ctx.stdout, ctx.stderr, type, new DataTable(dataA, 2));
+				DataTable dataTable = new DataTable(data);
+				return new PyEvalDataFrame(ctx.codeDef, ctx.stdout, ctx.stderr, type, dataTable);
 			}
 			else {
 				return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, type, data);
