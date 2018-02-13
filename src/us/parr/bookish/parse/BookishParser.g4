@@ -263,7 +263,7 @@ symbol : SYMBOL block ; // e.g., \symbol{degree}, \symbol{tm}
 
 quoted : QUOTE (paragraph_element|ws)+ QUOTE ;
 
-inline_code : BACKTICK (paragraph_element|ws)+ BACKTICK ;
+inline_code : INLINE_CODE ;
 
 firstuse : FIRSTUSE block ;
 

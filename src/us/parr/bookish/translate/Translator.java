@@ -603,11 +603,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitInline_code(BookishParser.Inline_codeContext ctx) {
-		List<OutputModelObject> elements = new ArrayList<>();
-		for (ParseTree el : ctx.children) {
-			elements.add( visit(el) );
-		}
-		return new InlineCode(elements);
+		return new InlineCode(stripQuotes(ctx.INLINE_CODE().getText()));
 	}
 
 	@Override

@@ -46,7 +46,7 @@ RCURLY : '}' ;
 
 QUOTE : '"' ;
 
-BACKTICK : '`' ;
+INLINE_CODE : '`' ~[`\r\n]+ '`';
 
 CODEBLOCK : '```' '\n' .*? '\n' '```';
 

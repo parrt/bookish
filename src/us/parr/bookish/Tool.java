@@ -245,7 +245,7 @@ public class Tool {
 					if ( def instanceof PyFigDef ) {
 						((PyFigDef) def).generatedFilename = outputDir+"/images/"+basename+"/"+basename+"_"+label+"_"+def.index+".svg";
 					}
-					if ( def instanceof PyFigDef && stderr.trim().length()>0 ) {
+					if ( stderr.trim().length()>0 ) {
 						System.err.println(stderr);
 					}
 					if ( def.isOutputVisible ) {
