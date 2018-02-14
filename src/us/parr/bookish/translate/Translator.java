@@ -83,7 +83,6 @@ import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -96,8 +95,8 @@ import static us.parr.bookish.parse.BookishParser.END_TAG;
 import static us.parr.bookish.translate.Tex2SVG.LatexType.BLOCKEQN;
 import static us.parr.bookish.translate.Tex2SVG.LatexType.LATEX;
 import static us.parr.lib.ParrtCollections.join;
+import static us.parr.lib.ParrtStrings.md5hash;
 import static us.parr.lib.ParrtStrings.stripQuotes;
-import static us.parr.lib.ParrtStrings.toHexString;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 13;
@@ -388,7 +387,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new Latex(null, text, text);
 		}
 
-		String relativePath = "images/latex-"+hash(text)+".svg";
+		String relativePath = "images/latex-"+md5hash(text)+".svg";
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
@@ -412,7 +411,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			return new BlockEquation(null, eqn);
 		}
 
-		String relativePath = "images/blkeqn-"+hash(eqn)+".svg";
+		String relativePath = "images/blkeqn-"+md5hash(eqn)+".svg";
 		String src = outputDir+"/"+relativePath;
 		Path outpath = Paths.get(src);
 		if ( !Files.exists(outpath) ) {
@@ -457,7 +456,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 		float height=0, depth = 0;
 
-		String prefix = String.format("eqn-%s",hash(eqn));
+		String prefix = String.format("eqn-%s", md5hash(eqn));
 //		String prefix = String.format("images/eqn-%s",hash(eqn));
 		File[] files =
 			new File(outputDir+"/images")
@@ -779,18 +778,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			}
 		}
 		return elements;
-	}
-
-	public static String hash(String text) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] digest = md.digest(text.getBytes());
-			return toHexString(digest);
-		}
-		catch (Exception e) {
-			e.printStackTrace(System.err);
-		}
-		return "bad-hash";
 	}
 
 	public static Pair<String,String> splitSectionTitle(String title) {
