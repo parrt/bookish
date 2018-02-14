@@ -65,7 +65,6 @@ public class Tool {
 		new HashSet<String>() {{
 			add("-o");          // output dir
 			add("-target");     // html or latex
-			add("-data");       // where is data stored for python snippets
 		}};
 
 	public String inputDir;
@@ -82,7 +81,6 @@ public class Tool {
 		String metadataFilename = option("metadataFilename");
 		inputDir = new File(metadataFilename).getParent();
 		outputDir = option("o");
-		dataDir = option("data");
 
 		String outFilename;
 		Translator trans;
@@ -119,6 +117,7 @@ public class Tool {
 		String title = metadata.getString("title");
 		Book book = new Book(this, title, null);
 		String author = metadata.getString("author");
+		dataDir = metadata.getString("data");
 		author = "\n\n"+author; // Rule paragraph needs blank line on the front
 		trans = new Translator(book, null, target, outputDir);
 		book.author = translateString(trans, author, "paragraph");
