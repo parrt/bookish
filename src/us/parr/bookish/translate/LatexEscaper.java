@@ -21,9 +21,11 @@ public class LatexEscaper extends StringRenderer {
 	}
 
 	private String escape(String s) {
+		s = s.replace("\\", "\\\\");
 		s = s.replace("_", "\\_");
 		s = s.replace("#", "\\#");
 		s = s.replace("&", "\\&");
+		s = s.replace("$", "\\$");
 		return s;
 	}
 }

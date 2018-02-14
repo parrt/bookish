@@ -67,6 +67,7 @@ TABLE_ : '</table>' ;
 XML		  : '<' -> pushMode(XML_MODE) ;
 END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
 
+DOLLAR	  : '\\$' ;
 EQN       : '$' ~'$'+ '$' ;
 BLOCK_EQN : '\\\\[' .+? '\\\\]' ;
 

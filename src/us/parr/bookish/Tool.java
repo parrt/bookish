@@ -214,8 +214,9 @@ public class Tool {
 			ParrtIO.mkdir(snippetsDir+"/"+basename);
 			ParrtIO.mkdir(outputDir+"/images/"+basename);
 			// every chapter snippets dir gets a data link to book data directory
-			System.out.println("ln -s "+dataDir+" "+snippetsDir+"/"+basename+"/data");
-			execCommandLine("ln -s "+dataDir+" "+snippetsDir+"/"+basename+"/data");
+			if ( !new File(snippetsDir+"/"+basename+"/data").exists() ) {
+				execCommandLine("ln -s "+dataDir+" "+snippetsDir+"/"+basename+"/data");
+			}
 
 			// get mapping from label (or index if no label) to list of snippets
 			MultiMap<String, ExecutableCodeDef> labelToDefs = new MultiMap<>();

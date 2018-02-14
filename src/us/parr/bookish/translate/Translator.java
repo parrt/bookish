@@ -373,7 +373,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitOther(BookishParser.OtherContext ctx) {
-		return new Other(ctx.getText());
+		String text = ctx.getText();
+		if ( text.equals("\\$") ) text = "$";
+		return new Other(text);
 	}
 
 	@Override
