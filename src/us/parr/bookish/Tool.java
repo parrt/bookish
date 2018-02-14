@@ -65,9 +65,11 @@ public class Tool {
 		new HashSet<String>() {{
 			add("-o");          // output dir
 			add("-target");     // html or latex
+			add("-data");       // where is data stored for python snippets
 		}};
 
 	public String inputDir;
+	public String dataDir;
 	public String outputDir;
 
 	public static void main(String[] args) throws Exception {
@@ -80,6 +82,7 @@ public class Tool {
 		String metadataFilename = option("metadataFilename");
 		inputDir = new File(metadataFilename).getParent();
 		outputDir = option("o");
+		dataDir = option("data");
 
 		String outFilename;
 		Translator trans;
@@ -198,11 +201,22 @@ public class Tool {
 	/** generate python files to execute \pydo, \pyeval blocks */
 	public void executeCodeSnippets(Book book, String buildDir,
 	                                List<List<ExecutableCodeDef>> codeBlocks)
-		throws Exception
 	{
 		String snippetsDir = buildDir+"/snippets";
 		for (int i = 0; i<book.filenames.size(); i++) {
 			List<ExecutableCodeDef> codeDefs = codeBlocks.get(i);
+			if ( codeDefs.size()==0 ) {
+				continue;
+			}
+			String basename = stripFileExtension(codeDefs.get(0).inputFilename);
+
+			// prepare directories
+			ParrtIO.mkdir(snippetsDir+"/"+basename);
+			ParrtIO.mkdir(outputDir+"/images/"+basename);
+			// every chapter snippets dir gets a data link to book data directory
+			System.out.println("ln -s "+dataDir+" "+snippetsDir+"/"+basename+"/data");
+			execCommandLine("ln -s "+dataDir+" "+snippetsDir+"/"+basename+"/data");
+
 			// get mapping from label (or index if no label) to list of snippets
 			MultiMap<String, ExecutableCodeDef> labelToDefs = new MultiMap<>();
 			List<String> labels = new ArrayList<>();
@@ -217,7 +231,6 @@ public class Tool {
 			// track snippet label order
 			for (String label : labels) {
 				List<ExecutableCodeDef> defs = labelToDefs.get(label);
-				String basename = stripFileExtension(defs.get(0).inputFilename);
 				String snippetFilename = basename+"_"+label+".py";
 				List<ST> snippets = new ArrayList<>();
 				for (ExecutableCodeDef def : defs) {
@@ -234,8 +247,6 @@ public class Tool {
 				file.add("basename", basename);
 				file.add("label", label);
 				String pycode = file.render();
-				ParrtIO.mkdir(snippetsDir+"/"+basename);
-				ParrtIO.mkdir(outputDir+"/images/"+basename);
 				ParrtIO.save(snippetsDir+"/"+basename+"/"+snippetFilename, pycode);
 
 				// execute!
