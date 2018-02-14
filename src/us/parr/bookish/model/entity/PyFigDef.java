@@ -18,7 +18,10 @@ public class PyFigDef extends ExecutableCodeDef {
 		super(inputFilename, index, tree.getStart(), code);
 		this.tree = tree;
 		this.isOutputVisible = false;
-		this.label = argMap.get("label");
-		if ( argMap.containsKey("hide") ) isCodeVisible = !argMap.get("hide").equals("true");
+		if ( argMap!=null ) {
+			this.label = argMap.get("label");
+			if ( argMap.containsKey("hide") )
+				isCodeVisible = !argMap.get("hide").equals("true");
+		}
 	}
 }

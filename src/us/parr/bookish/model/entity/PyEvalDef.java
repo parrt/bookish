@@ -15,7 +15,10 @@ public class PyEvalDef extends ExecutableCodeDef {
 	{
 		super(inputFilename, index, tree.getStart(), code, displayExpr);
 		this.tree = tree;
-		this.label = argMap.get("label");
-		if ( argMap.containsKey("hide") ) isCodeVisible = !argMap.get("hide").equals("true");
+		if ( argMap!=null ) {
+			this.label = argMap.get("label");
+			if ( argMap.containsKey("hide") )
+				isCodeVisible = !argMap.get("hide").equals("true");
+		}
 	}
 }

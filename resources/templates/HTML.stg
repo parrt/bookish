@@ -151,7 +151,7 @@ PyEval(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode({$model.codeDef.code$$if(model.codeDef.displayExpr)$$\n$$model.codeDef.displayExpr$$endif$})$
 $endif$
-<p class="stdout">$[model.stdout,model.displayData]:{d | $d$}; separator="\n"$</p>
+$if(model.stdout)$<p class="stdout">$[model.stdout,model.displayData]:{d | $d$}; separator="\n"$</p>$endif$
 $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 >>
 

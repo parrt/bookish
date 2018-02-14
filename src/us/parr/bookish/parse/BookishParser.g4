@@ -171,7 +171,8 @@ pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 		String fname = ParrtIO.basename(inputFilename);
 		String py = $code.text.trim();
 		if ( py.length()>0 ) {
-			$codeDef = new PyFigDef($ctx, fname, codeCounter, $codeblock_args.argMap, py);
+			Map<String,String> args = $codeblock_args.ctx!=null ? $codeblock_args.argMap : null;
+			$codeDef = new PyFigDef($ctx, fname, codeCounter, args, py);
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;
@@ -190,7 +191,8 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 			if ( $b.ctx!=null ) {
 				outputExpr = $b.ctx.paragraph_content().getText();
 			}
-			$codeDef = new PyEvalDef($ctx, fname, codeCounter, $codeblock_args.argMap, py, outputExpr);
+			Map<String,String> args = $codeblock_args.ctx!=null ? $codeblock_args.argMap : null;
+			$codeDef = new PyEvalDef($ctx, fname, codeCounter, args, py, outputExpr);
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;

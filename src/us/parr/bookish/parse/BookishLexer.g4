@@ -98,6 +98,7 @@ CODE_BLOCK_ATTR : [a-zA-Z]+ ;
 CODE_BLOCK_EQ : '=' ;
 CODE_BLOCK_ATTR_VALUE : '"' .*? '"' ;
 CODE_BLOCK_COMMA : ',' ;
+CODE_BLOCK_ARGS_WS : [ \r\t\n]+ -> skip ;
 END_CODE_BLOCK_ARGS : ']' -> popMode ;
 
 mode CODE_BLOCK_MODE;

@@ -741,12 +741,13 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** \pyfig[label]{draw some stuff} */
 	@Override
 	public OutputModelObject visitPyfig(BookishParser.PyfigContext ctx) {
-		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap);
+		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args!=null ? ctx.codeblock_args.argMap : null);
 	}
 
 	/** \pyeval[label,hide]{notebook cell}{displayExpr} */
 	@Override
 	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
+		Map<String, String> args = ctx.codeblock_args!=null ? ctx.codeblock_args.argMap : null;
 		if ( ctx.displayData!=null ) {
 			String[] dataA = ctx.displayData.split("\n");
 			String type = dataA[0];
@@ -756,14 +757,14 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			}
 			if ( type.equals("DataFrame") ) {
 				DataTable dataTable = new DataTable(data);
-				return new PyEvalDataFrame(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap, type, dataTable);
+				return new PyEvalDataFrame(ctx.codeDef, ctx.stdout, ctx.stderr, args, type, dataTable);
 			}
 			else {
-				return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap, type, data);
+				return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, args, type, data);
 			}
 		}
 		else {
-			return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args.argMap, null, null);
+			return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, args, null, null);
 		}
 	}
 

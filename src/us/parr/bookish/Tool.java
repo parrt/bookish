@@ -272,6 +272,8 @@ public class Tool {
 						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
 						tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out").trim();
 						tree.stderr = stderr.trim();
+						if ( tree.stdout.length()==0 ) tree.stdout = null;
+						if ( tree.stderr.length()==0 ) tree.stderr = null;
 //						System.out.println("stdout: "+stdout);
 //						System.out.println("stderr: "+stderr);
 					}
