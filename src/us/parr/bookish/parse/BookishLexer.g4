@@ -16,6 +16,8 @@ SIDENOTE  : '\\sidenote' ;
 SIDEFIG   : '\\sidefig' ;
 FIGURE    : '\\figure' ;
 
+CUT		  : '\\cut' '{' .*? '\r'? '\n' '}' '\r'? '\n' -> skip ;
+
 FIRSTUSE  : '\\first' ;
 
 TODO	  : '\\todo' | '\\TODO' ;
