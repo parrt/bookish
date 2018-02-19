@@ -41,6 +41,7 @@ import us.parr.bookish.model.PyFig;
 import us.parr.bookish.model.Quoted;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SideFigure;
+import us.parr.bookish.model.SideNote;
 import us.parr.bookish.model.SideQuote;
 import us.parr.bookish.model.Site;
 import us.parr.bookish.model.SubSection;
@@ -677,6 +678,26 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			}
 		}
 		SideQuote q = new SideQuote(def, label, (TextBlock) visit(ctx.q), (TextBlock) visit(ctx.a));
+		def.model = q;
+		if ( label==null ) {
+			return q; // if no label, insert inline here
+		}
+		return null;
+	}
+
+	@Override
+	public OutputModelObject visitSidenote(BookishParser.SidenoteContext ctx) {
+		String label = null;
+		EntityDef def = null;
+		if ( ctx.REF()!=null ) {
+			label = stripQuotes(ctx.REF().getText());
+			def = document.getEntity(label);
+			if ( def==null ) {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
+				return null;
+			}
+		}
+		SideNote q = new SideNote(def, label, (TextBlock) visit(ctx.block));
 		def.model = q;
 		if ( label==null ) {
 			return q; // if no label, insert inline here

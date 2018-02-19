@@ -151,7 +151,7 @@ sidequote : SIDEQUOTE (REF ws?)? q=block ws? a=block
 			{if ($REF!=null) defEntity(new SideQuoteDef(defCounter++, $REF, $q.text, $a.text));}
 		  ;
 
-sidenote  : CHAPQUOTE (REF ws?)? block
+sidenote  : SIDENOTE (REF ws?)? block
 			{if ($REF!=null) defEntity(new SideNoteDef(defCounter++, $REF, $block.text));}
 		  ;
 

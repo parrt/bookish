@@ -119,6 +119,8 @@ TextBlock(model,elements) ::= "<elements>"
 
 SideQuote(model,quote,author) ::= "\\mysidenote{``<quote>'' --- <author>}"
 
+SideNote(model,text) ::= "\\mysidenote{$text$}"
+
 Citation(model,title,bibinfo) ::= "\\mysidenote{``<title>'' --- <bibinfo>}"
 
 ChapQuote(model,quote,author) ::= "``<quote>'' --- <author>"

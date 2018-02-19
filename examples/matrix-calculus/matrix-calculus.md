@@ -1062,7 +1062,7 @@ Of course, we want to reduce, not increase, the loss, which is why the [gradient
 
 \\[ \mathbf{w}_{t+1} = \mathbf{w}_{t} - \eta \frac{\partial C}{\partial \mathbf{w}} \\]
 
-Because the gradient indicates the direction of higher cost, we want to update $\mathbf{x}$ in the opposite direction.
+Because the gradient indicates the direction of higher cost, we want to update $\mathbf{w}$ in the opposite direction.
 
 ### The derivative with respect to the bias
 

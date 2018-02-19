@@ -132,6 +132,8 @@ TextBlock(model,elements) ::= "$elements$"
 
 SideQuote(model,quote,author) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</span>"
 
+SideNote(model,text) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>$text$</span>"
+
 Citation(model,title,bibinfo) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$title$</i>&rdquo; &mdash; $bibinfo$</span>"
 
 ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $author$</p>"
