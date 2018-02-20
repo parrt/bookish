@@ -215,6 +215,11 @@ public class Tool {
 			}
 			String basename = stripFileExtension(codeDefs.get(0).inputFilename);
 
+			// Don't allow "plt.show()", strip it
+			for (ExecutableCodeDef codeDef : codeDefs) { // for each code blob
+				codeDef.code = codeDef.code.replace("plt.show()", "");
+			}
+
 			// prepare directories
 			String chapterSnippetsDir = snippetsDir+"/"+basename;
 			ParrtIO.mkdir(chapterSnippetsDir);
@@ -270,7 +275,7 @@ public class Tool {
 					}
 					if ( def.isOutputVisible ) {
 						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
-						tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out").trim();
+						tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
 						tree.stderr = stderr.trim();
 						if ( tree.stdout.length()==0 ) tree.stdout = null;
 						if ( tree.stderr.length()==0 ) tree.stderr = null;

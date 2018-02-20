@@ -296,7 +296,7 @@ HyperLink(model) ::= <<
 
 Quoted(model, elements) ::= "&ldquo;$elements$&rdquo;"
 
-InlineCode(model) ::= "<tt>$model.code$</tt>"
+InlineCode(model) ::= "<span class=inlinecode>$model.code$</span>"
 
 Bold(model) ::= "<b>$model.text$</b>"
 Italics(model) ::= "<i>$model.text$</i>"
