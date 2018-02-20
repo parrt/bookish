@@ -215,11 +215,6 @@ public class Tool {
 			}
 			String basename = stripFileExtension(codeDefs.get(0).inputFilename);
 
-			// Don't allow "plt.show()", strip it
-			for (ExecutableCodeDef codeDef : codeDefs) { // for each code blob
-				codeDef.code = codeDef.code.replace("plt.show()", "");
-			}
-
 			// prepare directories
 			String chapterSnippetsDir = snippetsDir+"/"+basename;
 			ParrtIO.mkdir(chapterSnippetsDir);
@@ -247,6 +242,8 @@ public class Tool {
 					String tname = def.isOutputVisible ? "pyeval" : "pyfig";
 					ST snippet = pycodeTemplates.getInstanceOf(tname);
 					snippet.add("def",def);
+					// Don't allow "plt.show()" to execute, strip it
+					snippet.add("code", def.code.replace("plt.show()", ""));
 					snippets.add(snippet);
 				}
 				ST file = pycodeTemplates.getInstanceOf("pyfile");

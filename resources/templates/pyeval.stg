@@ -22,12 +22,12 @@ def dump(o):
 <snippets; separator="\n">
 >>
 
-pyfig(def) ::= <<
+pyfig(def,code) ::= <<
 # <def.inputFilename> snippet <def.index>
 fstderr = io.StringIO()
 with redirect_stderr(fstderr):
 	try:
-		<def.code>
+		<code>
 		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.svg", format="svg", pad_inches=0.0)
 	except:
 		import traceback
@@ -38,14 +38,14 @@ with redirect_stderr(fstderr):
 <\n>
 >>
 
-pyeval(def) ::= <<
+pyeval(def,code) ::= <<
 # <def.inputFilename> snippet <def.index>
 fstdout = io.StringIO()
 fstderr = io.StringIO()
 with redirect_stderr(fstderr):
 	with redirect_stdout(fstdout):
 		try:
-			<def.code>
+			<code>
 			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.out", "w") as f:
 				f.write(fstdout.getvalue())
 			<if(def.displayExpr)>
