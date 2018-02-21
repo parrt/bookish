@@ -153,16 +153,16 @@ PyEval(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode({$model.codeDef.code$$if(model.codeDef.displayExpr)$$\n$$model.codeDef.displayExpr$$endif$})$
 $endif$
-$if(model.stdout)$<p class="stdout">$[model.stdout,model.displayData]:{d | $d$}; separator="\n"$</p>$endif$
-$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
+$if(model.stdout)$<p class="stdout">$[model.stdout,model.displayData]:{d | $d; format="xml-encode"$}; separator="\n"$</p>$endif$
+$if(model.stderr)$<p class="stderr">$model.stderr; format="xml-encode"$</p>$endif$
 >>
 
 PyEvalDataFrame(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode({$model.codeDef.code$$if(model.codeDef.displayExpr)$$\n$$model.codeDef.displayExpr$$endif$})$
 $endif$
-$if(model.stdout)$<p class="stdout">$model.stdout$</p>$endif$
-$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
+$if(model.stdout)$<p class="stdout">$model.stdout; format="xml-encode"$</p>$endif$
+$if(model.stderr)$<p class="stderr">$model.stderr; format="xml-encode"$</p>$endif$
 $dataTable(model.dataTable)$
 >>
 

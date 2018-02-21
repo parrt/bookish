@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.misc.Triple;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.stringtemplate.v4.STGroupFile;
+import org.stringtemplate.v4.StringRenderer;
 import us.parr.bookish.Tool;
 import us.parr.bookish.model.Abstract;
 import us.parr.bookish.model.Author;
@@ -141,16 +142,20 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		switch ( target ) {
 			case HTML :
 				templateFileName = "templates/HTML.stg";
+				templates = new STGroupFile(templateFileName);
+				templates.registerRenderer(String.class, new StringRenderer());
 				break;
 			case LATEX :
 				templateFileName = "templates/latex.stg";
+				templates = new STGroupFile(templateFileName);
+				templates.registerRenderer(String.class, new LatexEscaper());
 				break;
 			case LATEX_BOOK :
 				templateFileName = "templates/latex-book.stg";
+				templates = new STGroupFile(templateFileName);
+				templates.registerRenderer(String.class, new LatexEscaper());
 				break;
 		}
-		templates = new STGroupFile(templateFileName);
-		templates.registerRenderer(String.class, new us.parr.bookish.translate.LatexEscaper());
 		this.outputDir = outputDir;
 
 		texConverter = new Tex2SVG(outputDir);
