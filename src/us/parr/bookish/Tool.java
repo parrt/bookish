@@ -259,7 +259,10 @@ public class Tool {
 					ParrtIO.save(snippetHashFilename, ""); // save empty hash marker file
 					ParrtIO.save(chapterSnippetsDir+"/"+snippetFilename, pycode);
 					// EXEC!
-					ParrtSys.execInDir(chapterSnippetsDir, "python3", snippetFilename);
+					String[] result = ParrtSys.execInDir(chapterSnippetsDir, "python3", snippetFilename);
+					if ( result[1]!=null && result[1].length()>0 ) {
+						System.err.println(result[1]); // errors during python compilation not running
+					}
 				}
 
 				for (ExecutableCodeDef def : defs) {

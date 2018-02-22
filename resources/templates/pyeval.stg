@@ -8,6 +8,7 @@ from contextlib import redirect_stdout, redirect_stderr
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 
@@ -27,6 +28,10 @@ pyfig(def,code) ::= <<
 fstderr = io.StringIO()
 with redirect_stderr(fstderr):
 	try:
+		plt.style.use('seaborn-colorblind')
+		mpl.rcParams['font.size'] = 16
+		mpl.rcParams['savefig.bbox'] = 'tight'
+		mpl.rcParams['savefig.pad_inches'] = '0.5'
 		<code>
 		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.svg", format="svg", pad_inches=0.0)
 	except:
