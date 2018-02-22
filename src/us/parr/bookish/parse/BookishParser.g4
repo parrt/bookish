@@ -159,16 +159,24 @@ sidenote  : SIDENOTE (REF ws?)? block
 sidefig   : SIDEFIG attrs END_OF_TAG paragraph_content END_SIDEFIG
 			{
 			if ( $attrs.attrMap.containsKey("label") ) {
-				defEntity(new SideFigDef(figCounter++, $SIDEFIG, $attrs.attrMap));
+				defEntity(new SideFigDef(figCounter, $SIDEFIG, $attrs.attrMap));
 			}
+			else {
+				System.err.println("line "+$SIDEFIG.line+": sidefig missing label attribute");
+			}
+			figCounter++;
 			}
 		  ;
 
 figure    : FIGURE attrs END_OF_TAG paragraph_content END_FIGURE
 			{
 			if ( $attrs.attrMap.containsKey("label") ) {
-				defEntity(new FigureDef(figCounter++, $FIGURE, $attrs.attrMap));
+				defEntity(new FigureDef(figCounter, $FIGURE, $attrs.attrMap));
 			}
+			else {
+				System.err.println("line "+$FIGURE.line+": figure missing label attribute");
+			}
+			figCounter++;
 			}
 		  ;
 

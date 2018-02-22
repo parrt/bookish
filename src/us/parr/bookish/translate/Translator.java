@@ -377,7 +377,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitParagraph_content(BookishParser.Paragraph_contentContext ctx) {
 		List<OutputModelObject> elements = new ArrayList<>();
 		for (ParseTree el : ctx.children) {
-			elements.add( visit(el) );
+			OutputModelObject c = visit(el);
+			if ( c!=null ) {
+				elements.add(c);
+			}
 		}
 		return new Paragraph(elements);
 	}
@@ -742,11 +745,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		Paragraph p = (Paragraph)visit(ctx.paragraph_content());
 		TextBlock figText = new TextBlock(p.elements);
 		SideFigure f = new SideFigure(def, label, figText, ctx.attrs.attrMap);
-		def.model = f;
-		if ( label==null ) {
-			return f; // if no label, insert inline here
+		if ( def!=null ) {
+			def.model = f;
 		}
-		return null;
+		return null; // a ref will make this appear
 	}
 
 	@Override
