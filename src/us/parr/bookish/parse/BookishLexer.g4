@@ -13,8 +13,10 @@ CITATION  : '\\citation' ;
 SIDEQUOTE : '\\sidequote' ;
 CHAPQUOTE : '\\chapquote' ;
 SIDENOTE  : '\\sidenote' ;
-SIDEFIG   : '\\sidefig' ;
-FIGURE    : '\\figure' ;
+SIDEFIG   : '<sidefig' -> pushMode(XML_MODE) ;
+END_SIDEFIG : '</sidefig>' ;
+FIGURE   : '<figure' -> pushMode(XML_MODE) ;
+END_FIGURE : '</figure>' ;
 
 CUT		  : '\\cut' '{' .*? '\r'? '\n' '}' '\r'? '\n' -> skip ;
 
@@ -122,6 +124,7 @@ mode XML_MODE;           //e.g, <img src="images/neuron.png" alt="neuron.png" wi
 XML_ATTR : [a-zA-Z]+ ;
 XML_EQ : '=' ;
 XML_ATTR_VALUE : '"' ('\\"'|~'"')* '"' ;
+XML_ATTR_NUM : [0-9]+ ('.' [0-9]*)? ;
 XML_WS : [ \t]+ -> skip ;
 END_OF_TAG : '>' -> popMode ;
 

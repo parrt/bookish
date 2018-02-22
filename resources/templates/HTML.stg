@@ -189,8 +189,8 @@ $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 
 Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"
 
-SideFigure(model, code, caption) ::= <<
-<span class=sidenote>$code$<br><b>Figure $model.def.index$</b>. $caption$</span>
+SideFigure(model, code) ::= <<
+<span class=sidenote>$code$<br><b>Figure $model.def.index$</b>. $model.caption$</span>
 >>
 
 SiteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"

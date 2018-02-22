@@ -1,16 +1,16 @@
 package us.parr.bookish.model.entity;
 
 import org.antlr.v4.runtime.Token;
-import us.parr.bookish.translate.Translator;
+
+import java.util.Map;
 
 public class FigureDef extends EntityDef {
-	public String figure;
 	public String caption;
 
-	public FigureDef(int index, Token startToken, String figure, String caption) {
+	public FigureDef(int index, Token startToken, Map<String,String> args) {
 		super(index, startToken);
-		this.figure = Translator.stripCurlies(figure);
-		this.caption = Translator.stripCurlies(caption);
+		this.label = args.get("label");
+		this.caption = args.get("caption");
 	}
 
 	public boolean isGloballyVisible() { return true; }

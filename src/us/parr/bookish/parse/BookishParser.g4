@@ -156,12 +156,20 @@ sidenote  : SIDENOTE (REF ws?)? block
 			{if ($REF!=null) defEntity(new SideNoteDef(defCounter++, $REF, $block.text));}
 		  ;
 
-sidefig   : SIDEFIG REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new SideFigDef(figCounter++, $REF, $code.text, $caption.text));}
+sidefig   : SIDEFIG attrs END_OF_TAG paragraph_content END_SIDEFIG
+			{
+			if ( $attrs.attrMap.containsKey("label") ) {
+				defEntity(new SideFigDef(figCounter++, $SIDEFIG, $attrs.attrMap));
+			}
+			}
 		  ;
 
-figure    : FIGURE REF? ws? code=block (ws? caption=block)?
-			{if ($REF!=null) defEntity(new FigureDef(figCounter++, $REF, $code.text, $caption.text));}
+figure    : FIGURE attrs END_OF_TAG paragraph_content END_FIGURE
+			{
+			if ( $attrs.attrMap.containsKey("label") ) {
+				defEntity(new FigureDef(figCounter++, $FIGURE, $attrs.attrMap));
+			}
+			}
 		  ;
 
 pycode    : CODEBLOCK ;
@@ -263,6 +271,8 @@ paragraph_element
 	|	firstuse
 	|	todo
 	|	inline_code
+	|	pyfig
+	|	pyeval
 	|	other
 	;
 
@@ -316,8 +326,12 @@ attrs returns [Map<String,String> attrMap = new LinkedHashMap<>()]
  	;
 
 attr_assignment[Map<String,String> attrMap]
-	:	name=XML_ATTR XML_EQ value=XML_ATTR_VALUE
-		{$attrMap.put($name.text,ParrtStrings.stripQuotes($value.text));}
+	:	name=XML_ATTR XML_EQ value=(XML_ATTR|XML_ATTR_VALUE|XML_ATTR_NUM)
+		{
+    	String v = $value.text;
+    	if ( v.startsWith("\"") ) v = ParrtStrings.stripQuotes(v);
+		$attrMap.put($name.text,v);
+		}
 	;
 
 xml	: XML tagname=XML_ATTR attrs END_OF_TAG | END_TAG ;

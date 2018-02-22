@@ -727,19 +727,21 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return null;
 	}
 
+	// figure    : FIGURE attrs END_OF_TAG paragraph_content END_FIGURE
 	@Override
 	public OutputModelObject visitSidefig(BookishParser.SidefigContext ctx) {
-		String label = null;
+		String label = ctx.attrs.attrMap.get("label");
 		EntityDef def = null;
-		if ( ctx.REF()!=null ) {
-			label = stripQuotes(ctx.REF().getText());
+		if ( label!=null ) {
 			def = document.getEntity(label);
 			if ( def==null ) {
 				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
 				return null;
 			}
 		}
-		SideFigure f = new SideFigure(def, label, (TextBlock)visitBlock(ctx.code), (TextBlock)visit(ctx.caption));
+		Paragraph p = (Paragraph)visit(ctx.paragraph_content());
+		TextBlock figText = new TextBlock(p.elements);
+		SideFigure f = new SideFigure(def, label, figText, ctx.attrs.attrMap);
 		def.model = f;
 		if ( label==null ) {
 			return f; // if no label, insert inline here
