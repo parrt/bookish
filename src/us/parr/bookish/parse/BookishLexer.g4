@@ -22,8 +22,18 @@ FIRSTUSE  : '\\first' ;
 
 TODO	  : '\\todo' | '\\TODO' ;
 
-PYFIG	  : '\\pyfig' -> pushMode(CODE_BLOCK_START_MODE) ;
-PYEVAL	  : '\\pyeval' -> pushMode(CODE_BLOCK_START_MODE) ;
+PYEVAL	  : '<pyeval' ARG* '>' -> pushMode(PYCODE) ;
+PYFIG	  : '<pyfig' ARG* '>' -> pushMode(PYCODE) ;
+
+// This stuff parsed later (again) by XML.g4
+fragment
+ARG : [ \r\n\t]* ATTR [ \r\n\t]* '=' [ \r\n\t]* (ATTR|ATTR_VALUE|ATTR_NUM) [ \r\n\t]* ;
+fragment
+ATTR : [a-zA-Z]+  ;
+fragment
+ATTR_VALUE : '"' ('\\"'|~'"')* '"' ;
+fragment
+ATTR_NUM : [0-9]+ ('.' [0-9]*)? ;
 
 AUTHOR	  : '\\author' ;
 PREABSTRACT  : '\\preabstract' ;
@@ -111,6 +121,12 @@ CODE_BLOCK_OTHER : [\r\n}] ; // match curly when not on left edge
 mode XML_MODE;           //e.g, <img src="images/neuron.png" alt="neuron.png" width="250">
 XML_ATTR : [a-zA-Z]+ ;
 XML_EQ : '=' ;
-XML_ATTR_VALUE : '"' .*? '"' ;
+XML_ATTR_VALUE : '"' ('\\"'|~'"')* '"' ;
 XML_WS : [ \t]+ -> skip ;
 END_OF_TAG : '>' -> popMode ;
+
+mode PYCODE;
+
+PYCODE_CONTENT : ~'<'+ | '<' ;
+END_PYEVAL : '</pyeval>' -> popMode ;
+END_PYFIG  : '</pyfig>' -> popMode ;

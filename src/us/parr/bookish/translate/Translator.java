@@ -1,5 +1,7 @@
 package us.parr.bookish.translate;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.misc.Triple;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -77,6 +79,8 @@ import us.parr.bookish.model.ref.SiteRef;
 import us.parr.bookish.model.ref.UnknownRef;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.BookishParserBaseVisitor;
+import us.parr.bookish.parse.XMLLexer;
+import us.parr.bookish.parse.XMLParser;
 import us.parr.bookish.util.DataTable;
 
 import java.io.File;
@@ -780,13 +784,13 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** \pyfig[label]{draw some stuff} */
 	@Override
 	public OutputModelObject visitPyfig(BookishParser.PyfigContext ctx) {
-		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeblock_args!=null ? ctx.codeblock_args.argMap : null);
+		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeDef.argMap);
 	}
 
 	/** \pyeval[label,hide]{notebook cell}{displayExpr} */
 	@Override
 	public OutputModelObject visitPyeval(BookishParser.PyevalContext ctx) {
-		Map<String, String> args = ctx.codeblock_args!=null ? ctx.codeblock_args.argMap : null;
+		Map<String, String> args = ctx.codeDef.argMap;
 		if ( ctx.displayData!=null ) {
 			String[] dataA = ctx.displayData.split("\n");
 			String type = dataA[0];
@@ -849,4 +853,53 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 		return s;
 	}
+
+	public static Map<String,String> parseXMLAttrs(String attrs) {
+		XMLLexer lexer = new XMLLexer(CharStreams.fromString(attrs));
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		XMLParser parser = new XMLParser(tokens);
+		XMLParser.AttrsContext attrsTree = parser.attrs();
+		Map<String,String> attrMap = attrsTree.attrMap;
+		return attrMap;
+	}
+
+	/*
+	public static Map<String,String> parseXMLAttrs(String attrs) {
+		Map<String,String> m = new LinkedHashMap<>();
+		StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(attrs));
+		Token t = getToken(tokenizer);
+		while ( t.getType()==TT_WORD ) {
+			String key = t.getText();
+			t = getToken(tokenizer);
+
+		}
+		tokenizer.quoteChar('"');
+		tokenizer.eolIsSignificant(false);
+	}
+
+	public static Token getToken(StreamTokenizer tokenizer) {
+		try {
+			while ( tokenizer.nextToken()!=TT_EOF ) {
+				switch ( tokenizer.ttype ) {
+					case TT_EOF :
+						return new CommonToken(TT_EOF, "");
+					case TT_WORD :
+						return new CommonToken(TT_EOF, tokenizer.sval);
+					case TT_NUMBER :
+						return new CommonToken(TT_EOF, String.valueOf(tokenizer.nval));
+					case ':' :
+						return new CommonToken(':', ":");
+					case '"' :
+						return new CommonToken('"', tokenizer.sval);
+					default :
+						System.err.println("Invalid char in xml attrs: "+(char)(tokenizer.ttype));
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	*/
 }
+

@@ -5,8 +5,6 @@ import us.parr.bookish.parse.BookishParser;
 import java.util.Map;
 
 public class PyFigDef extends ExecutableCodeDef {
-	public BookishParser.PyfigContext tree;
-
 	public String generatedFilename;
 
 	public PyFigDef(BookishParser.PyfigContext tree,
@@ -15,13 +13,7 @@ public class PyFigDef extends ExecutableCodeDef {
 	                Map<String,String> argMap,
 	                String code)
 	{
-		super(inputFilename, index, tree.getStart(), code);
-		this.tree = tree;
+		super(tree, inputFilename, index, tree.getStart(), argMap, code);
 		this.isOutputVisible = false;
-		if ( argMap!=null ) {
-			this.label = argMap.get("label");
-			if ( argMap.containsKey("hide") )
-				isCodeVisible = !argMap.get("hide").equals("true");
-		}
 	}
 }

@@ -11,6 +11,7 @@ import us.parr.lib.ParrtCollections;
 import us.parr.lib.ParrtIO;
 import us.parr.bookish.model.entity.*;
 import static us.parr.bookish.translate.Translator.splitSectionTitle;
+import static us.parr.bookish.translate.Translator.parseXMLAttrs;
 }
 
 options {
@@ -166,12 +167,15 @@ figure    : FIGURE REF? ws? code=block (ws? caption=block)?
 pycode    : CODEBLOCK ;
 
 pyfig returns [PyFigDef codeDef, String stdout, String stderr]
-	:	PYFIG codeblock_args? ws? code=codeblock END_CODE_BLOCK
+	:	PYFIG codeblock END_PYFIG
 		{
+		String tag = $PYFIG.text;
+		tag = tag.substring("<pyfig".length());
+		tag = tag.substring(0,tag.length()-1); // strip '>'
+		Map<String,String> args = parseXMLAttrs(tag);
 		String fname = ParrtIO.basename(inputFilename);
-		String py = $code.text.trim();
+		String py = $codeblock.text.trim();
 		if ( py.length()>0 ) {
-			Map<String,String> args = $codeblock_args.ctx!=null ? $codeblock_args.argMap : null;
 			$codeDef = new PyFigDef($ctx, fname, codeCounter, args, py);
 			codeBlocks.add($codeDef);
 		}
@@ -179,29 +183,32 @@ pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 		}
 	;
 
-/** \pyeval[env]{code to exec}{expr to display} */
+/** <pyeval args>code to exec</pyeval>
+ *  Must manually parse args and extract code from string
+ */
 pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayData]
-    :	PYEVAL codeblock_args? ws? code=codeblock END_CODE_BLOCK ws? b=block?
+    :	PYEVAL codeblock END_PYEVAL
 		{
+		String tag = $PYEVAL.text;
+		tag = tag.substring("<pyeval".length());
+		tag = tag.substring(0,tag.length()-1); // strip '>'
+		Map<String,String> args = parseXMLAttrs(tag);
 		String fname = ParrtIO.basename(inputFilename);
 		// last line is expression to get output or blank line or comment
-		String py = $code.text.trim();
+		String py = $codeblock.text.trim();
 		if ( py.length()>0 ) {
 			String outputExpr = null;
-			if ( $b.ctx!=null ) {
-				outputExpr = $b.ctx.paragraph_content().getText();
+			if ( args.containsKey("output") ) {
+				outputExpr = args.get("output");
 			}
-			Map<String,String> args = $codeblock_args.ctx!=null ? $codeblock_args.argMap : null;
-			$codeDef = new PyEvalDef($ctx, fname, codeCounter, args, py, outputExpr);
+			$codeDef = new PyEvalDef($ctx, fname, codeCounter, args, py);
 			codeBlocks.add($codeDef);
 		}
 		codeCounter++;
 		}
 	;
 
-codeblock
-	:	(CODE_BLOCK_STUFF|CODE_BLOCK_OTHER)+
-	;
+codeblock : PYCODE_CONTENT* ;
 
 /** \pyfig[label,hide=true,width="20em"]{...}
  *  \pyfig[width="20em"]{...}
@@ -304,7 +311,9 @@ block_image : image ;
 
 image : IMG attrs END_OF_TAG ;
 
-attrs returns [Map<String,String> attrMap = new LinkedHashMap<>()] : attr_assignment[$attrMap]* ;
+attrs returns [Map<String,String> attrMap = new LinkedHashMap<>()]
+ 	:	attr_assignment[$attrMap]*
+ 	;
 
 attr_assignment[Map<String,String> attrMap]
 	:	name=XML_ATTR XML_EQ value=XML_ATTR_VALUE

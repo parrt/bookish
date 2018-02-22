@@ -14,7 +14,6 @@ import us.parr.bookish.model.Document;
 import us.parr.bookish.model.OutputModelObject;
 import us.parr.bookish.model.entity.EntityDef;
 import us.parr.bookish.model.entity.ExecutableCodeDef;
-import us.parr.bookish.model.entity.PyEvalDef;
 import us.parr.bookish.model.entity.PyFigDef;
 import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
@@ -274,7 +273,7 @@ public class Tool {
 						System.err.println(stderr);
 					}
 					if ( def.isOutputVisible ) {
-						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
+						BookishParser.PyevalContext tree = (BookishParser.PyevalContext)def.tree;
 						tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
 						tree.stderr = stderr.trim();
 						if ( tree.stdout.length()==0 ) tree.stdout = null;
@@ -283,7 +282,7 @@ public class Tool {
 //						System.out.println("stderr: "+stderr);
 					}
 					if ( def.displayExpr!=null ) {
-						BookishParser.PyevalContext tree = ((PyEvalDef) def).tree;
+						BookishParser.PyevalContext tree = (BookishParser.PyevalContext)def.tree;
 						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
 						tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
 						System.out.println("data: "+tree.displayData);
