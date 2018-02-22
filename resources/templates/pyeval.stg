@@ -29,9 +29,10 @@ fstderr = io.StringIO()
 with redirect_stderr(fstderr):
 	try:
 		plt.style.use('seaborn-colorblind')
-		mpl.rcParams['font.size'] = 16
+		mpl.rcParams['font.size'] = 20
 		mpl.rcParams['savefig.bbox'] = 'tight'
 		mpl.rcParams['savefig.pad_inches'] = '0.5'
+		mpl.rcParams['legend.fontsize'] = 16
 		<code>
 		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.svg", format="svg", pad_inches=0.0)
 	except:

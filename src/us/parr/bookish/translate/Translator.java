@@ -510,6 +510,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		int middle = txt.indexOf("]("); // e.g., [name](link)
 		String title = txt.substring(1,middle);
 		String href = txt.substring(middle+2,txt.length()-1);
+		if ( href.contains("\\)") ) {
+			href = href.replace("\\)", ")");
+		}
 		return new HyperLink(title,href);
 	}
 
