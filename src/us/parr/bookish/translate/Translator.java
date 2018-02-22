@@ -120,9 +120,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public STGroupFile templates;
 
 	public static Pattern eqnVarPattern;
-	public static Pattern eqnVecVarPattern;
+	public static Pattern eqnVecVarPattern, eqnVecVarPattern2;
 	public static Pattern eqnIndexedVarPattern;
-	public static Pattern eqnIndexedVecVarPattern;
+	public static Pattern eqnIndexedVecVarPattern, eqnIndexedVecVarPattern2;
 	public static Pattern sectionAnchorPattern;
 	public static Pattern latexPattern;
 
@@ -163,7 +163,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		eqnVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)");
 		eqnIndexedVarPattern = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)_([a-zA-Z][a-zA-Z0-9]*)");
 		eqnVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
+		eqnVecVarPattern2 = Pattern.compile("\\\\vec\\{([a-zA-Z][a-zA-Z0-9]*)\\}");
 		eqnIndexedVecVarPattern = Pattern.compile("\\\\mathbf\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
+		eqnIndexedVecVarPattern2 = Pattern.compile("\\\\vec\\{([a-zA-Z][a-zA-Z0-9]*)\\}_([a-zA-Z][a-zA-Z0-9]*)");
 		sectionAnchorPattern = Pattern.compile(".*\\(([a-zA-Z_][a-zA-Z0-9\\-_:]*?)\\)");
 		latexPattern = Pattern.compile("\\\\latex\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
 	}
@@ -451,11 +453,19 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		if ( elements.size()>0 ) {
 			return new EqnVecVar(elements.get(0));
 		}
+		elements = extract(eqnVecVarPattern2, eqn);
+		if ( elements.size()>0 ) {
+			return new EqnVecVar(elements.get(0));
+		}
 		elements = extract(eqnIndexedVarPattern, eqn);
 		if ( elements.size()>0 ) {
 			return new EqnIndexedVar(elements.get(0), elements.get(1));
 		}
 		elements = extract(eqnIndexedVecVarPattern, eqn);
+		if ( elements.size()>0 ) {
+			return new EqnIndexedVecVar(elements.get(0), elements.get(1));
+		}
+		elements = extract(eqnIndexedVecVarPattern2, eqn);
 		if ( elements.size()>0 ) {
 			return new EqnIndexedVecVar(elements.get(0), elements.get(1));
 		}
