@@ -31,6 +31,8 @@ public class EntityDef {
 
 	public Token getStartToken() { return startToken; }
 
+	public boolean isSideItem() { return false; }
+
 	@Override
 	public String toString() {
 		return '<'+label+":"+this.getClass().getSimpleName()+'>';

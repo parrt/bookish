@@ -12,4 +12,6 @@ public class SideQuoteDef extends EntityDef {
 		this.quote = Translator.stripCurlies(quote);
 		this.author = Translator.stripCurlies(author);
 	}
+
+	public boolean isSideItem() { return true; }
 }

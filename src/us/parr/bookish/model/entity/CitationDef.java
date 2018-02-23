@@ -15,4 +15,5 @@ public class CitationDef extends EntityDef {
 	}
 
 	public boolean isGloballyVisible() { return true; }
+	public boolean isSideItem() { return true; }
 }

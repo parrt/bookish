@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.misc.Triple;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.xpath.XPath;
 import org.stringtemplate.v4.STGroupFile;
 import org.stringtemplate.v4.StringRenderer;
 import us.parr.bookish.Tool;
@@ -91,6 +92,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -361,7 +363,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			def = document.getEntity(anchor);
 			if ( def==null ) {
 				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), anchor);
-				return null;
 			}
 		}
 
@@ -382,7 +383,21 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				elements.add(c);
 			}
 		}
-		return new Paragraph(elements);
+		// find all REFs within paragraph
+		Collection<ParseTree> refNodes =
+			XPath.findAll(ctx, "//REF", new BookishParser(null));
+		List<EntityDef> entitiesRefd = new ArrayList<>();
+		for (ParseTree t : refNodes) {
+			String label = stripQuotes(t.getText());
+			EntityDef def = document.getEntity(label);
+			if ( def!=null ) {
+				entitiesRefd.add(def);
+			}
+			else {
+				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
+			}
+		}
+		return new Paragraph(elements, entitiesRefd);
 	}
 
 	@Override
@@ -699,11 +714,12 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			def = document.getEntity(label);
 			if ( def==null ) {
 				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
-				return null;
 			}
 		}
 		SideQuote q = new SideQuote(def, label, (TextBlock) visit(ctx.q), (TextBlock) visit(ctx.a));
-		def.model = q;
+		if ( def!=null ) {
+			def.model = q;
+		}
 		if ( label==null ) {
 			return q; // if no label, insert inline here
 		}
@@ -719,11 +735,12 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			def = document.getEntity(label);
 			if ( def==null ) {
 				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
-				return null;
 			}
 		}
 		SideNote q = new SideNote(def, label, (TextBlock) visit(ctx.block));
-		def.model = q;
+		if ( def!=null ) {
+			def.model = q;
+		}
 		if ( label==null ) {
 			return q; // if no label, insert inline here
 		}

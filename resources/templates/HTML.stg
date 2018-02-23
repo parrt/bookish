@@ -193,11 +193,12 @@ SideFigure(model, code) ::= <<
 <span class=sidenote>$code$<br><b>Figure $model.def.index$</b>. $model.caption$</span>
 >>
 
-SiteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
-CitationRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
-FigureRef(model) ::= "<b>Figure $model.def.index$</b>$model.def.template$"
-SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
-SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>$model.def.template$"
+// side stuff collected into Paragraph model and float:right'd for HTML (but not latex)
+SiteRef(model) ::= "<span class=sup>$model.def.index$</span>"
+CitationRef(model) ::= "<span class=sup>$model.def.index$</span>"
+FigureRef(model) ::= "<b>Figure $model.def.index$</b>"
+SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
+SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 SectionRef(model) ::= "<b>Section $model.def.containerNumber$</b> <i>$model.def.model.title$</i>"
 ChapterRef(model) ::= "<b>Chapter $model.def.containerNumber$</b> <i>$model.def.model.title$</i>"
 UnknownRef(model) ::= <<
@@ -244,7 +245,7 @@ TableHeaderItem(model, contents) ::= <<
 
 Paragraph(model, elements) ::= <<
 
-
+$model.entitiesOnRight:{d | $d.template$}$
 <p>$elements$</p>
 
 >>

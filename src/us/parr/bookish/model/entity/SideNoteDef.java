@@ -10,4 +10,6 @@ public class SideNoteDef extends EntityDef {
 		super(index, startToken);
 		this.note = Translator.stripCurlies(note);
 	}
+
+	public boolean isSideItem() { return true; }
 }

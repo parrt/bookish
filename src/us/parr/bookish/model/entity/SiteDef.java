@@ -12,4 +12,6 @@ public class SiteDef extends EntityDef {
 	}
 
 	public boolean isGloballyVisible() { return true; }
+
+	public boolean isSideItem() { return true; }
 }

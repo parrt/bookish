@@ -8,4 +8,6 @@ public class SideFigDef extends FigureDef {
 	public SideFigDef(int index, Token startToken, Map<String,String> args) {
 		super(index, startToken, args);
 	}
+
+	public boolean isSideItem() { return true; }
 }
