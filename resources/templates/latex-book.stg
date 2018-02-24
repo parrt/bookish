@@ -3,6 +3,10 @@ delimiters "<",">"
 header(author) ::= <<
 \documentclass[paper=7.5in:9.25in,pagesize=pdftex,
                headinclude=on,footinclude=on,10pt,twoside]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{alltt}
+\usepackage{verbatim}
 \usepackage{xparse}
 \usepackage{subfiles}
 \usepackage[pdftex,final]{graphicx}
@@ -11,7 +15,9 @@ header(author) ::= <<
 \usepackage{tikz}
 \usepackage{tikzscale}
 \usetikzlibrary{shapes, calc, shapes, arrows, positioning,shapes,backgrounds}
+\usepackage{tabto} %%symbol in left margin
 \usepackage{geometry}
+\usepackage{mdframed}
 
 \geometry{includehead,
           includefoot,
@@ -42,6 +48,8 @@ header(author) ::= <<
 urlcolor=blue,
 }
 
+\def\outputsymbol{\tabto*{-0.2cm}\vspace{-6.4mm}\footnotesize\guillemotright\vspace{6.4mm}}
+
 \newcommand{\degree}[0]{$^{\circ}$}
 
 \newcommand{\figref}[1]{Figure~\ref{#1} on page~\pageref{#1}}
@@ -65,6 +73,18 @@ urlcolor=blue,
 \newminted[pcode]{python}{mathescape, baselinestretch=.8, fontsize=\footnotesize, escapeinside=||}
 
 \newmintinline[pinline]{python}{fontsize=\footnotesize}
+
+\mdfsetup{%
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  innertopmargin=0,
+  innerleftmargin=3pt,
+  innerrightmargin=0pt,
+  innerbottommargin=0,
+  skipabove=2pt,
+  skipbelow=2pt,
+  }
 
 \DeclareDocumentCommand \mysidenoteN { O{0pt} m } {%
 \addtocounter{footnote}{1}\sidenotemark[\number\value{footnote}]\begin{marginfigure}\vspace{#1}
@@ -202,16 +222,36 @@ PyEval(model) ::= <<
 <if(model.codeDef.isCodeVisible)>
 <dumpCode(model.codeDef.code)>
 <endif>
-<if(model.stdout)><model.stdout; format="escape"><endif>
-<if(model.stderr)><model.stderr; format="escape"><endif>
+<if(model.stdout)>\begin{mdframed}
+{\footnotesize
+\begin{alltt}
+<model.stdout>\end{alltt}}
+\end{mdframed}
+<endif>
+<if(model.stderr)>\begin{mdframed}
+{\footnotesize
+\begin{alltt}
+<model.stderr>\end{alltt}}
+\end{mdframed}
+<endif>
 >>
 
 PyEvalDataFrame(model) ::= <<
 <if(model.codeDef.isCodeVisible)>
 <dumpCode({<model.codeDef.code><if(model.codeDef.displayExpr)><\n><model.codeDef.displayExpr><endif>})>
 <endif>
-<if(model.stdout)><model.stdout; format="escape"><endif>
-<if(model.stderr)><model.stderr; format="escape"><endif>
+<if(model.stdout)>\begin{mdframed}
+{\footnotesize
+\begin{alltt}
+<model.stdout>\end{alltt}}
+\end{mdframed}
+<endif>
+<if(model.stderr)>\begin{mdframed}
+{\footnotesize
+\begin{alltt}
+<model.stderr>\end{alltt}}
+\end{mdframed}
+<endif>
 <dataTable(model.dataTable)>
 <\n>
 >>
@@ -238,7 +278,11 @@ PyFig(model) ::= <<
 <else>
 \includegraphics[<if(model.args.width)>width=<model.args.width>\linewidth<endif>]{<model.codeDef.generatedFilenameNoSuffix>.pdf}
 <endif>
-<if(model.stderr)><model.stderr; format="escape"><endif>
+<if(model.stderr)>\begin{mdframed}
+{\footnotesize
+\begin{alltt}
+<model.stderr>\end{alltt}}
+<endif>
 >>
 
 Site(model) ::= "\\footnote{<model.def.website>}"
