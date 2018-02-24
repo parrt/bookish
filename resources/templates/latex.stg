@@ -242,7 +242,7 @@ EqnVecVar(model) ::= "$\mathbf{<model.varname>}$"
 EqnIndexedVecVar(model) ::= "$\mathbf{<model.varname>}_<model.indexname>$"
 
 HyperLink(model) ::= <<
-\href{<model.href; format="url-title-escape">}{<model.title; format="url-escape">}
+\href{<model.href; format="escape">}{<model.title; format="url-escape">}
 >>
 
 Quoted(model, elements) ::= "``<elements>''"
@@ -253,7 +253,7 @@ Italics(model) ::= "{\em <model.text>}"
 TODO(model) ::= "\textcolor{red}{{TODO: <model.text>\}}"
 
 Other(model) ::= <<
-<model.text; format="url-title-escape">
+<model.text; format="escape">
 >>
 
 Join(model, elements) ::= "<elements>"

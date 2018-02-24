@@ -414,7 +414,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		text = stuff.get(0);
 
 		if ( target==Tool.Target.LATEX || target==Tool.Target.LATEX_BOOK ) {
-			return new Latex(null, text, text);
+			return new Latex(this, null, text, text);
 		}
 
 		String relativePath = "images/latex-"+md5hash(text)+".svg";
@@ -430,7 +430,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				ioe.printStackTrace();
 			}
 		}
-		return new Latex(relativePath, text, text);
+		return new Latex(this, relativePath, text, text);
 	}
 
 	@Override
@@ -438,7 +438,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		String eqn = stripQuotes(ctx.getText(), 3);
 
 		if ( target==Tool.Target.LATEX || target==Tool.Target.LATEX_BOOK ) {
-			return new BlockEquation(null, eqn);
+			return new BlockEquation(this, null, eqn);
 		}
 
 		String relativePath = "images/blkeqn-"+md5hash(eqn)+".svg";
@@ -455,7 +455,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				ioe.printStackTrace();
 			}
 		}
-		return new BlockEquation(relativePath, eqn);
+		return new BlockEquation(this, relativePath, eqn);
 	}
 
 	@Override
@@ -540,12 +540,12 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitBlock_image(BookishParser.Block_imageContext ctx) {
-		return new BlockImage(ctx.image().attrs().attrMap);
+		return new BlockImage(this, ctx.image().attrs().attrMap);
 	}
 
 	@Override
 	public OutputModelObject visitImage(BookishParser.ImageContext ctx) {
-		return new Image(ctx.attrs().attrMap);
+		return new Image(this, ctx.attrs().attrMap);
 	}
 
 	@Override
@@ -805,7 +805,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** \pyfig[label]{draw some stuff} */
 	@Override
 	public OutputModelObject visitPyfig(BookishParser.PyfigContext ctx) {
-		return new PyFig(ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeDef.argMap);
+		return new PyFig(this, ctx.codeDef, ctx.stdout, ctx.stderr, ctx.codeDef.argMap);
 	}
 
 	/** \pyeval[label,hide]{notebook cell}{displayExpr} */
@@ -832,7 +832,35 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 	}
 
+	public boolean isHTMLTarget() {
+		return templates.getName().startsWith("HTML");
+	}
+
+	public boolean isLatexTarget() {
+		return templates.getName().startsWith("latex");
+	}
+
 	// Support
+
+	public String processImageWidth(String width) {
+		if ( width!=null ) {
+			if ( width.endsWith("%") ) {
+				// drop %; latex templates will use \linewidth and html will put % back on
+				width = width.replace("%", "");
+			}
+			else {
+				System.err.println("PYFIG width "+width+" must be in % units");
+				width = "100";
+			}
+		}
+		else {
+			width = "100";
+		}
+		if ( isLatexTarget() ) {
+			width = String.valueOf(Float.valueOf(width)/100.0); // convert to 0..1
+		}
+		return width;
+	}
 
 	public static List<String> extract(Pattern pattern, String text) {
 		Matcher m = pattern.matcher(text);

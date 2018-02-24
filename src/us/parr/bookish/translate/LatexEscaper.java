@@ -13,7 +13,7 @@ public class LatexEscaper extends StringRenderer {
 			s = escape(s);
 			return s;
 		}
-		else if ( formatString!=null && formatString.equals("url-title-escape") ) {
+		else if ( formatString!=null && formatString.equals("escape") ) {
 			s = escape(s);
 			return s;
 		}
@@ -26,6 +26,7 @@ public class LatexEscaper extends StringRenderer {
 		s = s.replace("#", "\\#");
 		s = s.replace("&", "\\&");
 		s = s.replace("$", "\\$");
+		s = s.replace("%", "\\%");
 		return s;
 	}
 }
