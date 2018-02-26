@@ -341,7 +341,10 @@ public class Tool {
 
 	/** Copy images/ subdir to outputDir/images */
 	public void copyImages(String inputDir, String outputDir) {
-		execCommandLine(String.format("cp -r %s %s", inputDir+"/images", outputDir));
+		execCommandLine(String.format("cp -r %s/images/*.svg %s/images", inputDir, outputDir));
+		execCommandLine(String.format("cp -r %s/images/*.png %s/images", inputDir, outputDir));
+		execCommandLine(String.format("cp -r %s/images/*.pdf %s/images", inputDir, outputDir));
+		execCommandLine(String.format("cp -r %s/images/*.jpg %s/images", inputDir, outputDir));
 	}
 
 	public String option(String name) { return (String)options.get(name); }
