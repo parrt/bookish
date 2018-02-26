@@ -395,6 +395,8 @@ Italics(model) ::= "{\em <model.text>}"
 
 TODO(model) ::= <<\textcolor{red}{{TODO: <model.text; format="escape">\}}>>
 
+LineBreak(model) ::= "\\\\"
+
 Other(model) ::= <<
 <model.text; format="escape">
 >>

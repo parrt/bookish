@@ -5,8 +5,10 @@ import us.parr.bookish.model.entity.EntityDef;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Book extends OutputModelObject {
 	public Tool tool;
@@ -23,6 +25,9 @@ public class Book extends OutputModelObject {
 	 *  locally-scoped labels like sidenote labels.
 	 */
 	public Map<String,EntityDef> entities = new HashMap<>();
+
+	/** Track which figures we have already displayed; don't show them more than once. */
+	public Set<EntityDef> entitiesRendered = new HashSet<>();
 
 	public int chapCounter = 1;
 

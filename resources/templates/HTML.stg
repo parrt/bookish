@@ -317,6 +317,8 @@ TODO(model) ::= <<
 <span style="color: red">{TODO: $model.text$}</span>
 >>
 
+LineBreak(model) ::= "<br>"
+
 Other(model) ::= "$model.text$"
 
 Join(model, elements) ::= "$elements$"

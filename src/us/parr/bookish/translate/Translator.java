@@ -33,6 +33,7 @@ import us.parr.bookish.model.InlineEquation;
 import us.parr.bookish.model.Italics;
 import us.parr.bookish.model.Join;
 import us.parr.bookish.model.Latex;
+import us.parr.bookish.model.LineBreak;
 import us.parr.bookish.model.ListItem;
 import us.parr.bookish.model.OrderedList;
 import us.parr.bookish.model.Other;
@@ -391,7 +392,10 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			String label = stripQuotes(t.getText());
 			EntityDef def = document.getEntity(label);
 			if ( def!=null ) {
-				entitiesRefd.add(def);
+				if ( !book.entitiesRendered.contains(def) ) {
+					entitiesRefd.add(def);
+					book.entitiesRendered.add(def);
+				}
 			}
 			else {
 				System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
@@ -674,6 +678,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitLinebreak(BookishParser.LinebreakContext ctx) {
+		return new LineBreak();
+	}
+
+	@Override
 	public OutputModelObject visitSite(BookishParser.SiteContext ctx) {
 		String label = null;
 		EntityDef def = null;
@@ -858,6 +867,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 		if ( isLatexTarget() ) {
 			width = String.valueOf(Float.valueOf(width)/100.0); // convert to 0..1
+		}
+		else {
+			width = width + "%";
 		}
 		return width;
 	}

@@ -281,10 +281,13 @@ paragraph_element
 	|	inline_code
 	|	pyfig
 	|	pyeval
+	|	linebreak
 	|	other
 	;
 
 ref : REF ;
+
+linebreak : LINE_BREAK ;
 
 symbol : SYMBOL block ; // e.g., \symbol{degree}, \symbol{tm}
 

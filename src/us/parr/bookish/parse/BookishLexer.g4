@@ -92,6 +92,8 @@ BLOCK_EQN : '\\\\[' .+? '\\\\]' ;
 */
 LATEX	  : '\\latex{{' '\r'? '\n' .*? '\r'? '\n}}' ;
 
+LINE_BREAK : '\\\\' '\r'? '\n' ;
+
 BLANK_LINE : NL ([ \t]* NL)+ ; // at least one blank line (optional junk whitespace on lines)
 
 TAB : '\t' ;

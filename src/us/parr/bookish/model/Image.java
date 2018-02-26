@@ -22,13 +22,23 @@ public class Image extends OutputModelObject {
 		if ( attrs.containsKey("src") ) {
 			String src = attrs.get("src");
 			String ext = ParrtIO.fileExtension(src);
-			if ( ext==null || !supportedSingleFormats.contains(ext) ) {
-				// then strip it and add appropriate ext for translation target
+			if ( ext!=null ) {
+				if ( !supportedSingleFormats.contains(ext) ) {
+					// then strip it and add appropriate ext for translation target
+					if ( translator.isHTMLTarget() ) {
+						src = ParrtIO.replaceFileExtension(src, ".svg");
+					}
+					else if ( translator.isLatexTarget() ) {
+						src = ParrtIO.replaceFileExtension(src, ".pdf");
+					}
+				}
+			}
+			else {
 				if ( translator.isHTMLTarget() ) {
-					src = ParrtIO.replaceFileExtension(src, ".svg");
+					src = src + ".svg";
 				}
 				else if ( translator.isLatexTarget() ) {
-					src = ParrtIO.replaceFileExtension(src, ".pdf");
+					src = src + ".pdf";
 				}
 			}
 			attrs.put("src", src);

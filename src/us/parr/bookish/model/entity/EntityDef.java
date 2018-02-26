@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.Token;
 import org.stringtemplate.v4.ST;
 import us.parr.bookish.model.OutputModelObject;
 
+import java.util.Objects;
+
 import static us.parr.lib.ParrtStrings.stripQuotes;
 
 public class EntityDef {
@@ -32,6 +34,19 @@ public class EntityDef {
 	public Token getStartToken() { return startToken; }
 
 	public boolean isSideItem() { return false; }
+
+	@Override
+	public boolean equals(Object o) {
+		if ( this==o ) return true;
+		if ( !(o instanceof EntityDef) ) return false;
+		EntityDef entityDef = (EntityDef) o;
+		return Objects.equals(label, entityDef.label);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(label);
+	}
 
 	@Override
 	public String toString() {
