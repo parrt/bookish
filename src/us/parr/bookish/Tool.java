@@ -107,7 +107,7 @@ public class Tool {
 			String output = results.b;
 			ParrtIO.save(outputDir+"/"+outFilename, output);
 			System.out.println("Wrote "+outputDir+"/"+outFilename);
-			copyImages(inputDir, outputDir);
+			copyImages(book, inputDir, outputDir);
 			return;
 		}
 
@@ -194,7 +194,7 @@ public class Tool {
 		bookTemplate.add("model", book);
 		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
 		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
-		copyImages(inputDir, outputDir);
+		copyImages(book, inputDir, outputDir);
 		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 //		copyImages(BUILD_DIR, outputDir);
 	}
@@ -339,12 +339,18 @@ public class Tool {
 
 	// SUPPORT
 
-	/** Copy images/ subdir to outputDir/images */
-	public void copyImages(String inputDir, String outputDir) {
-		execCommandLine(String.format("cp -r %s/images/*.svg %s/images", inputDir, outputDir));
-		execCommandLine(String.format("cp -r %s/images/*.png %s/images", inputDir, outputDir));
-		execCommandLine(String.format("cp -r %s/images/*.pdf %s/images", inputDir, outputDir));
-		execCommandLine(String.format("cp -r %s/images/*.jpg %s/images", inputDir, outputDir));
+	/** Copy images/ subdirs to outputDir/images */
+	public void copyImages(Book book, String inputDir, String outputDir) {
+		for (String fname : book.filenames) {
+			fname = ParrtIO.stripFileExtension(fname);
+			if ( new File(inputDir+"/images/"+fname).exists() ) {
+				execCommandLine(String.format("cp -r %s/images/%s %s/images", inputDir, fname, outputDir));
+			}
+		}
+//		execCommandLine(String.format("cp -r %s/images/*.svg %s/images", inputDir, outputDir));
+//		execCommandLine(String.format("cp -r %s/images/*.png %s/images", inputDir, outputDir));
+//		execCommandLine(String.format("cp -r %s/images/*.pdf %s/images", inputDir, outputDir));
+//		execCommandLine(String.format("cp -r %s/images/*.jpg %s/images", inputDir, outputDir));
 	}
 
 	public String option(String name) { return (String)options.get(name); }
