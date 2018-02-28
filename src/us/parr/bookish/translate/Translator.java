@@ -17,6 +17,7 @@ import us.parr.bookish.model.BlockEquation;
 import us.parr.bookish.model.BlockImage;
 import us.parr.bookish.model.Bold;
 import us.parr.bookish.model.Book;
+import us.parr.bookish.model.Callout;
 import us.parr.bookish.model.ChapQuote;
 import us.parr.bookish.model.Chapter;
 import us.parr.bookish.model.Citation;
@@ -775,6 +776,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			def.model = f;
 		}
 		return null; // a ref will make this appear
+	}
+
+	@Override
+	public OutputModelObject visitCallout(BookishParser.CalloutContext ctx) {
+		return new Callout((TextBlock)visit(ctx.block()));
 	}
 
 	@Override

@@ -388,6 +388,8 @@ HyperLink(model) ::= <<
 
 Quoted(model, elements) ::= "``<elements>''"
 
+Callout(model, text) ::= "\begin{callout}{<text>}\end{callout}"
+
 InlineCode(model) ::= <<{\texttt\small <model.code; format="escape">}>>
 
 Bold(model) ::= "{\bf <model.text>}"

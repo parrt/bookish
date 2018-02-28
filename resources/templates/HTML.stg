@@ -308,6 +308,8 @@ HyperLink(model) ::= <<
 
 Quoted(model, elements) ::= "&ldquo;$elements$&rdquo;"
 
+Callout(model, text) ::= "<div class=callout>$text$</div>"
+
 InlineCode(model) ::= "<span class=inlinecode>$model.code$</span>"
 
 Bold(model) ::= "<b>$model.text$</b>"

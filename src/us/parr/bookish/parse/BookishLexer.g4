@@ -18,6 +18,8 @@ END_SIDEFIG : '</sidefig>' ;
 FIGURE   : '<figure' -> pushMode(XML_MODE) ;
 END_FIGURE : '</figure>' ;
 
+CALLOUT   : '\\callout' ;
+
 CUT		  : '\\cut' '{' .*? '\r'? '\n' '}' '\r'? '\n' -> skip ;
 
 FIRSTUSE  : '\\first' ;

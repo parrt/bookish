@@ -133,6 +133,7 @@ section_element
 		|	pycode
 		|	pyfig
 		|	pyeval
+		|	callout
 		)
 	|	other
 	;
@@ -178,6 +179,9 @@ figure    : FIGURE attrs END_OF_TAG paragraph_content END_FIGURE
 			}
 			figCounter++;
 			}
+		  ;
+
+callout   : CALLOUT block
 		  ;
 
 pycode    : CODEBLOCK ;
