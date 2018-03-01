@@ -171,6 +171,7 @@ public class Tool {
 				EntityDef def = thisDocsEntities.get(label);
 				def.template = converter.walk(def.model);
 				if ( def.isGloballyVisible() ) { // move to global space
+					System.out.println("GLOBAL "+label);
 					book.entities.put(label, def);
 					thisDocsEntities.remove(label);
 				}

@@ -393,9 +393,16 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			String label = stripQuotes(t.getText());
 			EntityDef def = document.getEntity(label);
 			if ( def!=null ) {
-				if ( !book.entitiesRendered.contains(def) ) {
-					entitiesRefd.add(def);
-					book.entitiesRendered.add(def);
+				if ( !book.entitiesRendered.contains(def) &&
+					 !document.entitiesRendered.contains(def) )
+				{
+					entitiesRefd.add(def); // Nobody has shown it yet
+					if ( document.entitiesRendered.contains(def) ) {
+						document.entitiesRendered.add(def);
+					}
+					if ( book.entitiesRendered.contains(def) ) {
+						book.entitiesRendered.add(def);
+					}
 				}
 			}
 			else {

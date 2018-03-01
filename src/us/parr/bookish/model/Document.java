@@ -4,7 +4,9 @@ import us.parr.bookish.model.entity.EntityDef;
 import us.parr.bookish.parse.BookishParser;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Document extends OutputModelObject {
 	@ModelElement
@@ -16,6 +18,11 @@ public class Document extends OutputModelObject {
 
 	/** All the labeled entities defined in this document */
 	public Map<String,EntityDef> entities = new HashMap<>();
+
+	/** Track which non-globally visible figures/notes we have already displayed;
+	 *  don't show them more than once.
+	 */
+	public Set<EntityDef> entitiesRendered = new HashSet<>();
 
 	public BookishParser.DocumentContext tree;
 
