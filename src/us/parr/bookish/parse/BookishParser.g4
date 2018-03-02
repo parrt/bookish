@@ -195,7 +195,7 @@ pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 		Map<String,String> args = parseXMLAttrs(tag);
 		String fname = ParrtIO.basename(inputFilename);
 		String py = $codeblock.text.trim();
-		if ( py.length()>0 ) {
+		if ( py.length()>=0 ) {
 			$codeDef = new PyFigDef($ctx, fname, codeCounter, args, py);
 			codeBlocks.add($codeDef);
 		}
@@ -215,15 +215,17 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 		Map<String,String> args = parseXMLAttrs(tag);
 		String fname = ParrtIO.basename(inputFilename);
 		// last line is expression to get output or blank line or comment
-		String py = $codeblock.text.trim();
-		if ( py.length()>0 ) {
-			String outputExpr = null;
-			if ( args.containsKey("output") ) {
-				outputExpr = args.get("output");
-			}
-			$codeDef = new PyEvalDef($ctx, fname, codeCounter, args, py);
-			codeBlocks.add($codeDef);
+		String py = null;
+		if ( $codeblock.ctx!=null ) {
+			py = $codeblock.text.trim();
+			if ( py.length()==0 ) py = null;
 		}
+		String outputExpr = null;
+		if ( args.containsKey("output") ) {
+			outputExpr = args.get("output");
+		}
+		$codeDef = new PyEvalDef($ctx, fname, codeCounter, args, py);
+		codeBlocks.add($codeDef);
 		codeCounter++;
 		}
 	;

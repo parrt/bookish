@@ -243,7 +243,14 @@ public class Tool {
 					ST snippet = pycodeTemplates.getInstanceOf(tname);
 					snippet.add("def",def);
 					// Don't allow "plt.show()" to execute, strip it
-					snippet.add("code", def.code.replace("plt.show()", ""));
+					String code = null;
+					if ( def.code!=null ) {
+						code = def.code.replace("plt.show()", "");
+					}
+					if ( code!=null && code.trim().length()==0 ) {
+						code = null;
+					}
+					snippet.add("code", code);
 					snippets.add(snippet);
 				}
 				ST file = pycodeTemplates.getInstanceOf("pyfile");
