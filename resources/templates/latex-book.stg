@@ -198,13 +198,13 @@ SubSubSection(model, elements, subcontainers) ::= <<
 
 TextBlock(model,elements) ::= "<elements>"
 
-SideQuote(model,quote,author) ::= "\\mysidenote{``<quote>'' --- <author>}"
+SideQuote(model,quote,author) ::= "\\mysidenote{``{\it <quote>}'' --- <author>}"
 
 SideNote(model,text) ::= "\\mysidenoteN{<text>}"
 
 Citation(model,title,bibinfo) ::= "\\mysidenoteN{``<title>'' --- <bibinfo>}"
 
-ChapQuote(model,quote,author) ::= "``<quote>'' --- <author>"
+ChapQuote(model,quote,author) ::= "``{\it <quote>}'' --- <author><\n><\n>"
 
 dumpCode(code) ::= <<
 <\n>
@@ -260,8 +260,8 @@ dataTable(dt) ::= <<
 \vspace{5pt}
 {\footnotesize
 \begin{tabular}{<dt.colNames:{c | r}>}
-<dt.colNames:{c | {\bf <c>\}}; separator=" & ">\\\\
-<dt.rows:{r | <r:{c | <c>}; separator=" & ">\\\\}; separator="\n">
+<dt.colNames:{c | {\bf <c; format="escape">\}}; separator=" & ">\\\\
+<dt.rows:{r | <r:{c | <c; format="escape">}; separator=" & ">\\\\}; separator="\n">
 \end{tabular}
 }
 \vspace{5pt}

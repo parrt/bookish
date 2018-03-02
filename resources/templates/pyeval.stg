@@ -5,11 +5,14 @@ import io
 import sys
 from contextlib import redirect_stdout, redirect_stderr
 
-def dump(o):
+def dump(o, display_expr):
 	"""Given df, col, ndarray, value return csv formatted data"""
 	# write to <buildDir>
 	if type(o)==pd.DataFrame:
-		return o.to_csv(index=False)
+		if display_expr.endswith(".T"):
+			return o.to_csv(index=True)
+		else:
+			return o.to_csv(index=False)
 	else:
 		return repr(o)
 
@@ -55,7 +58,7 @@ with redirect_stderr(fstderr):
 				v = <def.displayExpr>
 				f.write(type(v).__name__)
 				f.write('\n')
-				f.write(dump(v))
+				f.write(dump(v, "<def.displayExpr>"))
 			<endif>
 		except:
 			import traceback
