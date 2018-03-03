@@ -29,7 +29,7 @@ public class DataTable {
 				List<String> row = new ArrayList<>();
 				for (int i = 0; i<record.size(); i++) {
 					String v = record.get(i);
-					v = abbrevString(v, 45);
+					v = abbrevString(v, 35);
 					row.add(v);
 				}
 				rows.add(row);
