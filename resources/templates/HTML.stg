@@ -140,8 +140,7 @@ ChapQuote(model,quote,author) ::= "<p>&ldquo;<i>$quote$</i>&rdquo; &mdash; $auth
 
 dumpCode(code) ::= <<
 $\n$
-<div class="codeblk">$code$
-</div>
+<div class="codeblk">$code$</div>
 >>
 
 BlockCode(model) ::= <<
@@ -318,6 +317,12 @@ HyperLink(model) ::= <<
 Quoted(model, elements) ::= "&ldquo;$elements$&rdquo;"
 
 Callout(model, text) ::= "<div class=callout>$text$</div>"
+
+Aside(model, text) ::= <<
+<div class=aside><b>$model.attrs.title$</b><br>
+$text$
+</div>
+>>
 
 InlineCode(model) ::= "<span class=inlinecode>$model.code$</span>"
 

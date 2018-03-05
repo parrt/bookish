@@ -15,8 +15,11 @@ CHAPQUOTE : '\\chapquote' ;
 SIDENOTE  : '\\sidenote' ;
 SIDEFIG   : '<sidefig' -> pushMode(XML_MODE) ;
 END_SIDEFIG : '</sidefig>' ;
-FIGURE   : '<figure' -> pushMode(XML_MODE) ;
-END_FIGURE : '</figure>' ;
+FIGURE    : '<figure' -> pushMode(XML_MODE) ;
+END_FIGURE: '</figure>' ;
+
+ASIDE     : '<aside'  -> pushMode(XML_MODE) ;
+END_ASIDE : '</aside>' ;
 
 CALLOUT   : '\\callout' ;
 

@@ -68,7 +68,7 @@ document
 	:	chapter BLANK_LINE? EOF
 	;
 
-chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? (section_element|ws)* section*
+chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? section_content section*
 		  {
 		  currentChap = new ChapterDef(chapNumber, $chap, null);
 		  defEntity(currentChap);
@@ -81,7 +81,7 @@ abstract_ : (ws|BLANK_LINE)? ABSTRACT LCURLY paragraph_optional_blank_line parag
 
 preabstract : (ws|BLANK_LINE)? PREABSTRACT LCURLY paragraph_optional_blank_line paragraph* RCURLY;
 
-section : BLANK_LINE sec=SECTION (section_element|ws)* subsection*
+section : BLANK_LINE sec=SECTION section_content subsection*
 		  {
 		  subSecCounter = 1;
 		  subSubSecCounter = 1;
@@ -93,7 +93,7 @@ section : BLANK_LINE sec=SECTION (section_element|ws)* subsection*
 		  }
 		;
 
-subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)* subsubsection*
+subsection : BLANK_LINE sec=SUBSECTION section_content subsubsection*
 		  {
 		  subSubSecCounter = 1;
 		  currentSubSubSec = null;
@@ -103,13 +103,15 @@ subsection : BLANK_LINE sec=SUBSECTION (section_element|ws)* subsubsection*
 		  }
 		;
 
-subsubsection : BLANK_LINE sec=SUBSUBSECTION (section_element|ws)*
+subsubsection : BLANK_LINE sec=SUBSUBSECTION section_content
 		  {
 		  currentSubSubSec = new SubSubSectionDef(subSubSecCounter, $sec, currentSubSec);
 		  defEntity(currentSubSubSec);
 		  subSubSecCounter++;
 		  }
 		;
+
+section_content : (section_element|ws)* ;
 
 section_element
 	:	paragraph
@@ -134,6 +136,7 @@ section_element
 		|	pyfig
 		|	pyeval
 		|	callout
+		|	aside
 		)
 	|	other
 	;
@@ -180,6 +183,8 @@ figure    : FIGURE attrs END_OF_TAG paragraph_content END_FIGURE
 			figCounter++;
 			}
 		  ;
+
+aside	  : ASIDE attrs END_OF_TAG section_content END_ASIDE ;
 
 callout   : CALLOUT block
 		  ;

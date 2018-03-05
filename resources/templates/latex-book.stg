@@ -86,6 +86,19 @@ urlcolor=blue,
   skipbelow=2pt,
   }
 
+\mdfdefinestyle{asidestyle}{%
+  topline=true,
+  bottomline=true,
+  rightline=true,
+  innertopmargin=5pt,
+  innerleftmargin=3pt,
+  innerrightmargin=0pt,
+  innerbottommargin=5pt,
+  skipabove=2pt,
+  skipbelow=2pt,
+}
+
+
 \DeclareDocumentCommand \mysidenoteN { O{0pt} m } {%
 \addtocounter{footnote}{1}\sidenotemark[\number\value{footnote}]\begin{marginfigure}\vspace{#1}
 \sidenotemark[\number\value{footnote}]\footnotesize #2
@@ -99,6 +112,14 @@ urlcolor=blue,
 }
 
 \newcommand{\todo}[1]{\textcolor{red}{#1}}
+
+\newenvironment{aside}[1]
+{
+    \begin{mdframed}[style=exampledefault, frametitle={#1}]
+}
+{
+    \end{mdframed}
+}
 
 \newenvironment{callout}[1]{
 \[
@@ -389,6 +410,8 @@ HyperLink(model) ::= <<
 Quoted(model, elements) ::= "``<elements>''"
 
 Callout(model, text) ::= "\begin{callout}{<text>}\end{callout}"
+
+Aside(model, text) ::= "\begin{aside}{<text>}\end{aside}"
 
 InlineCode(model) ::= <<{\texttt\small <model.code; format="escape">}>>
 
