@@ -88,7 +88,7 @@ END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
 
 DOLLAR	  : '\\$' ;
 EQN       : '$' ~'$'+ '$' ;
-BLOCK_EQN : '\\\\[' .+? '\\\\]' ;
+BLOCK_EQN : '\\[' .+? '\\]' ;
 
 /** Block of random latex show as block style content (not inline)
 \latex{{

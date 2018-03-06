@@ -868,15 +868,12 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				System.err.println("PYFIG width "+width+" must be in % units");
 				width = "100";
 			}
-		}
-		else {
-			width = "100";
-		}
-		if ( isLatexTarget() ) {
-			width = String.valueOf(Float.valueOf(width)/100.0); // convert to 0..1
-		}
-		else {
-			width = width + "%";
+			if ( isLatexTarget() ) {
+				width = String.valueOf(Float.valueOf(width)/100.0); // convert to 0..1
+			}
+			else {
+				width = width + "%";
+			}
 		}
 		return width;
 	}

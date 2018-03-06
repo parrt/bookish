@@ -10,6 +10,9 @@ public class PyFig extends PyDo {
 		super(codeDef, stdout, stderr, args);
 		String width = args.get("width");
 		width = translator.processImageWidth(width);
+		if ( width==null ) {
+			width = "100";
+		}
 		args.put("width", width);
 	}
 }

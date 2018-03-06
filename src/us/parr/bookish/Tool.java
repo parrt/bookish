@@ -171,7 +171,6 @@ public class Tool {
 				EntityDef def = thisDocsEntities.get(label);
 				def.template = converter.walk(def.model);
 				if ( def.isGloballyVisible() ) { // move to global space
-					System.out.println("GLOBAL "+label);
 					book.entities.put(label, def);
 					thisDocsEntities.remove(label);
 				}
@@ -293,7 +292,7 @@ public class Tool {
 						BookishParser.PyevalContext tree = (BookishParser.PyevalContext)def.tree;
 						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
 						tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
-						System.out.println("data: "+tree.displayData);
+//						System.out.println("data: "+tree.displayData);
 					}
 				}
 			}
