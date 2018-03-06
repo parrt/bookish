@@ -13,6 +13,7 @@ texdoc(body,fontsize) ::= <<
 \DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
 \DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
 \DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\renewcommand\vec{\mathbf}
 \begin{document}
 \thispagestyle{empty}
 <body>

@@ -184,7 +184,7 @@ figure    : FIGURE attrs END_OF_TAG paragraph_content END_FIGURE
 			}
 		  ;
 
-aside	  : ASIDE attrs END_OF_TAG section_content END_ASIDE ;
+aside	  : ASIDE attrs END_OF_TAG section_content BLANK_LINE? END_ASIDE ;
 
 callout   : CALLOUT block
 		  ;
@@ -225,10 +225,6 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 			py = $codeblock.text.trim();
 			if ( py.length()==0 ) py = null;
 		}
-		String outputExpr = null;
-		if ( args.containsKey("output") ) {
-			outputExpr = args.get("output");
-		}
 		$codeDef = new PyEvalDef($ctx, fname, codeCounter, args, py);
 		codeBlocks.add($codeDef);
 		codeCounter++;
@@ -240,7 +236,6 @@ codeblock : PYCODE_CONTENT* ;
 /** \pyfig[label,hide=true,width="20em"]{...}
  *  \pyfig[width="20em"]{...}
  *  \pyfig[label]{...}
- */
 codeblock_args returns [Map<String,String> argMap = new LinkedHashMap<>()]
 	:	START_CODE_BLOCK_ARGS
 		(	l=CODE_BLOCK_ATTR CODE_BLOCK_COMMA
@@ -263,6 +258,7 @@ codeblock_arglist[Map<String,String> argMap]
     	$argMap.put($name.text,v);
     	}
     ;
+ */
 
 block : LCURLY paragraph_content? RCURLY ;
 
@@ -290,6 +286,7 @@ paragraph_element
 	|	firstuse
 	|	todo
 	|	inline_code
+	|	inline_pyeval
 	|	pyfig
 	|	pyeval
 	|	linebreak
@@ -305,6 +302,20 @@ symbol : SYMBOL block ; // e.g., \symbol{degree}, \symbol{tm}
 quoted : QUOTE (paragraph_element|ws)+ QUOTE ;
 
 inline_code : INLINE_CODE ;
+
+inline_pyeval returns [InlinePyEvalDef codeDef, String stdout, String stderr, String displayData]
+ 	:	INLINE_PYEVAL REF? CHUNK
+		{
+		String fname = ParrtIO.basename(inputFilename);
+		// last line is expression to get output or blank line or comment
+		String py = $CHUNK.text.trim();
+		py = ParrtStrings.stripQuotes(py, 2).trim(); // strip double curlies
+		if ( py.length()==0 ) py = null;
+		$codeDef = new InlinePyEvalDef($ctx, fname, codeCounter, $REF!=null?$REF:$INLINE_PYEVAL, py);
+		codeBlocks.add($codeDef);
+		codeCounter++;
+		}
+	;
 
 firstuse : FIRSTUSE block ;
 
@@ -332,8 +343,8 @@ table
 		TABLE_
 	;
 
-table_header : TR ws? (TH attrs END_OF_TAG table_item)+ ;
-table_row : TR ws? (TD table_item)+ ;
+table_header : TR (ws? TH attrs END_OF_TAG table_item)+ ;
+table_row : TR (ws? TD table_item)+ ;
 
 list_item : (section_element|paragraph_element|quoted|ws|BLANK_LINE)* ;
 

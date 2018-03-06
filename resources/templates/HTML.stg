@@ -165,6 +165,14 @@ $endif$
 $if(model.stderr)$<p class="stderr">$model.stderr; format="xml-encode"$</p>$endif$
 >>
 
+InlinePyEval(model) ::= <<
+$if(model.stderr)$
+<span class="stderr">$model.stderr; format="xml-encode"$</span>
+$else$
+$model.displayData$
+$endif$
+>>
+
 PyEvalDataFrame(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
 $dumpCode({$model.codeDef.code$$if(model.codeDef.displayExpr)$$\n$$model.codeDef.displayExpr$$endif$})$
@@ -243,10 +251,10 @@ Table(model, headers, rows) ::= <<
 <center>
 <table style="">
 <thead>
-	$headers$
+$headers$
 </thead>
 <tbody>
-	$rows; separator="\n"$
+$rows; separator="\n"$
 </tbody>
 </table>
 </center>
@@ -254,7 +262,7 @@ Table(model, headers, rows) ::= <<
 
 TableRow(model, items) ::= <<
 <tr>
-	$items$
+$items$
 </tr>
 >>
 

@@ -32,6 +32,7 @@ import us.parr.bookish.model.HyperLink;
 import us.parr.bookish.model.Image;
 import us.parr.bookish.model.InlineCode;
 import us.parr.bookish.model.InlineEquation;
+import us.parr.bookish.model.InlinePyEval;
 import us.parr.bookish.model.Italics;
 import us.parr.bookish.model.Join;
 import us.parr.bookish.model.Latex;
@@ -110,8 +111,8 @@ import static us.parr.lib.ParrtStrings.md5hash;
 import static us.parr.lib.ParrtStrings.stripQuotes;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
-	public static int INLINE_EQN_FONT_SIZE = 13;
-	public static int BLOCK_EQN_FONT_SIZE = 13;
+	public static int INLINE_EQN_FONT_SIZE = 14;
+	public static int BLOCK_EQN_FONT_SIZE = 14;
 	public static Map<Class<? extends EntityDef>,Class<? extends EntityRef>> defToRefMap =
 		new HashMap<Class<? extends EntityDef>,Class<? extends EntityRef>>() {{
 			put(CitationDef.class, CitationRef.class);
@@ -846,6 +847,20 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		else {
 			return new PyEval(ctx.codeDef, ctx.stdout, ctx.stderr, args, null, null);
 		}
+	}
+
+	@Override
+	public OutputModelObject visitInline_pyeval(BookishParser.Inline_pyevalContext ctx) {
+		if ( ctx.displayData!=null ) {
+			String[] dataA = ctx.displayData.split("\n");
+			String type = dataA[0];
+			String data = null;
+			if ( dataA.length>1 ) {
+				data = join(Arrays.copyOfRange(dataA, 1, dataA.length), "\n");
+			}
+			return new InlinePyEval(ctx.codeDef, ctx.stdout, ctx.stderr, type, data);
+		}
+		return null;
 	}
 
 	public boolean isHTMLTarget() {

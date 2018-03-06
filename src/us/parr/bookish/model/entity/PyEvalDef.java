@@ -1,11 +1,11 @@
 package us.parr.bookish.model.entity;
 
-import us.parr.bookish.parse.BookishParser;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.Map;
 
 public class PyEvalDef extends ExecutableCodeDef {
-	public PyEvalDef(BookishParser.PyevalContext tree,
+	public PyEvalDef(ParserRuleContext tree,
 	                 String inputFilename,
 	                 int index,
 	                 Map<String,String> argMap,

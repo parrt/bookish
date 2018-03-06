@@ -54,6 +54,8 @@ urlcolor=blue,
 
 \newcommand{\figref}[1]{Figure~\ref{#1} on page~\pageref{#1}}
 
+\renewcommand\vec{\mathbf}
+
 \pagestyle{fancy}
 \addtolength{\headwidth}{\marginparsep}
 \addtolength{\headwidth}{\marginparwidth}

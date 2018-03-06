@@ -32,6 +32,8 @@ TODO	  : '\\todo' | '\\TODO' ;
 PYEVAL	  : '<pyeval' ARG* '>' -> pushMode(PYCODE) ;
 PYFIG	  : '<pyfig' ARG* '>' -> pushMode(PYCODE) ;
 
+INLINE_PYEVAL : '\\pyeval' ;
+
 // This stuff parsed later (again) by XML.g4
 fragment
 ARG : [ \r\n\t]* ATTR [ \r\n\t]* '=' [ \r\n\t]* (ATTR|ATTR_VALUE|ATTR_NUM) [ \r\n\t]* ;
@@ -69,6 +71,7 @@ INLINE_CODE : '`' ~[`\r\n]+ '`';
 
 CODEBLOCK : '```' '\n' .*? '\n' '```';
 
+CHUNK : '{{' .*? '}}' ;
 
 OL : '<ol>' ;
 LI : '<li>' ;
@@ -105,13 +108,14 @@ TAB : '\t' ;
 SPACE : ' ' ;
 NL : '\r'? '\n' ;
 
-OTHER : NOT_SPECIAL+ ;
+OTHER : (NOT_SPECIAL|'\\}')+ ;
 
 COMMENT : '<!--' .*? '-->' -> skip ;
 
 fragment
 NOT_SPECIAL : ~[$<#[*\\\n"{}\]`] ;
 
+/*
 mode CODE_BLOCK_START_MODE;
 START_CODE_BLOCK_ARGS : '[' -> pushMode(CODE_BLOCK_ARGS) ;
 START_CODE_BLOCK      : '{' -> mode(CODE_BLOCK_MODE), skip ;
@@ -128,6 +132,7 @@ mode CODE_BLOCK_MODE;
 END_CODE_BLOCK : '\r'? '\n' '}' -> popMode ;
 CODE_BLOCK_STUFF : ~[\r\n}]+ ;
 CODE_BLOCK_OTHER : [\r\n}] ; // match curly when not on left edge
+*/
 
 mode XML_MODE;           //e.g, <img src="images/neuron.png" alt="neuron.png" width="250">
 XML_ATTR : [a-zA-Z]+ ;

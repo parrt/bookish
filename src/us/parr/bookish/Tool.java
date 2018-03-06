@@ -280,19 +280,29 @@ public class Tool {
 						System.err.println(stderr);
 					}
 					if ( def.isOutputVisible ) {
-						BookishParser.PyevalContext tree = (BookishParser.PyevalContext)def.tree;
-						tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
-						tree.stderr = stderr.trim();
-						if ( tree.stdout.length()==0 ) tree.stdout = null;
-						if ( tree.stderr.length()==0 ) tree.stderr = null;
+						if ( def.tree instanceof BookishParser.PyevalContext ) {
+							BookishParser.PyevalContext tree = (BookishParser.PyevalContext) def.tree;
+							tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
+							tree.stderr = stderr.trim();
+							if ( tree.stdout.length()==0 ) tree.stdout = null;
+							if ( tree.stderr.length()==0 ) tree.stderr = null;
 //						System.out.println("stdout: "+stdout);
 //						System.out.println("stderr: "+stderr);
-					}
-					if ( def.displayExpr!=null ) {
-						BookishParser.PyevalContext tree = (BookishParser.PyevalContext)def.tree;
-						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
-						tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
-//						System.out.println("data: "+tree.displayData);
+							if ( def.displayExpr!=null ) {
+								String dataFilename = basename+"_"+label+"_"+def.index+".csv";
+								tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
+		//						System.out.println("data: "+tree.displayData);
+							}
+						}
+						else {
+							BookishParser.Inline_pyevalContext tree = (BookishParser.Inline_pyevalContext) def.tree;
+							tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
+							tree.stderr = stderr.trim();
+							if ( tree.stdout.length()==0 ) tree.stdout = null;
+							if ( tree.stderr.length()==0 ) tree.stderr = null;
+							String dataFilename = basename+"_"+label+"_"+def.index+".csv";
+							tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
+						}
 					}
 				}
 			}
