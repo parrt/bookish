@@ -185,10 +185,20 @@ dataTable(dt) ::= <<
 	<tr>$dt.colNames:{c | <th>$c$</th>}$</tr>
 </thead>
 <tbody>
-	$dt.rows:{r | <tr>$r:{c| <td>$c$</td>}$</tr>}; separator="\n"$
+	$dt.rows:{r | $dataTableRow(dt,r)$}; separator="\n"$
 </tbody>
 </table>
 </div>
+>>
+
+dataTableRow(dt,r) ::= <<
+<tr>
+$if(dt.firstColIsIndex)$
+<td><b>$first(r)$</b></td>$rest(r):{c| <td>$c$</td>}$
+$else$
+$rest(r):{c| <td>$c$</td>}$
+$endif$
+</tr>
 >>
 
 PyFig(model) ::= <<

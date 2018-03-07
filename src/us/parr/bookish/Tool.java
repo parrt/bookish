@@ -187,13 +187,13 @@ public class Tool {
 			}
 			ParrtIO.save(outputDir+"/"+outFilename, output);
 			doc.generatedFilename = outFilename;
-			System.out.println("Wrote "+outputDir+"/"+outFilename);
+//			System.out.println("Wrote "+outputDir+"/"+outFilename);
 		}
 
 		ST bookTemplate = trans.templates.getInstanceOf("Book");
 		bookTemplate.add("model", book);
 		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
-		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
+//		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
 		copyImages(book, inputDir, outputDir);
 		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 //		copyImages(BUILD_DIR, outputDir);

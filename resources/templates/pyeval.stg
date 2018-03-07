@@ -10,10 +10,7 @@ def dump(o, display_expr):
 	# write to <buildDir>
 	display_expr = display_expr.strip()
 	if type(o)==pd.DataFrame:
-		if display_expr.endswith(".T"):
-			return o.to_csv(index=True)
-		else:
-			return o.to_csv(index=False)
+		return o.to_csv(index=True)
 	else:
 		return repr(o)
 
