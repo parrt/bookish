@@ -166,11 +166,7 @@ $if(model.stderr)$<p class="stderr">$model.stderr; format="xml-encode"$</p>$endi
 >>
 
 InlinePyEval(model) ::= <<
-$if(model.stderr)$
-<span class="stderr">$model.stderr; format="xml-encode"$</span>
-$else$
-$model.displayData$
-$endif$
+$if(model.stderr)$<span class="stderr">$model.stderr; format="xml-encode"$</span>$else$$model.displayData$$endif$
 >>
 
 PyEvalDataFrame(model) ::= <<

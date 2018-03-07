@@ -106,7 +106,7 @@ public class Tool {
 			Pair<Document, String> results = legacy_translate(trans, inputDir, basename(inputFilename));
 			String output = results.b;
 			ParrtIO.save(outputDir+"/"+outFilename, output);
-			System.out.println("Wrote "+outputDir+"/"+outFilename);
+			//System.out.println("Wrote "+outputDir+"/"+outFilename);
 			copyImages(book, inputDir, outputDir);
 			return;
 		}
