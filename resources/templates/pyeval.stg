@@ -25,6 +25,7 @@ fstderr = io.StringIO()
 with redirect_stderr(fstderr):
 	try:
 		plt.style.use('seaborn-colorblind')
+		fig__ = plt.figure(999999, clear=True) # clear previous fig 999999
 		mpl.rcParams['font.size'] = 20
 		mpl.rcParams['savefig.bbox'] = 'tight'
 		mpl.rcParams['savefig.pad_inches'] = '0.5'
@@ -32,7 +33,7 @@ with redirect_stderr(fstderr):
 		<code>
 		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.svg", format="svg", pad_inches=0.0)
 		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.pdf", format="pdf", pad_inches=0.0)
-		plt.close()
+		plt.close(fig__)
 	except:
 		import traceback
 		traceback.print_exc(file=sys.stderr)
