@@ -111,8 +111,8 @@ import static us.parr.lib.ParrtStrings.md5hash;
 import static us.parr.lib.ParrtStrings.stripQuotes;
 
 public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
-	public static int INLINE_EQN_FONT_SIZE = 14;
-	public static int BLOCK_EQN_FONT_SIZE = 14;
+	public static int INLINE_EQN_FONT_SIZE = 13;
+	public static int BLOCK_EQN_FONT_SIZE = 13;
 	public static Map<Class<? extends EntityDef>,Class<? extends EntityRef>> defToRefMap =
 		new HashMap<Class<? extends EntityDef>,Class<? extends EntityRef>>() {{
 			put(CitationDef.class, CitationRef.class);
