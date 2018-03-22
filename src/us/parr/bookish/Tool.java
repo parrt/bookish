@@ -20,6 +20,7 @@ import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
 import us.parr.bookish.translate.Translator;
 import us.parr.lib.ParrtIO;
+import us.parr.lib.ParrtStrings;
 import us.parr.lib.ParrtSys;
 
 import javax.json.Json;
@@ -89,7 +90,7 @@ public class Tool {
 		Target target = (Target)optionO("target");
 
 		ParrtIO.mkdir(outputDir+"/images");
-		String snippetsDir = BUILD_DIR+"/snippets";
+		String snippetsDir = getBuildDir(metadataFilename)+"/snippets";
 		ParrtIO.mkdir(snippetsDir);
 
 		if ( metadataFilename.endsWith(".md") ) { // just one file (legacy stuff)
@@ -148,7 +149,7 @@ public class Tool {
 			codeBlocks.add(results.b.codeBlocks);
 		}
 
-		executeCodeSnippets(book, BUILD_DIR, codeBlocks);
+		executeCodeSnippets(book, getBuildDir(metadataFilename), codeBlocks);
 
 		// now walk all trees and translate
 		List<Document> documents = new ArrayList<>();
@@ -197,6 +198,10 @@ public class Tool {
 		copyImages(book, inputDir, outputDir);
 		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 //		copyImages(BUILD_DIR, outputDir);
+	}
+
+	public String getBuildDir(String metadataFilename) {
+		return BUILD_DIR+"-"+ParrtIO.stripFileExtension(ParrtIO.basename(metadataFilename));
 	}
 
 	/** generate python files to execute \pyfig, \pyeval blocks */
