@@ -110,7 +110,7 @@ NL : '\r'? '\n' ;
 
 OTHER : (NOT_SPECIAL|'\\}')+ ;
 
-COMMENT : '<!--' .*? '-->' -> skip ;
+COMMENT : NL* '<!--' .*? '-->' NL* -> skip ;
 
 fragment
 NOT_SPECIAL : ~[$<#[*\\\n"{}\]`] ;
