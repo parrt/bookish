@@ -77,6 +77,8 @@ public class Tool {
 	public static void main(String[] args) throws Exception {
 		Tool tool = new Tool();
 		tool.process(args);
+		System.out.println("DONE");
+		System.out.println();
 	}
 
 	public void process(String[] args) throws Exception {
