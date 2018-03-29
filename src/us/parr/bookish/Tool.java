@@ -20,7 +20,6 @@ import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
 import us.parr.bookish.translate.Translator;
 import us.parr.lib.ParrtIO;
-import us.parr.lib.ParrtStrings;
 import us.parr.lib.ParrtSys;
 
 import javax.json.Json;
@@ -272,7 +271,7 @@ public class Tool {
 					ParrtIO.save(snippetHashFilename, ""); // save empty hash marker file
 					ParrtIO.save(chapterSnippetsDir+"/"+snippetFilename, pycode);
 					// EXEC!
-					String[] result = ParrtSys.execInDir(chapterSnippetsDir, "python3", snippetFilename);
+					String[] result = ParrtSys.execInDir(chapterSnippetsDir, "pythonw", snippetFilename);
 					if ( result[1]!=null && result[1].length()>0 ) {
 						System.err.println(result[1]); // errors during python compilation not running
 					}
