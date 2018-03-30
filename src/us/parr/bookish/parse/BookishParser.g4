@@ -10,6 +10,7 @@ import us.parr.lib.ParrtStrings;
 import us.parr.lib.ParrtCollections;
 import us.parr.lib.ParrtIO;
 import us.parr.bookish.model.entity.*;
+import us.parr.lib.collections.MutableInt;
 import static us.parr.bookish.translate.Translator.splitSectionTitle;
 import static us.parr.bookish.translate.Translator.parseXMLAttrs;
 }
@@ -52,7 +53,7 @@ options {
 	public SubSubSectionDef currentSubSubSec;
 
 	public List<ExecutableCodeDef> codeBlocks = new ArrayList<>();
-	public int codeCounter = 1;
+	public Map<String,MutableInt> codeCounters = new HashMap<>();
 
 	public String inputFilename;
 	public int chapNumber;
@@ -200,11 +201,12 @@ pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 		Map<String,String> args = parseXMLAttrs(tag);
 		String fname = ParrtIO.basename(inputFilename);
 		String py = $codeblock.text.trim();
+		codeCounters.putIfAbsent(tag, new MutableInt(1));
 		if ( py.length()>=0 ) {
-			$codeDef = new PyFigDef($ctx, fname, codeCounter, args, py);
+			$codeDef = new PyFigDef($ctx, fname, codeCounters.get(tag).v, args, py);
 			codeBlocks.add($codeDef);
 		}
-		codeCounter++;
+		codeCounters.get(tag).v++;
 		}
 	;
 
@@ -221,13 +223,14 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 		String fname = ParrtIO.basename(inputFilename);
 		// last line is expression to get output or blank line or comment
 		String py = null;
+		codeCounters.putIfAbsent(tag, new MutableInt(1));
 		if ( $codeblock.ctx!=null ) {
 			py = $codeblock.text.trim();
 			if ( py.length()==0 ) py = null;
 		}
-		$codeDef = new PyEvalDef($ctx, fname, codeCounter, args, py);
+		$codeDef = new PyEvalDef($ctx, fname, codeCounters.get(tag).v, args, py);
 		codeBlocks.add($codeDef);
-		codeCounter++;
+		codeCounters.get(tag).v++;
 		}
 	;
 
@@ -307,13 +310,16 @@ inline_pyeval returns [InlinePyEvalDef codeDef, String stdout, String stderr, St
  	:	INLINE_PYEVAL REF? CHUNK
 		{
 		String fname = ParrtIO.basename(inputFilename);
+		String tag = $REF.text;
+		tag = ParrtStrings.stripQuotes(tag);
 		// last line is expression to get output or blank line or comment
 		String py = $CHUNK.text.trim();
 		py = ParrtStrings.stripQuotes(py, 2).trim(); // strip double curlies
+		codeCounters.putIfAbsent(tag, new MutableInt(1));
 		if ( py.length()==0 ) py = null;
-		$codeDef = new InlinePyEvalDef($ctx, fname, codeCounter, $REF!=null?$REF:$INLINE_PYEVAL, py);
+		$codeDef = new InlinePyEvalDef($ctx, fname, codeCounters.get(tag).v, $REF!=null?$REF:$INLINE_PYEVAL, py);
 		codeBlocks.add($codeDef);
-		codeCounter++;
+		codeCounters.get(tag).v++;
 		}
 	;
 

@@ -268,6 +268,7 @@ public class Tool {
 				String pycode = file.render();
 				String snippetHashFilename = chapterSnippetsDir+"/"+basename+"_"+label+"-"+md5hash(pycode)+".hash";
 				if ( !Files.exists(Paths.get(snippetHashFilename)) ) {
+					System.err.println("BUILDING "+snippetFilename);
 					ParrtIO.save(snippetHashFilename, ""); // save empty hash marker file
 					ParrtIO.save(chapterSnippetsDir+"/"+snippetFilename, pycode);
 					// EXEC!
