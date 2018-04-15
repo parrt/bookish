@@ -129,10 +129,12 @@ public class Tool {
 			book.filenames.add(fname);
 			Pair<BookishParser.DocumentContext, BookishParser> results =
 				parseChapter(inputDir, fname, book.chapCounter);
+			BookishParser.DocumentContext tree = results.a;
+			BookishParser parser = results.b;
 			book.chapCounter++;
-			trees.add(results.a);
-			entities.add(results.b.entities);
-			codeBlocks.add(results.b.codeBlocks);
+			trees.add(tree);
+			entities.add(parser.entities);
+			codeBlocks.add(parser.codeBlocks);
 		}
 
 		executeCodeSnippets(book, getBuildDir(metadataFilename), codeBlocks);
@@ -140,10 +142,8 @@ public class Tool {
 		// now walk all trees and translate
 		generateBook(target, book, trees, entities);
 
-//		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
 		copyImages(book, inputDir, outputDir);
 		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
-//		copyImages(BUILD_DIR, outputDir);
 	}
 
 	public Book createBook(Target target, JsonObject metadata) throws Exception {
@@ -219,7 +219,8 @@ public class Tool {
 	}
 
 	/** generate python files to execute \pyfig, \pyeval blocks */
-	public void executeCodeSnippets(Book book, String buildDir,
+	public void executeCodeSnippets(Book book,
+	                                String buildDir,
 	                                List<List<ExecutableCodeDef>> codeBlocks)
 	{
 		String snippetsDir = buildDir+"/snippets";
@@ -255,27 +256,11 @@ public class Tool {
 			for (String label : labels) { // for each group of code with same label
 				List<ExecutableCodeDef> defs = labelToDefs.get(label);
 				String snippetFilename = basename+"_"+label+".py";
-				List<ST> snippets = new ArrayList<>();
-				for (ExecutableCodeDef def : defs) {
-					String tname = def.isOutputVisible ? "pyeval" : "pyfig";
-					ST snippet = pycodeTemplates.getInstanceOf(tname);
-					snippet.add("def",def);
-					// Don't allow "plt.show()" to execute, strip it
-					String code = null;
-					if ( def.code!=null ) {
-						code = def.code.replace("plt.show()", "");
-					}
-					if ( code!=null && code.trim().length()==0 ) {
-						code = null;
-					}
-					snippet.add("code", code);
-					snippets.add(snippet);
-				}
+				List<ST> snippets = getSnippetTemplates(pycodeTemplates, defs);
 				ST file = pycodeTemplates.getInstanceOf("pyfile");
 				file.add("snippets", snippets);
 				file.add("buildDir", buildDir);
 				file.add("outputDir", outputDir);
-//				file.add("imagesDir", inputDir+"/images");
 				file.add("basename", basename);
 				file.add("label", label);
 				String pycode = file.render();
@@ -291,42 +276,66 @@ public class Tool {
 					}
 				}
 
-				for (ExecutableCodeDef def : defs) {
-					String stderr = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".err");
-					if ( def instanceof PyFigDef ) {
-						((PyFigDef) def).generatedFilenameNoSuffix = outputDir+"/images/"+basename+"/"+basename+"_"+label+"_"+def.index;
-					}
-					if ( stderr.trim().length()>0 ) {
-						System.err.println(stderr);
-					}
-					if ( def.isOutputVisible ) {
-						if ( def.tree instanceof BookishParser.PyevalContext ) {
-							BookishParser.PyevalContext tree = (BookishParser.PyevalContext) def.tree;
-							tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
-							tree.stderr = stderr.trim();
-							if ( tree.stdout.length()==0 ) tree.stdout = null;
-							if ( tree.stderr.length()==0 ) tree.stderr = null;
+				storeOutputInTrees(defs, label, basename, chapterSnippetsDir);
+			}
+		}
+	}
+
+	public void storeOutputInTrees(List<ExecutableCodeDef> defs, String label, String basename, String chapterSnippetsDir) {
+		for (ExecutableCodeDef def : defs) {
+			String stderr = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".err");
+			if ( def instanceof PyFigDef ) {
+				((PyFigDef) def).generatedFilenameNoSuffix = outputDir+"/images/"+basename+"/"+basename+"_"+label+"_"+def.index;
+			}
+			if ( stderr.trim().length()>0 ) {
+				System.err.println(stderr);
+			}
+			if ( def.isOutputVisible ) {
+				if ( def.tree instanceof BookishParser.PyevalContext ) {
+					BookishParser.PyevalContext tree = (BookishParser.PyevalContext) def.tree;
+					tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
+					tree.stderr = stderr.trim();
+					if ( tree.stdout.length()==0 ) tree.stdout = null;
+					if ( tree.stderr.length()==0 ) tree.stderr = null;
 //						System.out.println("stdout: "+stdout);
 //						System.out.println("stderr: "+stderr);
-							if ( def.displayExpr!=null ) {
-								String dataFilename = basename+"_"+label+"_"+def.index+".csv";
-								tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
-		//						System.out.println("data: "+tree.displayData);
-							}
-						}
-						else {
-							BookishParser.Inline_pyevalContext tree = (BookishParser.Inline_pyevalContext) def.tree;
-							tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
-							tree.stderr = stderr.trim();
-							if ( tree.stdout.length()==0 ) tree.stdout = null;
-							if ( tree.stderr.length()==0 ) tree.stderr = null;
-							String dataFilename = basename+"_"+label+"_"+def.index+".csv";
-							tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
-						}
+					if ( def.displayExpr!=null ) {
+						String dataFilename = basename+"_"+label+"_"+def.index+".csv";
+						tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
+//						System.out.println("data: "+tree.displayData);
 					}
+				}
+				else {
+					BookishParser.Inline_pyevalContext tree = (BookishParser.Inline_pyevalContext) def.tree;
+					tree.stdout = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out");
+					tree.stderr = stderr.trim();
+					if ( tree.stdout.length()==0 ) tree.stdout = null;
+					if ( tree.stderr.length()==0 ) tree.stderr = null;
+					String dataFilename = basename+"_"+label+"_"+def.index+".csv";
+					tree.displayData = ParrtIO.load(chapterSnippetsDir+"/"+dataFilename);
 				}
 			}
 		}
+	}
+
+	public List<ST> getSnippetTemplates(STGroup pycodeTemplates, List<ExecutableCodeDef> defs) {
+		List<ST> snippets = new ArrayList<>();
+		for (ExecutableCodeDef def : defs) {
+			String tname = def.isOutputVisible ? "pyeval" : "pyfig";
+			ST snippet = pycodeTemplates.getInstanceOf(tname);
+			snippet.add("def",def);
+			// Don't allow "plt.show()" to execute, strip it
+			String code = null;
+			if ( def.code!=null ) {
+				code = def.code.replace("plt.show()", "");
+			}
+			if ( code!=null && code.trim().length()==0 ) {
+				code = null;
+			}
+			snippet.add("code", code);
+			snippets.add(snippet);
+		}
+		return snippets;
 	}
 
 	public String translateString(Translator trans, String markdown, String startRule) throws Exception {
