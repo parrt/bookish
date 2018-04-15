@@ -87,7 +87,6 @@ public class Tool {
 		outputDir = option("o");
 
 		String outFilename;
-		Translator trans;
 		Target target = (Target)optionO("target");
 
 		ParrtIO.mkdir(outputDir+"/images");
@@ -98,7 +97,7 @@ public class Tool {
 			String inputFilename = metadataFilename;
 			Book book = new Book(this, "","");
 			book.entities = new HashMap<>();
-			trans = new Translator(book, book.entities, target, outputDir);
+			Translator trans = new Translator(book, book.entities, target, outputDir);
 			if ( target==Target.HTML ) {
 				outFilename = "index.html";
 			}
@@ -118,21 +117,7 @@ public class Tool {
 		JsonObject metadata = jsonReader.readObject();
 //		System.out.println(metadata);
 
-		String title = metadata.getString("title");
-		Book book = new Book(this, title, null);
-		String author = metadata.getString("author");
-		dataDir = metadata.getString("data");
-		author = "\n\n"+author; // Rule paragraph needs blank line on the front
-		trans = new Translator(book, null, target, outputDir);
-		book.author = translateString(trans, author, "paragraph");
-
-		String mainOutFilename;
-		if ( target==Target.HTML ) {
-			mainOutFilename = "index.html";
-		}
-		else {
-			mainOutFilename = "book.tex";
-		}
+		Book book = createBook(target, metadata);
 
 		// parse all documents first to get entity defs
 		List<BookishParser.DocumentContext> trees = new ArrayList<>();
@@ -153,7 +138,32 @@ public class Tool {
 		executeCodeSnippets(book, getBuildDir(metadataFilename), codeBlocks);
 
 		// now walk all trees and translate
-		List<Document> documents = new ArrayList<>();
+		generateBook(target, book, trees, entities);
+
+//		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
+		copyImages(book, inputDir, outputDir);
+		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
+//		copyImages(BUILD_DIR, outputDir);
+	}
+
+	public Book createBook(Target target, JsonObject metadata) throws Exception {
+		String title = metadata.getString("title");
+		Book book = new Book(this, title, null);
+		String author = metadata.getString("author");
+		dataDir = metadata.getString("data");
+		author = "\n\n"+author; // Rule paragraph needs blank line on the front
+		Translator trans = new Translator(book, null, target, outputDir);
+		book.author = translateString(trans, author, "paragraph");
+		return book;
+	}
+
+	public void generateBook(Target target,
+	                         Book book,
+	                         List<BookishParser.DocumentContext> trees,
+	                         List<Map<String, EntityDef>> entities)
+	{
+		String outFilename;
+		Translator trans = null;
 		for (int i = 0; i<book.filenames.size(); i++) {
 			String fname = book.filenames.get(i);
 			BookishParser.DocumentContext tree = trees.get(i);
@@ -180,7 +190,6 @@ public class Tool {
 
 			String output = outputST.render();
 			doc.markdownFilename = fname;
-			documents.add(doc);
 			if ( target==Target.HTML ) {
 				outFilename = stripFileExtension(fname)+".html";
 			}
@@ -194,11 +203,15 @@ public class Tool {
 
 		ST bookTemplate = trans.templates.getInstanceOf("Book");
 		bookTemplate.add("model", book);
+
+		String mainOutFilename;
+		if ( target==Target.HTML ) {
+			mainOutFilename = "index.html";
+		}
+		else {
+			mainOutFilename = "book.tex";
+		}
 		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
-//		System.out.println("Wrote "+outputDir+"/"+mainOutFilename);
-		copyImages(book, inputDir, outputDir);
-		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
-//		copyImages(BUILD_DIR, outputDir);
 	}
 
 	public String getBuildDir(String metadataFilename) {
