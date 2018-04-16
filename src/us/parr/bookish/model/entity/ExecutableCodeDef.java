@@ -13,6 +13,8 @@ public abstract class ExecutableCodeDef extends EntityDef {
 	public String code;
 	public String displayExpr;
 	public String inputFilename;
+	public SectionDef enclosingSection;
+	public ChapterDef enclosingChapter;
 
 	public boolean isCodeVisible = true;
 	public boolean isOutputVisible = true;

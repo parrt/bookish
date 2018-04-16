@@ -19,6 +19,7 @@ import us.parr.bookish.parse.BookishLexer;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.translate.ModelConverter;
 import us.parr.bookish.translate.Translator;
+import us.parr.lib.ParrtCollections;
 import us.parr.lib.ParrtIO;
 import us.parr.lib.ParrtSys;
 
@@ -238,9 +239,14 @@ public class Tool {
 			String chapterSnippetsDir = snippetsDir+"/"+basename;
 			ParrtIO.mkdir(chapterSnippetsDir);
 			ParrtIO.mkdir(outputDir+"/images/"+basename);
-			// every chapter snippets dir gets a data link to book data directory
+			String outputChapDir = outputDir+"/notebooks/"+basename;
+			ParrtIO.mkdir(outputChapDir);
+			// every chapter snippets/notebooks dir gets a data link to book data directory
 			if ( !new File(chapterSnippetsDir+"/data").exists() ) {
 				execCommandLine("ln -s "+dataDir+" "+chapterSnippetsDir+"/data");
+			}
+			if ( !new File(outputChapDir+"/data").exists() ) {
+				execCommandLine("ln -s "+dataDir+" "+outputChapDir+"/data");
 			}
 
 			// get mapping from label (or index if no label) to list of snippets
@@ -264,6 +270,8 @@ public class Tool {
 				file.add("basename", basename);
 				file.add("label", label);
 				String pycode = file.render();
+
+				// Generate and exec snippets .py file
 				String snippetHashFilename = chapterSnippetsDir+"/"+basename+"_"+label+"-"+md5hash(pycode)+".hash";
 				if ( !Files.exists(Paths.get(snippetHashFilename)) ) {
 					System.err.println("BUILDING "+snippetFilename);
@@ -272,8 +280,25 @@ public class Tool {
 					// EXEC!
 					String[] result = ParrtSys.execInDir(chapterSnippetsDir, "pythonw", snippetFilename);
 					if ( result[1]!=null && result[1].length()>0 ) {
-						System.err.println(result[1]); // errors during python compilation not running
+						System.err.println(result[1]); // errors during python compilation not exec
 					}
+				}
+
+				// Generate and exec .py file to create .ipynb file
+				ST nbwriter = pycodeTemplates.getInstanceOf("noteBookWriter");
+				List<String> codeBlks = ParrtCollections.map(defs, d -> d.code);
+				nbwriter.add("snippets", codeBlks);
+				nbwriter.add("outputDir", outputDir);
+				nbwriter.add("basename", basename);
+				nbwriter.add("label", label);
+				nbwriter.add("title", "Notebook "+label+" from Chap "+i+" "+defs.get(0).enclosingChapter.title);
+				String nbcode = nbwriter.render();
+				String nbWriterFilename = "mk_ipynb_"+basename+"_"+label+".py";
+				ParrtIO.save(chapterSnippetsDir+"/"+nbWriterFilename, nbcode);
+				System.out.println("### "+chapterSnippetsDir+"/"+nbWriterFilename);
+				String[] result = ParrtSys.execInDir(chapterSnippetsDir, "pythonw", nbWriterFilename);
+				if ( result[1]!=null && result[1].length()>0 ) {
+					System.err.println(result[1]); // errors during python compilation not exec
 				}
 
 				storeOutputInTrees(defs, label, basename, chapterSnippetsDir);

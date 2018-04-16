@@ -26,7 +26,7 @@ options {
 	 *  Track all labeled entities in this file for inclusion in overall book.
 	 *  Do during parse for speed, to avoid having to walk tree 2x.
 	 */
-	public Map<String,EntityDef> entities = new HashMap<>();
+	public Map<String,EntityDef> entities = new LinkedHashMap<>();
 
 	public void defEntity(EntityDef entity) {
 		if ( entity.label!=null ) {
@@ -49,6 +49,7 @@ options {
 
 	public ChapterDef currentChap;
 	public SectionDef currentSec;
+	public SectionDef currentSecPtr;
 	public SubSectionDef currentSubSec;
 	public SubSubSectionDef currentSubSubSec;
 
@@ -69,11 +70,12 @@ document
 	:	chapter BLANK_LINE? EOF
 	;
 
-chapter : BLANK_LINE? chap=CHAPTER author? preabstract? abstract_? section_content section*
+chapter : BLANK_LINE? chap=CHAPTER
 		  {
 		  currentChap = new ChapterDef(chapNumber, $chap, null);
 		  defEntity(currentChap);
 		  }
+		  author? preabstract? abstract_? section_content section*
 		;
 
 author : (ws|BLANK_LINE)? AUTHOR LCURLY paragraph_optional_blank_line RCURLY ;
@@ -82,34 +84,40 @@ abstract_ : (ws|BLANK_LINE)? ABSTRACT LCURLY paragraph_optional_blank_line parag
 
 preabstract : (ws|BLANK_LINE)? PREABSTRACT LCURLY paragraph_optional_blank_line paragraph* RCURLY;
 
-section : BLANK_LINE sec=SECTION section_content subsection*
+section : BLANK_LINE sec=SECTION
 		  {
 		  subSecCounter = 1;
 		  subSubSecCounter = 1;
 		  currentSubSec = null;
 		  currentSubSubSec = null;
 		  currentSec = new SectionDef(secCounter, $sec, currentChap);
+		  currentSecPtr = currentSec;
 		  defEntity(currentSec);
 		  secCounter++;
 		  }
+		  section_content subsection*
 		;
 
-subsection : BLANK_LINE sec=SUBSECTION section_content subsubsection*
+subsection : BLANK_LINE sec=SUBSECTION
 		  {
 		  subSubSecCounter = 1;
 		  currentSubSubSec = null;
 		  currentSubSec = new SubSectionDef(subSecCounter, $sec, currentSec);
+		  currentSecPtr = currentSubSec;
 		  defEntity(currentSubSec);
 		  subSecCounter++;
 		  }
+		  section_content subsubsection*
 		;
 
-subsubsection : BLANK_LINE sec=SUBSUBSECTION section_content
+subsubsection : BLANK_LINE sec=SUBSUBSECTION
 		  {
 		  currentSubSubSec = new SubSubSectionDef(subSubSecCounter, $sec, currentSubSec);
+		  currentSecPtr = currentSubSubSec;
 		  defEntity(currentSubSubSec);
 		  subSubSecCounter++;
 		  }
+		  section_content
 		;
 
 section_content : (section_element|ws)* ;
@@ -206,6 +214,8 @@ pyfig returns [PyFigDef codeDef, String stdout, String stderr]
 		if ( py.length()>=0 ) {
 			$codeDef = new PyFigDef($ctx, fname, codeCounters.get(label).v, args, py);
 			codeBlocks.add($codeDef);
+			$codeDef.enclosingSection = currentSecPtr;
+			$codeDef.enclosingChapter = currentChap;
 		}
 		codeCounters.get(label).v++;
 		}
@@ -232,6 +242,8 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 		}
 		$codeDef = new PyEvalDef($ctx, fname, codeCounters.get(label).v, args, py);
 		codeBlocks.add($codeDef);
+		$codeDef.enclosingSection = currentSecPtr;
+		$codeDef.enclosingChapter = currentChap;
 		codeCounters.get(label).v++;
 		}
 	;

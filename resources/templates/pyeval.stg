@@ -67,3 +67,24 @@ with redirect_stderr(fstderr):
 			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.err", "w") as f:
 				f.write(fstderr.getvalue())
 >>
+
+// templates to generate python file that creates notebook
+
+noteBookWriter(snippets,outputDir, basename, label, title) ::= <<
+import nbformat as nbf
+
+nb = nbf.v4.new_notebook(metadata={"kernelspec": {
+                                      "display_name": "Python 3",
+                                      "language": "python",
+                                      "name": "python3"
+                                     }})
+
+codeSnippets = [
+<snippets:{snippet | <\n># ----------<\n>'''<snippet>''',<\n>}>
+]
+
+nb['cells'] = \
+	[nbf.v4.new_markdown_cell("# <title>")] + \
+	[nbf.v4.new_code_cell(c) for c in codeSnippets]
+nbf.write(nb, '<outputDir>/notebooks/<basename>/<label>.ipynb')
+>>
