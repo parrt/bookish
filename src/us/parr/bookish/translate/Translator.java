@@ -155,6 +155,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 				templates = new STGroupFile(templateFileName);
 				templates.registerRenderer(String.class, new StringRenderer());
 				break;
+			case HTML_ARTICLE :
+				templateFileName = "templates/html-article.stg";
+				templates = new STGroupFile(templateFileName);
+				templates.registerRenderer(String.class, new StringRenderer());
+				break;
 			case LATEX :
 				templateFileName = "templates/latex.stg";
 				templates = new STGroupFile(templateFileName);

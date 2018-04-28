@@ -60,7 +60,7 @@ import static us.parr.lib.ParrtSys.execCommandLine;
 public class Tool {
 	public static final String BUILD_DIR = "/tmp/build";
 
-	public enum Target { HTML, LATEX, LATEX_BOOK }
+	public enum Target { HTML, HTML_ARTICLE, LATEX, LATEX_BOOK }
 
 	public Map<String,Object> options = new HashMap<>();
 
@@ -87,29 +87,14 @@ public class Tool {
 		inputDir = new File(metadataFilename).getParent();
 		outputDir = option("o");
 
-		String outFilename;
 		Target target = (Target)optionO("target");
 
 		ParrtIO.mkdir(outputDir+"/images");
 		String snippetsDir = getBuildDir(metadataFilename)+"/snippets";
 		ParrtIO.mkdir(snippetsDir);
 
-		if ( metadataFilename.endsWith(".md") ) { // just one file (legacy stuff)
-			String inputFilename = metadataFilename;
-			Book book = new Book(this, "","");
-			book.entities = new HashMap<>();
-			Translator trans = new Translator(book, book.entities, target, outputDir);
-			if ( target==Target.HTML ) {
-				outFilename = "index.html";
-			}
-			else {
-				outFilename = stripFileExtension(basename(inputFilename))+".tex";
-			}
-			Pair<Document, String> results = legacy_translate(trans, inputDir, basename(inputFilename));
-			String output = results.b;
-			ParrtIO.save(outputDir+"/"+outFilename, output);
-			//System.out.println("Wrote "+outputDir+"/"+outFilename);
-			copyImages(book, inputDir, outputDir);
+		if ( metadataFilename.endsWith(".md") ) { // just one file
+			generateArticle(metadataFilename, target);
 			return;
 		}
 
@@ -143,6 +128,26 @@ public class Tool {
 		// now walk all trees and translate
 		generateBook(target, book, trees, entities);
 
+		copyImages(book, inputDir, outputDir);
+		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
+	}
+
+	public void generateArticle(String metadataFilename, Target target) throws IOException {
+		String outFilename;
+		String inputFilename = metadataFilename;
+		Book book = new Book(this, "", "");
+		book.entities = new HashMap<>();
+		Translator trans = new Translator(book, book.entities, target, outputDir);
+		if ( target==Target.HTML || target==Target.HTML_ARTICLE ) {
+			outFilename = "index.html";
+		}
+		else {
+			outFilename = stripFileExtension(basename(inputFilename))+".tex";
+		}
+		Pair<Document, String> results = parseArticle(trans, inputDir, basename(inputFilename));
+		String output = results.b;
+		ParrtIO.save(outputDir+"/"+outFilename, output);
+		//System.out.println("Wrote "+outputDir+"/"+outFilename);
 		copyImages(book, inputDir, outputDir);
 		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 	}
@@ -392,9 +397,9 @@ public class Tool {
 	}
 
 	// legacy single-doc translation
-	public Pair<Document,String> legacy_translate(Translator trans,
-	                                              String inputDir,
-	                                              String inputFilename)
+	public Pair<Document,String> parseArticle(Translator trans,
+	                                          String inputDir,
+	                                          String inputFilename)
 		throws IOException
 	{
 		Pair<BookishParser.DocumentContext,BookishParser> results =
@@ -451,6 +456,9 @@ public class Tool {
 					case "html":
 					case "HTML" :
 						value = Target.HTML;
+						break;
+					case "html-article":
+						value = Target.HTML_ARTICLE;
 						break;
 					case "latex" :
 						value = Target.LATEX;
