@@ -148,7 +148,7 @@ public class Tool {
 		String output = results.b;
 		ParrtIO.save(outputDir+"/"+outFilename, output);
 		//System.out.println("Wrote "+outputDir+"/"+outFilename);
-		copyImages(book, inputDir, outputDir);
+		execCommandLine(String.format("cp -r %s/images %s", inputDir, outputDir));
 		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 	}
 
