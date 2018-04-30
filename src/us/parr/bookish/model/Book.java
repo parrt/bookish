@@ -31,6 +31,8 @@ public class Book extends OutputModelObject {
 
 	public int chapCounter = 1;
 
+	public String type; // book, article, etc...
+
 	public Book(Tool tool, String title, String author) {
 		this.tool = tool;
 		this.author = author;

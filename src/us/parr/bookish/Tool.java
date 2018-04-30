@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -157,6 +158,7 @@ public class Tool {
 		Book book = new Book(this, title, null);
 		String author = metadata.getString("author");
 		dataDir = metadata.getString("data");
+		book.type = metadata.getString("type", "book");
 		author = "\n\n"+author; // Rule paragraph needs blank line on the front
 		Translator trans = new Translator(book, null, target, outputDir);
 		book.author = translateString(trans, author, "paragraph");
@@ -196,7 +198,7 @@ public class Tool {
 
 			String output = outputST.render();
 			doc.markdownFilename = fname;
-			if ( target==Target.HTML ) {
+			if ( target==Target.HTML || target==Target.HTML_ARTICLE ) {
 				outFilename = stripFileExtension(fname)+".html";
 			}
 			else {
@@ -210,14 +212,16 @@ public class Tool {
 		ST bookTemplate = trans.templates.getInstanceOf("Book");
 		bookTemplate.add("model", book);
 
-		String mainOutFilename;
-		if ( target==Target.HTML ) {
-			mainOutFilename = "index.html";
+		if ( book.type.equals("book") ) {
+			String mainOutFilename;
+			if ( target==Target.HTML || target==Target.HTML_ARTICLE ) {
+				mainOutFilename = "index.html";
+			}
+			else {
+				mainOutFilename = "book.tex";
+			}
+			ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
 		}
-		else {
-			mainOutFilename = "book.tex";
-		}
-		ParrtIO.save(outputDir+"/"+mainOutFilename, bookTemplate.render());
 	}
 
 	public String getBuildDir(String metadataFilename) {
@@ -409,6 +413,8 @@ public class Tool {
 		Document doc = (Document)trans.visit(results.a); // get single chapter
 		doc.chapter.connectContainerTree();
 
+		executeCodeSnippets(book, "/tmp/build-article-code", Arrays.asList(results.b.codeBlocks));
+
 		ModelConverter converter = new ModelConverter(trans.templates);
 		ST outputST = converter.walk(doc);
 
@@ -431,16 +437,16 @@ public class Tool {
 
 	/** Copy images/ subdirs to outputDir/images */
 	public void copyImages(Book book, String inputDir, String outputDir) {
+		if ( book.type.equals("article") ) {
+			execCommandLine(String.format("cp -r %s/images %s", inputDir, outputDir));
+			return;
+		}
 		for (String fname : book.filenames) {
 			fname = ParrtIO.stripFileExtension(fname);
 			if ( new File(inputDir+"/images/"+fname).exists() ) {
 				execCommandLine(String.format("cp -r %s/images/%s %s/images", inputDir, fname, outputDir));
 			}
 		}
-//		execCommandLine(String.format("cp -r %s/images/*.svg %s/images", inputDir, outputDir));
-//		execCommandLine(String.format("cp -r %s/images/*.png %s/images", inputDir, outputDir));
-//		execCommandLine(String.format("cp -r %s/images/*.pdf %s/images", inputDir, outputDir));
-//		execCommandLine(String.format("cp -r %s/images/*.jpg %s/images", inputDir, outputDir));
 	}
 
 	public String option(String name) { return (String)options.get(name); }
