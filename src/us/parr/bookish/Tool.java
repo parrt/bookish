@@ -144,7 +144,7 @@ public class Tool {
 		else {
 			outFilename = stripFileExtension(basename(inputFilename))+".tex";
 		}
-		Pair<Document, String> results = parseArticle(trans, inputDir, basename(inputFilename));
+		Pair<Document, String> results = parseArticle(book, trans, inputDir, basename(inputFilename));
 		String output = results.b;
 		ParrtIO.save(outputDir+"/"+outFilename, output);
 		//System.out.println("Wrote "+outputDir+"/"+outFilename);
@@ -397,7 +397,8 @@ public class Tool {
 	}
 
 	// legacy single-doc translation
-	public Pair<Document,String> parseArticle(Translator trans,
+	public Pair<Document,String> parseArticle(Book book,
+	                                          Translator trans,
 	                                          String inputDir,
 	                                          String inputFilename)
 		throws IOException
@@ -410,6 +411,19 @@ public class Tool {
 
 		ModelConverter converter = new ModelConverter(trans.templates);
 		ST outputST = converter.walk(doc);
+
+		// walk all OutputModelObjects created as labeled entities to convert those entities
+		// unlabeled entities are done in-line
+		ArrayList<String> labels = new ArrayList<>(trans.entities.keySet());
+		for (String label : labels) {
+			EntityDef def = trans.entities.get(label);
+			def.template = converter.walk(def.model);
+			if ( def.isGloballyVisible() ) { // move to global space
+				book.entities.put(label, def);
+				trans.entities.remove(label);
+			}
+		}
+
 		return new Pair<>(doc,outputST.render());
 	}
 
