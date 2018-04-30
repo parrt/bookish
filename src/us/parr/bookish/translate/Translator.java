@@ -792,8 +792,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitBlock(BookishParser.BlockContext ctx) {
-		Paragraph content = (Paragraph)visit(ctx.paragraph_content());
-		return new TextBlock(content.elements);
+		if ( ctx.paragraph_content()!=null ) {
+			Paragraph content = (Paragraph) visit(ctx.paragraph_content());
+			return new TextBlock(content.elements);
+		}
+		return null;
 	}
 
 	@Override
