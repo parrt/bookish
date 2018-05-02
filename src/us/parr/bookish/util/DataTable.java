@@ -37,7 +37,15 @@ public class DataTable {
 				List<String> row = new ArrayList<>();
 				for (int i = 0; i<record.size(); i++) {
 					String v = record.get(i);
-					if ( !NumberUtils.isDigits(v) && NumberUtils.isCreatable(v) ) {
+					boolean isInt = false;
+					try {
+						Integer.parseInt(v);
+						isInt = true;
+					}
+					catch (NumberFormatException nfe) {
+						isInt = false;
+					}
+					if ( !isInt && !NumberUtils.isDigits(v) && NumberUtils.isCreatable(v) ) {
 						v = String.format("%.4f",Precision.round(Double.valueOf(v), 4));
 					}
 					else {
