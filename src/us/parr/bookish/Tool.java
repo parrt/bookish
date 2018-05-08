@@ -206,7 +206,7 @@ public class Tool {
 			}
 			ParrtIO.save(outputDir+"/"+outFilename, output);
 			doc.generatedFilename = outFilename;
-//			System.out.println("Wrote "+outputDir+"/"+outFilename);
+			System.out.println("Wrote "+outputDir+"/"+outFilename);
 		}
 
 		ST bookTemplate = trans.templates.getInstanceOf("Book");
