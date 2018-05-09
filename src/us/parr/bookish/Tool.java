@@ -156,7 +156,7 @@ public class Tool {
 	public Book createBook(Target target, JsonObject metadata) throws Exception {
 		String title = metadata.getString("title");
 		Book book = new Book(this, title, null);
-		String author = metadata.getString("author");
+		String author = metadata.getString("author", "");
 		dataDir = metadata.getString("data");
 		book.type = metadata.getString("type", "book");
 		author = "\n\n"+author; // Rule paragraph needs blank line on the front
