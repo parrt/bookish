@@ -3,6 +3,9 @@ package us.parr.bookish;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.misc.MultiMap;
 import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -157,11 +160,13 @@ public class Tool {
 		String title = metadata.getString("title");
 		Book book = new Book(this, title, null);
 		String author = metadata.getString("author", "");
-		dataDir = metadata.getString("data");
-		book.type = metadata.getString("type", "book");
-		author = "\n\n"+author; // Rule paragraph needs blank line on the front
-		Translator trans = new Translator(book, null, target, outputDir);
-		book.author = translateString(trans, author, "paragraph");
+		if ( author.length()>0 ) {
+			dataDir = metadata.getString("data");
+			book.type = metadata.getString("type", "book");
+			author = "\n\n"+author; // Rule paragraph needs blank line on the front
+			Translator trans = new Translator(book, null, target, outputDir);
+			book.author = translateString(trans, author, "paragraph");
+		}
 		return book;
 	}
 
@@ -377,6 +382,14 @@ public class Tool {
 		BookishLexer lexer = new BookishLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		BookishParser parser = new BookishParser(tokens,null, 0);
+		parser.removeErrorListeners();
+		parser.addErrorListener(new ConsoleErrorListener() {
+			@Override
+			public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+				msg = "Parsing author string: "+msg;
+				super.syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e);
+			}
+		});
 		Method startMethod = BookishParser.class.getMethod(startRule, (Class[])null);
 		ParseTree doctree = (ParseTree)startMethod.invoke(parser, (Object[])null);
 
