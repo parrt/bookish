@@ -47,6 +47,8 @@ header(author) ::= <<
 
 \newcommand{\cut}[1]{}
 
+\renewcommand\vec{\mathbf}
+
 \allowdisplaybreaks
 
 \hypersetup{
