@@ -63,7 +63,7 @@ $preabstract$
 
 $abstract_$
 
-$if(model.chapterDocuments)$
+$if(model.subcontainers)$
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>
