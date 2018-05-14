@@ -90,6 +90,7 @@ XML		  : '<' -> pushMode(XML_MODE) ;
 END_TAG	  : '</' [a-zA-Z_][a-zA-Z0-9_]* '>' ;
 
 DOLLAR	  : '\\$' ;
+LT		  : '\\<' ;
 EQN       : '$' ~'$'+ '$' ;
 BLOCK_EQN : '\\[' .+? '\\]' ;
 

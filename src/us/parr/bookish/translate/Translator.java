@@ -409,6 +409,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public OutputModelObject visitOther(BookishParser.OtherContext ctx) {
 		String text = ctx.getText();
 		if ( text.equals("\\$") ) text = "$";
+		else if ( text.equals("\\<") ) text = "<";
 		return new Other(text);
 	}
 
@@ -874,6 +875,13 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		return null;
 	}
 
+	@Override
+	public OutputModelObject visitSymbol(BookishParser.SymbolContext ctx) {
+		return super.visitSymbol(ctx);
+	}
+
+	// Support
+
 	public boolean isHTMLTarget() {
 		return templates.getName().startsWith("HTML");
 	}
@@ -881,8 +889,6 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public boolean isLatexTarget() {
 		return templates.getName().startsWith("latex");
 	}
-
-	// Support
 
 	public String processImageWidth(String width) {
 		if ( width!=null ) {
