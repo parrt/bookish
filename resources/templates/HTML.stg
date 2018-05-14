@@ -63,6 +63,7 @@ $preabstract$
 
 $abstract_$
 
+$if(model.chapterDocuments)$
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>
@@ -76,6 +77,7 @@ $model.subcontainers:{sec |
 }$
 </ul>
 </div>
+$endif$
 
 $elements$
 
@@ -150,7 +152,7 @@ $\n$
 
 PyEval(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
-$dumpCode({$if(model.codeDef.code)$$model.codeDef.code$$\n$$endif$$if(model.codeDef.displayExpr)$$model.codeDef.displayExpr$$endif$})$
+$dumpLookCode({$if(model.codeDef.code)$$model.codeDef.code$$\n$$endif$$if(model.codeDef.displayExpr)$$model.codeDef.displayExpr$$endif$})$
 $endif$
 
 $if(model.stdout&&model.displayData)$
