@@ -10,6 +10,7 @@ header(author) ::= <<
 \usepackage{epstopdf}
 \usepackage{mdframed}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage[noline, boxed, procnumbered, linesnumberedhidden, titlenumbered]{algorithm2e}
 
 \textwidth = 6.5 in
 \textheight = 9 in

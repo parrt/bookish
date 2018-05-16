@@ -18,6 +18,7 @@ header(author) ::= <<
 \usepackage{tabto} %%symbol in left margin
 \usepackage{geometry}
 \usepackage{mdframed}
+\usepackage[noline, boxed, procnumbered, linesnumberedhidden, titlenumbered]{algorithm2e}
 
 \geometry{includehead,
           includefoot,
