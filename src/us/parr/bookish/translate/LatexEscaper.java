@@ -27,6 +27,8 @@ public class LatexEscaper extends StringRenderer {
 		s = s.replace("&", "\\&");
 		s = s.replace("$", "\\$");
 		s = s.replace("%", "\\%");
+		s = s.replace("<", "\\textless");
+		s = s.replace(">", "\\textgreater");
 		return s;
 	}
 }
