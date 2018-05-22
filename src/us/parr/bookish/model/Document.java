@@ -42,4 +42,6 @@ public class Document extends OutputModelObject {
 		}
 		return def;
 	}
+
+	public String getTitle() { return book.title; }
 }

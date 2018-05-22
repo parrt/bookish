@@ -250,9 +250,23 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		Join sec = (Join)visitSection_content(ctx.section_content());
 		Chapter chapter = new Chapter(def,
 		                              title, null,
-		                              (Author)auth, (PreAbstract)preabs,
-		                              (Abstract)abs, sec!=null?sec.elements:null, sections);
+		                              (Author) auth, (PreAbstract) preabs,
+		                              (Abstract) abs, sec!=null ? sec.elements : null, sections);
 		return chapter;
+//		if ( book.type.equals("article") ) {
+//			Article a = new Article(def,
+//			                              title, null,
+//			                              (Author) auth, (PreAbstract) preabs,
+//			                              (Abstract) abs, sec!=null ? sec.elements : null, sections);
+//			return a;
+//		}
+//		else {
+//			Chapter chapter = new Chapter(def,
+//			                              title, null,
+//			                              (Author) auth, (PreAbstract) preabs,
+//			                              (Abstract) abs, sec!=null ? sec.elements : null, sections);
+//			return chapter;
+//		}
 	}
 
 	@Override

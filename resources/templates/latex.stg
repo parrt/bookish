@@ -1,7 +1,7 @@
 delimiters "<",">"
 
 
-header(author) ::= <<
+header(title,author) ::= <<
 \documentclass[11pt]{article}
 \usepackage{hyperref}
 \usepackage{graphicx}
@@ -59,7 +59,7 @@ header(author) ::= <<
 }
 
 \urlstyle{same}
-\title{<model.title>}
+\title{<title>}
 \author{<author>}
 \begin{document}
 \maketitle
@@ -72,7 +72,7 @@ footer() ::= <<
 >>
 
 Book(model) ::= <<
-<header(model.author)>
+<header(model.title, model.author)>
 \tableofcontents
 
 \title{<model.title>}
@@ -84,13 +84,12 @@ Book(model) ::= <<
 
 
 Document(model, chapter) ::= <<
-<header(chapter.author)>
+<header(chapter.model.title, chapter.author)>
 <chapter>
 <footer()>
 >>
 
 Chapter(model, author, preabstract, abstract_, elements, subcontainers) ::= <<
-
 <preabstract>
 
 <abstract_>
