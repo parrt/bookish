@@ -78,6 +78,8 @@ public class Tool {
 	public String dataDir;
 	public String outputDir;
 
+	public JsonObject metadata;
+
 	public static void main(String[] args) throws Exception {
 		Tool tool = new Tool();
 		tool.process(args);
@@ -104,7 +106,7 @@ public class Tool {
 
 		// otherwise, read and use metadata
 		JsonReader jsonReader = Json.createReader(new FileReader(metadataFilename));
-		JsonObject metadata = jsonReader.readObject();
+		this.metadata = jsonReader.readObject();
 //		System.out.println(metadata);
 
 		Book book = createBook(target, metadata);
@@ -132,6 +134,7 @@ public class Tool {
 		// now walk all trees and translate
 		generateBook(target, book, trees, entities);
 
+		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 		copyImages(book, inputDir, outputDir);
 		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
 	}
@@ -263,6 +266,10 @@ public class Tool {
 				execCommandLine("ln -s "+dataDir+" "+outputChapDir+"/data");
 			}
 
+			// Copy resource to output notebook dir
+			String notebookResource = metadata.getString("notebook-resource");
+			execCommandLine(String.format("cp %s/%s %s", inputDir, notebookResource, chapterSnippetsDir));
+
 			// get mapping from label (or index if no label) to list of snippets
 			MultiMap<String, ExecutableCodeDef> labelToDefs = new MultiMap<>();
 			List<String> labels = new ArrayList<>();
@@ -309,6 +316,10 @@ public class Tool {
 				String nbcode = nbwriter.render();
 				String nbWriterFilename = "mk_ipynb_"+basename+"_"+label+".py";
 				ParrtIO.save(chapterSnippetsDir+"/"+nbWriterFilename, nbcode);
+
+				// Copy resource to output notebook dir
+				execCommandLine(String.format("cp %s/%s %s", inputDir, notebookResource, outputDir+"/notebooks/"+basename));
+
 				System.out.println("### "+chapterSnippetsDir+"/"+nbWriterFilename);
 				String[] result = ParrtSys.execInDir(chapterSnippetsDir, "pythonw", nbWriterFilename);
 				if ( result[1]!=null && result[1].length()>0 ) {
