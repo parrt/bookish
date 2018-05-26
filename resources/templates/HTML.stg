@@ -274,7 +274,7 @@ $items$
 </tr>
 >>
 
-TableItem(model, contents) ::= "<td align=left>$contents$</td>"
+TableItem(model, contents) ::= "<td align=center>$contents$</td>"
 TableHeaderItem(model, contents) ::= <<
 <th align=center $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>$contents$</th>
 >>
