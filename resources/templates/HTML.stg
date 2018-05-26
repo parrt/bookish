@@ -276,7 +276,7 @@ $items$
 
 TableItem(model, contents) ::= "<td align=left>$contents$</td>"
 TableHeaderItem(model, contents) ::= <<
-<th align=left $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>$contents$</th>
+<th align=center $model.attrs:{attr | $attr$="$model.attrs.(attr)$"}; separator=" "$>$contents$</th>
 >>
 
 Paragraph(model, elements) ::= <<
