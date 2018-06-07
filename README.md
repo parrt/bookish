@@ -5,19 +5,19 @@ Bookish is an xml-ish + some markdown format for books and articles that it can 
 You can use python directly in the doc like a notebook to  computer and print stuff:
 
 <center>
-<img src=images/snapshot-print.png width=700>
+<img src=images/snapshot-print.png width=600>
 </center>
 
 and display data frames:
 
 <center>
-<img src=images/snapshot-df.png width=700>
+<img src=images/snapshot-df.png width=400>
 </center>
 
 and even show matplotlib graphs:
 
 <center>
-<img src=images/snapshot-graph.png width=700>
+<img src=images/snapshot-graph.png width=600>
 </center>
 
 You will also notice that I have built this program as if it were a programming language translator.  The strategy I use is to construct a model of the document from the parse tree using a visitor. Then I use a [fiendishly clever bit of code](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/ModelConverter.java) to automatically convert that representation of the document into a tree of [string templates](http://www.stringtemplate.org).  Of course the set of templates you use determines what output you get.  Change the templates and you change the target language. For example here are the [HTML templates](https://github.com/parrt/bookish/blob/master/resources/templates/html-book.stg).
