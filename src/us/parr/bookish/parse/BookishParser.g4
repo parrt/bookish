@@ -55,6 +55,7 @@ include : INCLUDE attrs[List.of("file")] END_TAG ;
 content
 	:	(	paragraph
 	 	|	BLANK_LINE
+	 	|	callout
 	 	|	chapquote
 	 	|	sidequote
 	 	|	sidenote
@@ -201,7 +202,7 @@ table
 		TABLE_
 	;
 
-table_header : TR (ws? TH attrs[List.of("width")] END_TAG table_item)+ ;
+table_header : TR (ws? TH attrs[List.of("width")]? END_TAG table_item)+ ;
 table_row : TR (ws? TD table_item)+ ;
 
 list_item : content? ;

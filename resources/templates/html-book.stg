@@ -340,7 +340,7 @@ Quoted(model, elements) ::= "&ldquo;$elements$&rdquo;"
 
 Callout(model, text) ::= "<div class=callout>$text$</div>"
 
-Aside(model) ::= <<
+Aside(model, text) ::= <<
 <div class=aside><b>$model.attributes.title$</b><br>
 $text$
 </div>
