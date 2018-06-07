@@ -10,21 +10,22 @@ You can use python directly in the doc like a notebook to  computer and print st
 
 and display data frames:
 
-<center>
-<img src=images/snapshot-df.png width=400>
-</center>
+<table>
+<tr><td><img src=images/snapshot-df.png width=400>
+</table>
 
 and even show matplotlib graphs:
 
-<center>
-<img  src=images/snapshot-graph.png width=600>
-</center>
+<table>
+<tr><td><img  src=images/snapshot-graph.png width=600>
+</table>
 
 As see below, it also does some really fancy magic to convert full latex equations (or even latex chunks) to SVG images for display inline (tricky to get vertical alignment correct.)
 
-<center>
+<table>
+<tr><td>
 <img src=images/snapshot.png width=700>
-</center>
+</table>
 
 ## Meta-language
 
@@ -123,9 +124,10 @@ Here are the tags that contain attributes, not all of which are required:
 
 In the end we converted the source document to markdown and build a translator that generated [HTML](http://parrt.cs.usfca.edu/doc/matrix-calculus/index.html) using SVG for equations and [PDF](http://parrt.cs.usfca.edu/doc/matrix-calculus.pdf) from native latex equations. It does a pretty good job with html as you can see:
 
-<center>
+<table>
+<tr><td>
 <img src=images/snapshot.png width=700>
-</center>
+</table>
 
 All of those equations, even the ones inline in the text paragraph, are `<img>` references.
 
@@ -147,9 +149,10 @@ If you can't use JavaScript, you have to use images. If you have to use images, 
 
 The really tricky bit is the vertical alignment of equations within a line of HTML text. Check out this sentence with embedded equations:
 
-<center>
+<table>
+<tr><td>
 <img src="images/snapshot2.png" width=560>
-</center>
+</table>
 
 (I had to take a snapshot and show that instead of giving raw HTML plus equations; github's markdown processor didn't handle it properly. haha.)
 
