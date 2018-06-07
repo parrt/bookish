@@ -1,0 +1,362 @@
+delimiters "$","$"
+
+/*
+NOTES
+
+From: https://css-tricks.com/probably-dont-base64-svg/
+<img src="data:image/svg+xml;base64,[data]"> for embedding SVG directly in HTML doc with base64
+<img src='data:image/svg+xml;utf8,<svg ... > ... </svg>'>
+make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
+*/
+
+header() ::= <<
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+<link rel="stylesheet" type="text/css" href="css/book.css"/>
+</head>
+<body>
+>>
+
+footer() ::= <<
+</body>
+</html>
+>>
+
+/** This is the title page, TOC etc... for the book. Chapters and
+ *  all content in separate files.  Article has no main page.
+ */
+BookFrontMatterFile(model) ::= <<
+$header()$
+<h1>$model.title$</h1>
+
+<p>$model.author$</p>
+
+<div id="toc">
+<p class="toc_title">Contents</p>
+<ul>
+$model.chapterDocuments:{chap |
+	<li><a href="$chap.generatedFilename$">$chap.title$</a></li>
+	<ul>
+	$chap.subcontainers:{sec |
+		<li><a href="$chap.generatedFilename$#$sec.anchor$">$sec.title$</a></li>
+	}$
+	</ul>
+}$
+</ul>
+</div>
+
+$footer()$
+>>
+
+/** Any kind of output document; wraps chapter */
+OutputFile(model, body) ::= <<
+$header()$
+$body$
+$footer()$
+>>
+
+/** Also represents an article page */
+Chapter(model, preabstract, abstract_, content, subcontainers) ::= <<
+<h1>$model.title$</h1>
+
+$model.attributes.author$
+
+$preabstract$
+
+$abstract_$
+
+$if(model.subcontainers)$
+<div id="toc">
+<p class="toc_title">Contents</p>
+<ul>
+$model.subcontainers:{sec |
+	<li><a href="#$sec.anchor$">$sec.title$</a></li>
+	<ul>
+	$sec.subcontainers:{subsec |
+		<li><a href="#$subsec.anchor$">$subsec.title$</a></li>
+	}$
+	</ul>
+}$
+</ul>
+</div>
+$endif$
+
+$content$
+
+$subcontainers$
+>>
+
+Author(model, author) ::= <<
+
+<p id="author">$author$</p>
+
+>>
+
+Abstract(model, elements) ::= <<
+<p><b>Abstract</b></p>
+<p>$elements$</p>
+
+>>
+
+PreAbstract(model, elements) ::= <<
+
+<p>$elements$</p>
+
+>>
+
+Section(model, content, subcontainers) ::= <<
+
+<h2 id="$model.anchor$">$model.title$</h2>
+
+$content$
+
+$subcontainers$
+
+>>
+
+SubSection(model, content, subcontainers) ::= <<
+
+<h3 id="$model.anchor$">$model.title$</h3>
+
+$content$
+
+$subcontainers$
+
+>>
+
+SubSubSection(model, content, subcontainers) ::= <<
+
+<h4 id="$model.anchor$">$model.title$</h4>
+
+$content$
+
+>>
+
+TextBlock(model,elements) ::= "$elements$"
+
+SideQuote(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$model.def.attributes.quote$</i>&rdquo; &mdash; $model.def.attributes.author$</span>"
+
+SideNote(model,text) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>$text$</span>"
+
+Citation(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$model.def.title$</i>&rdquo; &mdash; $model.def.author$</span>"
+
+ChapQuote(model) ::= "<p>&ldquo;<i>$model.quote$</i>&rdquo; &mdash; $model.author$</p>"
+
+dumpCode(code) ::= <<
+$\n$
+<div class="codeblk">$code$</div>
+>>
+
+BlockCode(model) ::= <<
+$dumpCode(model.code)$
+$\n$
+>>
+
+PyEval(model) ::= <<
+$if(model.codeDef.isCodeVisible)$
+$dumpCode({$if(model.codeDef.code)$$model.codeDef.code$$\n$$endif$$if(model.codeDef.displayExpr)$$model.codeDef.displayExpr$$endif$})$
+$endif$
+
+$if(model.stdout&&model.displayData)$
+<p class="stdout">$model.stdout; format="xml-encode"$
+$model.displayData; format="xml-encode"$</p>
+$elseif(model.stdout)$
+<p class="stdout">$model.stdout; format="xml-encode"$</p>
+$elseif(model.displayData)$
+<p class="stdout">$model.displayData; format="xml-encode"$</p>
+$endif$
+
+$if(model.stderr)$<p class="stderr">$model.stderr; format="xml-encode"$</p>$endif$
+>>
+
+InlinePyEval(model) ::= <<
+$if(model.stderr)$<span class="stderr">$model.stderr; format="xml-encode"$</span>$else$$model.displayData$$endif$
+>>
+
+PyEvalDataFrame(model) ::= <<
+$if(model.codeDef.isCodeVisible)$
+$dumpCode({$model.codeDef.code$$if(model.codeDef.displayExpr)$$\n$$model.codeDef.displayExpr$$endif$})$
+$endif$
+$if(model.stdout)$<p class="stdout">$model.stdout; format="xml-encode"$</p>$endif$
+$if(model.stderr)$<p class="stderr">$model.stderr; format="xml-encode"$</p>$endif$
+$dataTable(model.dataTable)$
+>>
+
+dataTable(dt) ::= <<
+<div class="scrollbar_wrapper">
+<table class="dataframe">
+<thead>
+	<tr>$dt.colNames:{c | <th>$c$</th>}$</tr>
+</thead>
+<tbody>
+	$dt.rows:{r | $dataTableRow(dt,r)$}; separator="\n"$
+</tbody>
+</table>
+</div>
+>>
+
+dataTableRow(dt,r) ::= <<
+<tr>
+$if(dt.firstColIsIndex)$
+<td><b>$first(r)$</b></td>$rest(r):{c| <td>$c$</td>}$
+$else$
+$rest(r):{c| <td>$c$</td>}$
+$endif$
+</tr>
+>>
+
+PyFig(model) ::= <<
+$if(model.args.side)$
+<span class=sidenote>
+&#187; <i>Graph generated by code to left</i><br>
+<img src="$model.codeDef.generatedFilenameNoSuffix$.svg"
+  width="$model.args.width$%"
+>
+</span>
+$endif$
+$if(model.codeDef.isCodeVisible)$
+$dumpCode(model.codeDef.code)$
+$endif$
+$if(!model.args.side)$
+<img src="$model.codeDef.generatedFilenameNoSuffix$.svg"
+  width="$model.args.width$%"
+>
+$endif$
+$if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
+>>
+
+Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"
+
+SideFigure(model, code) ::= <<
+<span class=sidenote>$code$<br><b>Figure $model.def.index$</b>. $model.caption$</span>
+>>
+
+// side stuff collected into Paragraph model and float:right'd for HTML (but not latex)
+SiteRef(model) ::= "<span class=sup>$model.def.index$</span>"
+CitationRef(model) ::= "<span class=sup>$model.def.index$</span>"
+FigureRef(model) ::= "<b>Figure $model.def.index$</b>"
+SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
+SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
+SectionRef(model) ::= "<b>Section $model.def.index$</b> <i>$model.def.title$</i>"
+ChapterRef(model) ::= "<b>Chapter $model.def.index$</b> <i>$model.def.title$</i>"
+UnknownRef(model) ::= <<
+<span style="color: red">[$model.def.label$]</span>
+>>
+
+OrderedList(model, items) ::= <<
+<ol>
+$items; separator="\n"$
+</ol>
+>>
+
+UnOrderedList(model, items) ::= <<
+<ul>
+$items; separator="\n"$
+</ul>
+>>
+
+ListItem(model, elements) ::= "<li>$elements$</li>"
+
+Table(model, headers, rows) ::= <<
+<center>
+<table style="">
+<thead>
+$headers$
+</thead>
+<tbody>
+$rows; separator="\n"$
+</tbody>
+</table>
+</center>
+>>
+
+TableRow(model, items) ::= <<
+<tr>
+$items$
+</tr>
+>>
+
+TableItem(model, contents) ::= "<td align=center>$contents$</td>"
+TableHeaderItem(model, contents) ::= <<
+<th align=center $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>$contents$</th>
+>>
+
+Paragraph(model, content) ::= <<
+
+$model.entitiesRefd:{d | $d.template$}$
+<p>$content$</p>
+
+>>
+
+InlineImage(model) ::= <<
+<img style="vertical-align: middle;" src="$model.src$">
+>>
+
+Image(model) ::= <<
+<img $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>
+>>
+
+BlockImage(model) ::= <<$\n$
+<center>
+$Image(model)$
+</center>
+$\n$
+>>
+
+XMLTag(model) ::= <<
+<$model.name$ $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>
+>>
+XMLEndTag(model) ::= "</$model.name$>"
+
+Latex(model) ::= <<
+
+<div><img class="blkeqn" $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$></div>
+
+>>
+
+BlockEquation(model) ::= <<
+
+<div><img class="blkeqn" $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$></div>
+
+>>
+
+InlineEquation(model) ::= <<
+<img style="vertical-align: -$model.depthTweaked$pt;" src="$model.src$">
+>>
+
+EqnVar(model) ::= "<span class=eqn>$model.varname$</span>"
+EqnIndexedVar(model) ::= "<span class=eqn>$model.varname$<sub>$model.indexname$</sub></span>"
+EqnVecVar(model) ::= "<span class=eqnvec>$model.varname$</span>"
+EqnIndexedVecVar(model) ::= "<span class=eqnvec>$model.varname$</span><sub class=eqn>$model.indexname$</sub>"
+
+HyperLink(model) ::= <<
+<a href="$model.href$">$model.title$</a>
+>>
+
+Quoted(model, elements) ::= "&ldquo;$elements$&rdquo;"
+
+Callout(model, text) ::= "<div class=callout>$text$</div>"
+
+Aside(model) ::= <<
+<div class=aside><b>$model.attributes.title$</b><br>
+$text$
+</div>
+>>
+
+InlineCode(model) ::= "<span class=inlinecode>$model.code$</span>"
+
+Bold(model) ::= "<b>$model.text$</b>"
+Italics(model) ::= "<i>$model.text$</i>"
+
+TODO(model) ::= <<
+<span style="color: red">{TODO: $model.text$}</span>
+>>
+
+LineBreak(model) ::= "<br>"
+
+Text(model) ::= "$model.text$"
+
+Join(model, elements) ::= "$elements$"

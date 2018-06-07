@@ -1,0 +1,22 @@
+<chapter label="intro" title="An intro">
+
+some text *foo* and `this` is cool. Ref to [summary] forward ref.
+
+<section label="sec1" title="the first section">
+
+<pyeval label=ick output=x>
+print("hi from chap1")
+x = 1
+</pyeval>
+
+An $x^2$ eqn and latex:
+
+<latex>
+latex input
+</latex>
+
+a block:
+
+\[
+dy/dt = 3
+\]

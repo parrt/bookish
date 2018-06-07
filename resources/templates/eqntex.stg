@@ -1,0 +1,37 @@
+delimiters "<", ">"
+
+texdoc(body,fontsize) ::= <<
+\documentclass[fontsize=<fontsize>pt]{scrlttr2}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage[noline, boxed, titlenotnumbered, linesnumberedhidden]{algorithm2e}
+
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+\renewcommand\vec{\mathbf}
+\begin{document}
+\thispagestyle{empty}
+<body>
+\setbox0=\vbox{<body>\}
+\typeout{// bookish metrics: \the\ht0, \the\dp0\}
+\end{document}
+>>
+
+eqntex(text,fontsize) ::= <<
+<texdoc(body={$<text>$}, fontsize=fontsize)>
+>>
+
+blockeqntex(text,fontsize) ::= <<
+<texdoc(body={\[<text>\]}, fontsize=fontsize)>
+>>
+
+blocktex(text,fontsize) ::= <<
+<texdoc(body={<text>}, fontsize=fontsize)>
+>>

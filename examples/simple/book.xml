@@ -1,0 +1,4 @@
+<book title="A simple book" author="T. Parr">
+
+<include file=chap1.xml>
+<include file=chap2.xml>

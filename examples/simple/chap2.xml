@@ -1,0 +1,12 @@
+<chapter label="summary" title="Last chap" author="T. Parr">
+
+<abstract>Something nice</abstract>
+
+Ref to previous chap is [intro].
+
+<pyeval label="foo" output="df">
+import pandas as pd
+df = pd.DataFrame({"a":[1,2,3]})
+</pyeval>
+
+Some <py>432</py> inline code.

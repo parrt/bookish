@@ -1,0 +1,91 @@
+delimiters "<",">"
+
+pyfile(snippets, buildDir, outputDir, basename, label) ::= <<
+import io
+import sys
+from pandas import DataFrame
+from contextlib import redirect_stdout, redirect_stderr
+
+def dump(o, display_expr):
+	"""Given df, col, ndarray, value return csv formatted data"""
+	# write to <buildDir>
+	display_expr = display_expr.strip()
+	if type(o)==DataFrame:
+		return o.to_csv(index=True)
+	else:
+		return repr(o)
+
+<snippets; separator="\n">
+>>
+
+pyfig(def,code) ::= <<
+# <def.inputFilename> snippet <def.index>
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+fstderr = io.StringIO()
+with redirect_stderr(fstderr):
+	try:
+		plt.style.use('seaborn-colorblind')
+		fig__ = plt.figure(999999, clear=True) # clear previous fig 999999
+		mpl.rcParams['font.size'] = 20
+		mpl.rcParams['savefig.bbox'] = 'tight'
+		mpl.rcParams['savefig.pad_inches'] = '0.5'
+		mpl.rcParams['legend.fontsize'] = 16
+		<code>
+		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.svg", format="svg", pad_inches=0.0)
+		plt.savefig("<outputDir>/images/<basename>/<basename>_<label>_<def.index>.pdf", format="pdf", pad_inches=0.0)
+		plt.close(fig__)
+	except:
+		import traceback
+		traceback.print_exc(file=sys.stderr)
+	finally:
+		with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.err", "w") as f:
+			f.write(fstderr.getvalue())
+<\n>
+>>
+
+pyeval(def,code) ::= <<
+# <def.inputFilename> snippet <def.index>
+fstdout = io.StringIO()
+fstderr = io.StringIO()
+with redirect_stderr(fstderr):
+	with redirect_stdout(fstdout):
+		try:
+			<code>
+			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.out", "w") as f:
+				f.write(fstdout.getvalue())
+			<if(def.displayExpr)>
+			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.csv", "w") as f:
+				v = <def.displayExpr>
+				f.write(type(v).__name__)
+				f.write('\n')
+				f.write(dump(v, """ <def.displayExpr> """))
+			<endif>
+		except:
+			import traceback
+			traceback.print_exc(file=sys.stderr)
+		finally:
+			with open("<buildDir>/snippets/<basename>/<basename>_<label>_<def.index>.err", "w") as f:
+				f.write(fstderr.getvalue())
+>>
+
+// templates to generate python file that creates notebook
+
+noteBookWriter(snippets,outputDir, basename, label, title) ::= <<
+import nbformat as nbf
+
+nb = nbf.v4.new_notebook(metadata={"kernelspec": {
+                                      "display_name": "Python 3",
+                                      "language": "python",
+                                      "name": "python3"
+                                     }})
+
+codeSnippets = [
+<snippets:{snippet | <\n># ----------<\n>'''<snippet>''',<\n>}>
+]
+
+nb['cells'] = \
+	[nbf.v4.new_markdown_cell("# <title>")] + \
+	[nbf.v4.new_code_cell(c) for c in codeSnippets]
+nbf.write(nb, '<outputDir>/notebooks/<basename>/<label>.ipynb')
+>>
