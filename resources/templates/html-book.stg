@@ -34,9 +34,15 @@ footer() ::= <<
  */
 BookFrontMatterFile(model) ::= <<
 $header()$
+
+<div class="watermark">
+Book version $model.attributes.version$
+</div>
+
 <h1>$model.title$</h1>
 
-<p>$model.author$</p>
+<p>$model.attributes.author$</p>
+<p style="font-size: 80%">$model.book.copyright$</font></p>
 
 <div id="toc">
 <p class="toc_title">Contents</p>
@@ -52,8 +58,6 @@ $model.chapterDocuments:{chap |
 </ul>
 </div>
 
-<p>$model.book.copyright$</p>
-
 $footer()$
 >>
 
@@ -66,7 +70,13 @@ $footer()$
 
 /** Also represents an article page */
 Chapter(model, preabstract, abstract_, content, subcontainers) ::= <<
+<div class="watermark">
+Book version $model.artifact.rootdoc.attributes.version$
+</div>
+
 <h1>$model.title$</h1>
+
+<p style="font-size: 80%">$model.artifact.copyright$</p>
 
 $model.attributes.author$
 

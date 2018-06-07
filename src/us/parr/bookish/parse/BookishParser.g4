@@ -18,7 +18,7 @@ rootdocument
 	|	article EOF
 	;
 
-book:	BOOK attrs[List.of("label","author","title")] END_TAG
+book:	BOOK attrs[List.of("label","author","title","version")] END_TAG
 		(ws? include)*
 		(ws? data | ws? notebook_support | ws? copyright)*
 		book_content
