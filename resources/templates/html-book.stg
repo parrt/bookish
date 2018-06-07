@@ -35,9 +35,11 @@ footer() ::= <<
 BookFrontMatterFile(model) ::= <<
 $header()$
 
+$if(model.attributes.version)$
 <div class="watermark">
 Book version $model.attributes.version$
 </div>
+$endif$
 
 <h1>$model.title$</h1>
 
@@ -70,9 +72,11 @@ $footer()$
 
 /** Also represents an article page */
 Chapter(model, preabstract, abstract_, content, subcontainers) ::= <<
+$if(model.artifact.rootdoc.attributes.version)$
 <div class="watermark">
 Book version $model.artifact.rootdoc.attributes.version$
 </div>
+$endif$
 
 <h1>$model.title$</h1>
 
