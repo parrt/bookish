@@ -165,7 +165,7 @@
       <module fileurl="file://$PROJECT_DIR$/bookish.iml" filepath="$PROJECT_DIR$/bookish.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_3" default="false" project-jdk-name="10.0" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_9" default="false" project-jdk-name="10.0" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="PropertiesComponent">

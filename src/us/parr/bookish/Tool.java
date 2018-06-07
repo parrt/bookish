@@ -60,9 +60,7 @@ import static us.parr.lib.ParrtSys.execCommandLine;
  *                           -o /tmp/gradient-boosting \
  *                           /Users/parrt/github/ml-articles/gradient-boosting/article.xml
  *
- * java us.parr.bookist.Tool -target html \
- *                           -o /tmp/mlbook
- *                           /Users/parrt/github/mlbook-private/content/book.xml
+ * java us.parr.bookist.Tool -target html -o /tmp/mlbook /Users/parrt/github/mlbook-private/content/book.xml
  *
  * java us.parr.bookist.Tool -target html \
  *                           -o /tmp/simple
