@@ -55,7 +55,7 @@ Here are the tags that contain attributes, not all of which are required:
 
 <table>
 <tr>
-<td><tt>&lt;book label="..." author="..." title="..."></tt>
+<td><tt>&lt;book label="..." author="..." title="..." version="..."></tt>
 
 <tr>
 <td><tt>&lt;chapter label="..." author="..." title="..."></tt>
