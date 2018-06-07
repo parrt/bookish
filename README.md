@@ -20,7 +20,15 @@ and even show matplotlib graphs:
 <img src=images/snapshot-graph.png width=600>
 </center>
 
-You will also notice that I have built this program as if it were a programming language translator.  The strategy I use is to construct a model of the document from the parse tree using a visitor. Then I use a [fiendishly clever bit of code](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/ModelConverter.java) to automatically convert that representation of the document into a tree of [string templates](http://www.stringtemplate.org).  Of course the set of templates you use determines what output you get.  Change the templates and you change the target language. For example here are the [HTML templates](https://github.com/parrt/bookish/blob/master/resources/templates/html-book.stg).
+As see below, it also does some really fancy magic to convert full latex equations (or even latex chunks) to SVG images for display inline (tricky to get vertical alignment correct.)
+
+<center>
+<img src=images/snapshot.png width=700>
+</center>
+
+## Meta-language
+
+Bookish is mostly XML-like but uses markdown for the more common things like italics and code fonts. (Note that the xml tags do not always have an end tag or even the trailing `/`' as in `<.../>` .)
 
 Bookish requires a root document that is kind of like a metadata file:
 
@@ -39,8 +47,6 @@ Then the chapter files look like:
 Some text *foo* and `this` is code. Ref [summary], which is forward ref in
 another file. Links are [cnn](http://www.cnn.com).
 ```
-
-Notice that the xml does not always have an end tag or even the trailing `/`' as in `<.../>` .
 
 ## Cheatsheet
 
@@ -174,3 +180,7 @@ Oh, and to get the font to look less anemic, you need to set the math fonts:
 One last little tidbit. Image file names are based upon the MD5 digest hash of the equation. There are two benefits: (1) repeated equations share the same file and (2) latex is slow, like 1 second per equation, but the hashed filename lets us cache all of the images and know when we must refresh an image because the equation changed.  
 
 It's safe to stop reading here.  You can learn everything you need to know about doing this yourself from this description and the source code.  This repository is just getting started and is in progress so don't expect a tool you can use yourself, at least at the moment.
+
+## Implementation
+
+You will also notice that I have built this program as if it were a programming language translator.  The strategy I use is to construct a model of the document from the parse tree using a visitor. Then I use a [fiendishly clever bit of code](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/ModelConverter.java) to automatically convert that representation of the document into a tree of [string templates](http://www.stringtemplate.org).  Of course the set of templates you use determines what output you get.  Change the templates and you change the target language. For example here are the [HTML templates](https://github.com/parrt/bookish/blob/master/resources/templates/html-book.stg).
