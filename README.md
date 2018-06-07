@@ -16,8 +16,8 @@ and display data frames:
 
 and even show matplotlib graphs:
 
-<center style="border: 1px solid black">
-<img src=images/snapshot-graph.png width=600>
+<center>
+<img  style="border: 1px solid black" src=images/snapshot-graph.png width=600>
 </center>
 
 As see below, it also does some really fancy magic to convert full latex equations (or even latex chunks) to SVG images for display inline (tricky to get vertical alignment correct.)
