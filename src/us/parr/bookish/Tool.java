@@ -56,9 +56,7 @@ import static us.parr.lib.ParrtSys.execCommandLine;
  *
  * Sample invocation:
  *
- * java us.parr.bookist.Tool -target html \
- *                           -o /tmp/gradient-boosting \
- *                           /Users/parrt/github/ml-articles/gradient-boosting/article.xml
+ * java us.parr.bookist.Tool -target html -o /tmp/gradient-boosting /Users/parrt/github/ml-articles/gradient-boosting/article.xml
  *
  * java us.parr.bookist.Tool -target html \
  *                           -o /tmp/mlbook
@@ -187,14 +185,17 @@ public class Tool {
 
 		// THIRD: RENDER TEMPLATE TREE TO STRING AND SAVE
 
-		String mainFileOutput = mainFileST.render();
+		if ( mainFile!=null ) {
+			String mainFileOutput = mainFileST.render();
+			saveOutput(target, artifact.rootdoc, mainFileOutput);
+		}
+
 		for (int i = 0; i<fileSTs.size(); i++) {
 			ST fileST = fileSTs.get(i);
 			ChapDocInfo doc = artifact.docs.get(i);
 			String output = fileST.render();
 			saveOutput(target, doc, output);
 		}
-		saveOutput(target, artifact.rootdoc, mainFileOutput);
 	}
 
 	/** walk all Def OutputModelObjects that were not inserted inline into
@@ -306,6 +307,24 @@ public class Tool {
 	 *  done on trees.
 	 */
 	public Artifact parseAllFiles(String rootfile) throws IOException {
+		Artifact artifact = createArtifact(rootfile);
+
+		List<String> includes = collectIncludeFilenames(artifact.rootdoc);
+		int n = 1;
+		for (String subordinateFilename : includes) {
+			try {
+				ChapDocInfo doc = parseChapter(artifact, inputDir+"/"+subordinateFilename);
+				doc.docNumber = n++;
+				artifact.addDoc(doc);
+			}
+			catch (NoSuchFileException nsfe) {
+				System.err.println("No such subordinate file: "+inputDir+"/"+subordinateFilename+" ref'd from "+rootfile);
+			}
+		}
+		return artifact;
+	}
+
+	public Artifact createArtifact(String rootFile) throws IOException {
 		RootDocInfo rootdoc = parseRoot(rootfile);
 
 		// book or article?
@@ -332,17 +351,12 @@ public class Tool {
 			artifact.dataDir = dataNode.attrs().attributes.get("dir");
 		}
 
-		List<String> includes = collectIncludeFilenames(rootdoc);
-		int n = 1;
-		for (String subordinateFilename : includes) {
-			try {
-				ChapDocInfo doc = parseChapter(artifact, inputDir+"/"+subordinateFilename);
-				doc.docNumber = n++;
-				artifact.addDoc(doc);
-			}
-			catch (NoSuchFileException nsfe) {
-				System.err.println("No such subordinate file: "+inputDir+"/"+subordinateFilename+" ref'd from "+rootfile);
-			}
+		Collection<ParseTree> supportNodes =
+			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//NOTEBOOK_SUPPORT", artifact.rootdoc.parser);
+		if ( !supportNodes.isEmpty() ) {
+			TerminalNode tok = (TerminalNode) supportNodes.iterator().next();
+			BookishParser.Notebook_supportContext node = (BookishParser.Notebook_supportContext)tok.getParent();
+			artifact.notebookResources.add(node.attrs().attributes.get("file") );
 		}
 		return artifact;
 	}

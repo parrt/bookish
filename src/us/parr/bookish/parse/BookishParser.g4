@@ -26,9 +26,9 @@ book:	BOOK attrs[List.of("label","author","title")] END_TAG
 
 article
 	:	ARTICLE
-		(ws? abstract_)?
- 		content?
- 		section*
+		(ws? include)*
+		(ws? data | ws? notebook_support)*
+		ws?
 	;
 
 /** A chapter doubles as a section of article or is book chapter.
@@ -87,6 +87,7 @@ content
 		|	firstuse
 		|	inline_code
 		|	dollar
+		|	lt
 	 	)+
 	 ;
 
@@ -106,6 +107,7 @@ paragraph_element
 	|	linebreak
 	|	quoted
  	|	dollar
+ 	|	lt
 	|	text
 	|	ws_no_blank_lines
 	;
@@ -115,6 +117,8 @@ paragraph_content
  	;
 
 dollar : DOLLAR ;
+
+lt : LT ;
 
 link : LINK ;
 
@@ -172,7 +176,7 @@ pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayD
 	;
 
 pyfig returns [PyFigDef codeDef, String stdout, String stderr]
-	:	PYFIG attrs[List.of("label","side","hide")] END_TAG pycodeblock END_PYFIG
+	:	PYFIG attrs[List.of("label","side","hide","width")] END_TAG pycodeblock END_PYFIG
 	;
 
 inline_py returns [InlinePyEvalDef codeDef, String stdout, String stderr, String displayData]

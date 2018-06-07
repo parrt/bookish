@@ -14,7 +14,6 @@ import us.parr.lib.ParrtSys;
 import us.parr.lib.collections.MultiMap;
 import us.parr.lib.collections.MultiMapOfLists;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -40,23 +39,23 @@ public class PySnippetExecutor {
 		String chapterSnippetsDir = snippetsDir+"/"+basename;
 		ParrtIO.mkdir(chapterSnippetsDir);
 		ParrtIO.mkdir(tool.outputDir+"/images/"+basename);
-		String outputChapDir = tool.outputDir+"/notebooks/"+basename;
-		ParrtIO.mkdir(outputChapDir);
+		String outputChapNotebooksDir = tool.outputDir+"/notebooks/"+basename;
+		ParrtIO.mkdir(outputChapNotebooksDir);
 
 		// every chapter snippets/notebooks dir gets a data link to book data directory
-		if ( !new File(chapterSnippetsDir+"/data").exists() ) {
-			System.err.println("ln -s "+doc.artifact.dataDir+" "+chapterSnippetsDir+"/data");
+		if ( !Files.isSymbolicLink(Paths.get(chapterSnippetsDir+"/data")) ) {
+//			System.err.println("ln -s "+doc.artifact.dataDir+" "+chapterSnippetsDir+"/data");
 			execCommandLine("ln -s "+doc.artifact.dataDir+" "+chapterSnippetsDir+"/data");
 		}
-		if ( !new File(outputChapDir+"/data").exists() ) {
-			System.err.println("ln -s "+doc.artifact.dataDir+" "+outputChapDir+"/data");
-			execCommandLine("ln -s "+doc.artifact.dataDir+" "+outputChapDir+"/data");
+		if ( !Files.isSymbolicLink(Paths.get(outputChapNotebooksDir+"/data")) ) {
+//			System.err.println("ln -s "+doc.artifact.dataDir+" "+outputChapNotebooksDir+"/data");
+			execCommandLine("ln -s "+doc.artifact.dataDir+" "+outputChapNotebooksDir+"/data");
 		}
 
 		// Copy resource to output notebook dir
-		if ( doc.artifact.notebookResources.size()>0 ) {
-			String notebookResource = doc.artifact.notebookResources.get(0); // just one for now
+		for (String notebookResource : doc.artifact.notebookResources) {
 			execCommandLine(String.format("cp %s/%s %s", tool.inputDir, notebookResource, chapterSnippetsDir));
+			execCommandLine(String.format("cp %s/%s %s", tool.inputDir, notebookResource, outputChapNotebooksDir));
 		}
 	}
 
@@ -127,7 +126,7 @@ public class PySnippetExecutor {
 		String nbWriterFilename = "mk_ipynb_"+basename+"_"+label+".py";
 		ParrtIO.save(chapterSnippetsDir+"/"+nbWriterFilename, nbcode);
 
-		System.out.println("### "+chapterSnippetsDir+"/"+nbWriterFilename);
+		System.err.println("### "+chapterSnippetsDir+"/"+nbWriterFilename);
 		String[] result = ParrtSys.execInDir(chapterSnippetsDir, "pythonw", nbWriterFilename);
 		if ( result[1]!=null && result[1].length()>0 ) {
 			System.err.println(result[1]); // errors during python compilation not exec

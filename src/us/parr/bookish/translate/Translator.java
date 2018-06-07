@@ -447,6 +447,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	@Override
+	public OutputModelObject visitLt(BookishParser.LtContext ctx) {
+		return new Text("<");
+	}
+
+	@Override
 	public OutputModelObject visitChapquote(BookishParser.ChapquoteContext ctx) {
 		String quote = getAttr(ctx, "quote");
 		String author = getAttr(ctx, "author");
