@@ -5,19 +5,19 @@ Bookish is an xml-ish + some markdown format for books and articles that it can 
 You can use python directly in the doc like a notebook to  computer and print stuff:
 
 <center>
-<img src=images/snapshot-print.png="..." width=700>
+<img src=images/snapshot-print.png width=700>
 </center>
 
 and display data frames:
 
 <center>
-<img src=images/snapshot-df.png="..." width=700>
+<img src=images/snapshot-df.png width=700>
 </center>
 
 and even show matplotlib graphs:
 
 <center>
-<img src=images/snapshot-graph.png="..." width=700>
+<img src=images/snapshot-graph.png width=700>
 </center>
 
 You will also notice that I have built this program as if it were a programming language translator.  The strategy I use is to construct a model of the document from the parse tree using a visitor. Then I use a [fiendishly clever bit of code](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/ModelConverter.java) to automatically convert that representation of the document into a tree of [string templates](http://www.stringtemplate.org).  Of course the set of templates you use determines what output you get.  Change the templates and you change the target language. For example here are the [HTML templates](https://github.com/parrt/bookish/blob/master/resources/templates/html-book.stg).
@@ -118,7 +118,7 @@ Here are the tags that contain attributes, not all of which are required:
 In the end we converted the source document to markdown and build a translator that generated [HTML](http://parrt.cs.usfca.edu/doc/matrix-calculus/index.html) using SVG for equations and [PDF](http://parrt.cs.usfca.edu/doc/matrix-calculus.pdf) from native latex equations. It does a pretty good job with html as you can see:
 
 <center>
-<img src=images/snapshot.png="..." width=700>
+<img src=images/snapshot.png width=700>
 </center>
 
 All of those equations, even the ones inline in the text paragraph, are `<img>` references.
