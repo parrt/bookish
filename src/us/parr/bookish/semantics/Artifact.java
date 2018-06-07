@@ -24,6 +24,8 @@ public abstract class Artifact {
 	/** A symlink to where data is should be made for snippets to exec */
 	public String dataDir;
 
+	public String copyright;
+
 	public List<String> notebookResources = new ArrayList<>();
 
 	public RootDocInfo rootdoc;
@@ -37,8 +39,14 @@ public abstract class Artifact {
 		templates = loadTemplates();
 	}
 
+	public void addRootDoc(RootDocInfo rootdoc) {
+		this.rootdoc = rootdoc;
+		this.rootdoc.artifact = this;
+	}
+
 	public void addDoc(ChapDocInfo doc) {
 		docs.add(doc);
+		doc.artifact = this;
 	}
 
 	public EntityDef getEntity(String label) {

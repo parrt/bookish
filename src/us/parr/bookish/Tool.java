@@ -58,9 +58,7 @@ import static us.parr.lib.ParrtSys.execCommandLine;
  *
  * java us.parr.bookist.Tool -target html -o /tmp/gradient-boosting /Users/parrt/github/ml-articles/gradient-boosting/article.xml
  *
- * java us.parr.bookist.Tool -target html \
- *                           -o /tmp/mlbook
- *                           /Users/parrt/github/mlbook-private/content/book.xml
+ * java us.parr.bookist.Tool -target html -o /tmp/mlbook /Users/parrt/github/mlbook-private/content/book.xml
  *
  * java us.parr.bookist.Tool -target html \
  *                           -o /tmp/simple
@@ -142,14 +140,14 @@ public class Tool {
 
 		BookFrontMatterFile mainFile = null;
 		if ( artifact instanceof Book ) {
-			Translator translator = new Translator(artifact, artifact.rootdoc);
+			Translator translator = new Translator(artifact.rootdoc);
 			translator.translateXMLAttributes(artifact.rootdoc);
 			mainFile = new BookFrontMatterFile((Book)artifact);
 		}
 
 		List<Chapter> chapterModels = new ArrayList<>();
 		for (ChapDocInfo doc : artifact.docs) {
-			Translator translator = new Translator(artifact, doc);
+			Translator translator = new Translator(doc);
 			translator.translateXMLAttributes(doc);
 			Chapter chapModel = (Chapter)translator.visit(doc.tree); // get model for single chapter
 			chapModel.generatedFilename = doc.getGeneratedFilename(target);
@@ -342,8 +340,9 @@ public class Tool {
 			return null;
 		}
 
-		artifact.rootdoc = rootdoc;
+		artifact.addRootDoc(rootdoc);
 
+		// Get specific tags like data, copyright, ...
 		Collection<ParseTree> dataNodes =
 			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//data", artifact.rootdoc.parser);
 		if ( !dataNodes.isEmpty() ) {
@@ -358,6 +357,18 @@ public class Tool {
 			BookishParser.Notebook_supportContext node = (BookishParser.Notebook_supportContext)tok.getParent();
 			artifact.notebookResources.add(node.attrs().attributes.get("file") );
 		}
+
+		Collection<ParseTree> copyrightNodes =
+			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//copyright", artifact.rootdoc.parser);
+		if ( !copyrightNodes.isEmpty() ) {
+			BookishParser.CopyrightContext copyNode =
+				(BookishParser.CopyrightContext) copyrightNodes.iterator().next();
+			String location = artifact.rootdoc.getSourceName()+" "+
+				copyNode.start.getLine()+":"+
+				copyNode.start.getCharPositionInLine();
+			artifact.copyright = translateString(artifact.rootdoc, copyNode.content().getText(), location);
+		}
+
 		return artifact;
 	}
 
@@ -402,7 +413,7 @@ public class Tool {
 //		System.out.println(doctree.toStringTree(Arrays.asList(BookishParser.ruleNames)));
 
 		if ( isRoot ) {
-			return new RootDocInfo(parser, (BookishParser.RootdocumentContext)doctree);
+			return new RootDocInfo(artifact, parser, (BookishParser.RootdocumentContext)doctree);
 		}
 		return new ChapDocInfo(artifact, parser, (BookishParser.ChapterContext)doctree);
 	}
@@ -460,14 +471,14 @@ public class Tool {
 		return tree;
 	}
 
-	public OutputModelObject translateStringToModel(String bookishString, String location) {
-		Translator subtranslator = new Translator(null, null);
+	public OutputModelObject translateStringToModel(DocInfo docInfo, String bookishString, String location) {
+		Translator subtranslator = new Translator(docInfo);
 		return subtranslator.visit(Tool.parseString(bookishString, location));
 	}
 
-	public String translateString(Artifact artifact, String bookishString, String location) {
-		OutputModelObject m = translateStringToModel(bookishString, location);
-		ModelConverter converter = new ModelConverter(artifact.templates);
+	public String translateString(DocInfo docInfo, String bookishString, String location) {
+		OutputModelObject m = translateStringToModel(docInfo, bookishString, location);
+		ModelConverter converter = new ModelConverter(docInfo.artifact.templates);
 		ST st = converter.walk(m);
 		return st.render();
 	}

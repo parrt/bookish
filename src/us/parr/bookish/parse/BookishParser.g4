@@ -20,14 +20,14 @@ rootdocument
 
 book:	BOOK attrs[List.of("label","author","title")] END_TAG
 		(ws? include)*
-		(ws? data | ws? notebook_support)*
+		(ws? data | ws? notebook_support | ws? copyright)*
 		book_content
 	;
 
 article
 	:	ARTICLE
 		(ws? include)*
-		(ws? data | ws? notebook_support)*
+		(ws? data | ws? notebook_support | ws? copyright)*
 		ws?
 	;
 
@@ -45,6 +45,8 @@ chapter returns [ChapterDef def]
 abstract_ : ABSTRACT content END_ABSTRACT ;
 
 data : DATA attrs[List.of("dir")] END_TAG ;
+
+copyright : COPYRIGHT content END_COPYRIGHT ;
 
 notebook_support : NOTEBOOK_SUPPORT attrs[List.of("file")] END_TAG ;
 
@@ -82,6 +84,7 @@ content
         |   codeblock
         |	linebreak
 		|	todo
+		|	symbol
 	 	|	text
 	 	|	ws
 		|	firstuse
@@ -102,6 +105,7 @@ paragraph_element
 	|	ref
 	|	firstuse
 	|	todo
+	|	symbol
 	|	inline_code
 	|	inline_py
 	|	linebreak
@@ -222,6 +226,8 @@ ref : REF ;
 firstuse : FIRSTUSE ;
 
 todo : TODO ;
+
+symbol : SYMBOL ;
 
 latex returns [String relativeImageFilename] : LATEX LATEX_CONTENT END_LATEX ;
 

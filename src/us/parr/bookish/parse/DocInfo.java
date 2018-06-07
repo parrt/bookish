@@ -3,12 +3,14 @@ package us.parr.bookish.parse;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import us.parr.bookish.entity.EntityDef;
+import us.parr.bookish.semantics.Artifact;
 import us.parr.lib.ParrtIO;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DocInfo {
+	public Artifact artifact;
 	public Parser parser;
 	public ParserRuleContext tree;
 
@@ -19,7 +21,8 @@ public class DocInfo {
 	 */
 	public Map<String,EntityDef> entities = new HashMap<>();
 
-	public DocInfo(Parser parser, ParserRuleContext tree) {
+	public DocInfo(Artifact artifact, Parser parser, ParserRuleContext tree) {
+		this.artifact = artifact;
 		this.parser = parser;
 		this.tree = tree;
 	}

@@ -13,14 +13,12 @@ import java.util.List;
  *  Every document exists within an artifact.
  */
 public class ChapDocInfo extends DocInfo {
-	public Artifact artifact;
 	public int docNumber; // from 1
 
 	public List<ExecutableCodeDef> codeBlocks = new ArrayList<>();
 
 	public ChapDocInfo(Artifact artifact, Parser parser, BookishParser.ChapterContext tree) {
-		super(parser, tree);
-		this.artifact = artifact;
+		super(artifact, parser, tree);
 		this.parser = parser;
 		this.tree = tree;
 	}

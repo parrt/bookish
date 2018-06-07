@@ -20,6 +20,8 @@ END_FIGURE	: '</figure>' ;
 
 ABSTRACT	: '<abstract>' ;
 END_ABSTRACT: '</abstract>' ;
+COPYRIGHT	: '<copyright>' ;
+END_COPYRIGHT : '</copyright>' ;
 DATA        : '<data ' -> pushMode(XML_MODE) ;
 NOTEBOOK_SUPPORT : '<notebook-support ' -> pushMode(XML_MODE) ;
 
@@ -38,6 +40,8 @@ CUT		    : '<cut>' .*? '</cut>' -> skip ;
 FIRSTUSE    : '\\first' '{' .*? '}' ;
 
 TODO	    : '\\todo' '{' .*? '}' ;
+
+SYMBOL		: '\\symbol' '{' .*? '}' ;
 
 EQN         : '$' ~'$'+ '$' ;
 BLOCK_EQN   : '\\[' .+? '\\]' ;

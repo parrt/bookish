@@ -61,6 +61,7 @@ import us.parr.bookish.model.TableItem;
 import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.Text;
 import us.parr.bookish.model.UnOrderedList;
+import us.parr.bookish.model.UnknownSymbol;
 import us.parr.bookish.model.ref.ChapterRef;
 import us.parr.bookish.model.ref.CitationRef;
 import us.parr.bookish.model.ref.EntityRef;
@@ -118,11 +119,9 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	/** Set by visit(tree, doc) so we know which doc we are translating. */
 	public DocInfo docInfo;
 
-	public Translator(Artifact artifact, DocInfo docInfo) {
-		if ( artifact!=null ) {
-			this.tool = artifact.tool;
-		}
-		this.artifact = artifact;
+	public Translator(DocInfo docInfo) {
+		this.artifact = docInfo.artifact;
+		this.tool = artifact.tool;
 		this.docInfo = docInfo;
 	}
 
@@ -144,7 +143,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 						v = stripQuotes(v);
 						BookishParser.AttrsContext a = (BookishParser.AttrsContext) attrsNode;
 						String location = docInfo.getSourceName()+" "+a.start.getLine()+":"+a.start.getCharPositionInLine();
-						v = tool.translateString(artifact, v, location);
+						v = tool.translateString(docInfo, v, location);
 						a.attributes.put(key.getText(), v);
 //						System.out.println("ALTER "+key.getText()+" from "+value.getText()+" ->" + v);
 					}
@@ -449,6 +448,21 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitLt(BookishParser.LtContext ctx) {
 		return new Text("<");
+	}
+
+	@Override
+	public OutputModelObject visitSymbol(BookishParser.SymbolContext ctx) {
+		String text = ctx.SYMBOL().getText();
+		text = text.substring("\\symbol".length());
+		text = stripQuotes(text); // remove {...}
+		Map<String, Object> symbols = artifact.templates.rawGetDictionary("symbols");
+		Object s = symbols.get(text);
+		if ( s==null ) {
+			String location = docInfo.getSourceName()+" "+ctx.start.getLine()+":"+ctx.start.getCharPositionInLine();
+			System.err.println(location+" symbol not defined '"+text+"'");
+			return new UnknownSymbol(text);
+		}
+		return new Text((String) s);
 	}
 
 	@Override

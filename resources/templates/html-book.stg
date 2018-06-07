@@ -1,5 +1,9 @@
 delimiters "$","$"
 
+symbols ::= [
+	"copyright":"&copy;"
+]
+
 /*
 NOTES
 
@@ -47,6 +51,8 @@ $model.chapterDocuments:{chap |
 }$
 </ul>
 </div>
+
+<p>$model.book.copyright$</p>
 
 $footer()$
 >>
@@ -244,6 +250,10 @@ SectionRef(model) ::= "<b>Section $model.def.index$</b> <i>$model.def.title$</i>
 ChapterRef(model) ::= "<b>Chapter $model.def.index$</b> <i>$model.def.title$</i>"
 UnknownRef(model) ::= <<
 <span style="color: red">[$model.def.label$]</span>
+>>
+
+UnknownSymbol(model) ::= <<
+<span style="color: red">!$model.symbolName$!</span>
 >>
 
 OrderedList(model, items) ::= <<
