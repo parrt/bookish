@@ -2,7 +2,7 @@
 
 Bookish is an xml-ish + some markdown format for books and articles that it can convert to HTML and latex. I used it to generate this article: [The Matrix Calculus You Need For Deep Learning](http://parrt.cs.usfca.edu/doc/matrix-calculus/index.html). 
 
-You can use python directly in the doc like a notebook to  computer and print stuff:
+You can use python directly in the doc like a notebook to compute and print stuff:
 
 <table>
 <tr><td><img src=images/snapshot-print.png width=600>
