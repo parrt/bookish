@@ -37,6 +37,7 @@ $header()$
 
 $if(model.attributes.version)$
 <div class="watermark">
+<i>$model.attributes.watermark$</i><br>
 Book version $model.attributes.version$
 </div>
 $endif$
@@ -74,11 +75,14 @@ $footer()$
 Chapter(model, preabstract, abstract_, content, subcontainers) ::= <<
 $if(model.artifact.rootdoc.attributes.version)$
 <div class="watermark">
+<i>$model.artifact.rootdoc.attributes.watermark$</i><br>
 Book version $model.artifact.rootdoc.attributes.version$
 </div>
 $endif$
 
 <h1>$model.title$</h1>
+
+<p>$model.artifact.rootdoc.attributes.author$</p>
 
 <p style="font-size: 80%">$model.artifact.copyright$</p>
 
