@@ -27,6 +27,7 @@ import us.parr.bookish.parse.DocInfo;
 import us.parr.bookish.parse.RootDocInfo;
 import us.parr.bookish.semantics.Article;
 import us.parr.bookish.semantics.Artifact;
+import us.parr.bookish.semantics.ArtifactListener;
 import us.parr.bookish.semantics.Book;
 import us.parr.bookish.semantics.ConvertLatexToImageListener;
 import us.parr.bookish.semantics.DefEntitiesListener;
@@ -112,15 +113,13 @@ public class Tool {
 		outputDir = option("o");
 		target = option("target");
 
-		ParrtIO.mkdir(outputDir+"/images");
-		String snippetsDir = getBuildDir()+"/snippets";
-		ParrtIO.mkdir(snippetsDir);
-
 		processAllDocuments(rootfile);
 	}
 
 	public void processAllDocuments(String rootfile) throws IOException {
 		Artifact artifact = parseAllFiles(rootfile);
+
+		createArtifactDirectories(artifact);
 
 		defineAllEntities(artifact);
 		verifyAllEntityRefs(artifact);
@@ -129,8 +128,21 @@ public class Tool {
 
 		translateAndGenerate(artifact);
 
-		execCommandLine(String.format("cp -r %s/css %s", inputDir, outputDir));
+		copyResources(artifact);
+	}
+
+	public void createArtifactDirectories(Artifact artifact) {
+		ParrtIO.mkdir(outputDir+"/images");
+		ParrtIO.mkdir(outputDir+"/data");
+		ParrtIO.mkdir(getBuildDir()+"/snippets");
+	}
+
+	public void copyResources(Artifact artifact) {
+		execCommandLine(String.format("cp -R %s/css %s", inputDir, outputDir));
 		copyImages(artifact, inputDir, outputDir);
+		for (String f : artifact.dataFilesToCopy) {
+			execCommandLine(String.format("cp %s/%s %s/data", artifact.dataDir, f, outputDir));
+		}
 	}
 
 	public void translateAndGenerate(Artifact artifact) {
@@ -343,41 +355,9 @@ public class Tool {
 		artifact.addRootDoc(rootdoc);
 
 		// Get specific tags like data, copyright, ...
-		Collection<ParseTree> dataNodes =
-			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//data", artifact.rootdoc.parser);
-		if ( !dataNodes.isEmpty() ) {
-			BookishParser.DataContext dataNode = (BookishParser.DataContext) dataNodes.iterator().next();
-			artifact.dataDir = dataNode.attrs().attributes.get("dir");
-		}
-
-		Collection<ParseTree> abstractNodes =
-			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//abstract_", artifact.rootdoc.parser);
-		if ( !abstractNodes.isEmpty() ) {
-			BookishParser.Abstract_Context abstractNode = (BookishParser.Abstract_Context) abstractNodes.iterator().next();
-			String location = artifact.rootdoc.getSourceName()+" "+
-				abstractNode.start.getLine()+":"+
-				abstractNode.start.getCharPositionInLine();
-			artifact.abstract_ = translateString(artifact.rootdoc, abstractNode.content().getText(), location);
-		}
-
-		Collection<ParseTree> supportNodes =
-			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//NOTEBOOK_SUPPORT", artifact.rootdoc.parser);
-		if ( !supportNodes.isEmpty() ) {
-			TerminalNode tok = (TerminalNode) supportNodes.iterator().next();
-			BookishParser.Notebook_supportContext node = (BookishParser.Notebook_supportContext)tok.getParent();
-			artifact.notebookResources.add(node.attrs().attributes.get("file") );
-		}
-
-		Collection<ParseTree> copyrightNodes =
-			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//copyright", artifact.rootdoc.parser);
-		if ( !copyrightNodes.isEmpty() ) {
-			BookishParser.CopyrightContext copyNode =
-				(BookishParser.CopyrightContext) copyrightNodes.iterator().next();
-			String location = artifact.rootdoc.getSourceName()+" "+
-				copyNode.start.getLine()+":"+
-				copyNode.start.getCharPositionInLine();
-			artifact.copyright = translateString(artifact.rootdoc, copyNode.content().getText(), location);
-		}
+		ArtifactListener artifactListener = new ArtifactListener(artifact);
+		ParseTreeWalker walker = new ParseTreeWalker();
+		walker.walk(artifactListener, rootdoc.tree);
 
 		return artifact;
 	}
@@ -565,13 +545,13 @@ public class Tool {
 	/** Copy images/ subdirs to outputDir/images */
 	public void copyImages(Artifact artifact, String inputDir, String outputDir) {
 		if ( artifact instanceof Article ) {
-			execCommandLine(String.format("cp -r %s/images %s", inputDir, outputDir));
+			execCommandLine(String.format("cp -R %s/images %s", inputDir, outputDir));
 			return;
 		}
 		for (ChapDocInfo doc : artifact.docs) {
 			String label = doc.getSourceBaseName();
 			if ( new File(inputDir+"/images/"+label).exists() ) {
-				execCommandLine(String.format("cp -r %s/images/%s %s/images", inputDir, label, outputDir));
+				execCommandLine(String.format("cp -R %s/images/%s %s/images", inputDir, label, outputDir));
 			}
 		}
 	}

@@ -21,8 +21,11 @@ public abstract class Artifact {
 	// track title just for completeness here at the root artifact
 	public String title;
 
-	/** A symlink to where data is should be made for snippets to exec */
+	/** A symlink to where data is for building/exec'ing python code */
 	public String dataDir;
+
+	/** Copy these files from dataDir into generated artifact */
+	public List<String> dataFilesToCopy = new ArrayList<>();
 
 	public String copyright; // translated to output target
 

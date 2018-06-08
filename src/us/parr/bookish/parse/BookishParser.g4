@@ -44,7 +44,16 @@ chapter returns [ChapterDef def]
 
 abstract_ : ABSTRACT content END_ABSTRACT ;
 
-data : DATA attrs[List.of("dir")] END_TAG ;
+data:	DATA
+		(ws? dataBuild)
+		(ws? dataCopy)*
+		ws?
+		END_DATA
+	;
+
+dataCopy : DATA_COPY attrs[List.of("file")] END_TAG ;
+
+dataBuild : DATA_BUILD attrs[List.of("dir")] END_TAG ;
 
 copyright : COPYRIGHT content END_COPYRIGHT ;
 

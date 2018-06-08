@@ -22,7 +22,11 @@ ABSTRACT	: '<abstract>' ;
 END_ABSTRACT: '</abstract>' ;
 COPYRIGHT	: '<copyright>' ;
 END_COPYRIGHT : '</copyright>' ;
-DATA        : '<data ' -> pushMode(XML_MODE) ;
+DATA        : '<data>' ;
+END_DATA    : '</data>' ;
+DATA_BUILD	: '<build ' -> pushMode(XML_MODE) ;
+DATA_COPY	: '<copy ' -> pushMode(XML_MODE) ;
+
 NOTEBOOK_SUPPORT : '<notebook-support ' -> pushMode(XML_MODE) ;
 
 ASIDE     	: '<aside '  -> pushMode(XML_MODE) ;
