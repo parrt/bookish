@@ -49,7 +49,7 @@ public class PySnippetExecutor {
 		}
 		if ( !Files.isSymbolicLink(Paths.get(outputChapNotebooksDir+"/data")) ) {
 //			System.err.println("ln -s "+doc.artifact.dataDir+" "+outputChapNotebooksDir+"/data");
-			execCommandLine("ln -s "+doc.artifact.dataDir+" "+outputChapNotebooksDir+"/data");
+			execCommandLine("ln -s ../../data "+outputChapNotebooksDir+"/data"); // relative link
 		}
 
 		// Copy resource to output notebook dir
