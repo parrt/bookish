@@ -350,6 +350,16 @@ public class Tool {
 			artifact.dataDir = dataNode.attrs().attributes.get("dir");
 		}
 
+		Collection<ParseTree> abstractNodes =
+			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//abstract_", artifact.rootdoc.parser);
+		if ( !abstractNodes.isEmpty() ) {
+			BookishParser.Abstract_Context abstractNode = (BookishParser.Abstract_Context) abstractNodes.iterator().next();
+			String location = artifact.rootdoc.getSourceName()+" "+
+				abstractNode.start.getLine()+":"+
+				abstractNode.start.getCharPositionInLine();
+			artifact.abstract_ = translateString(artifact.rootdoc, abstractNode.content().getText(), location);
+		}
+
 		Collection<ParseTree> supportNodes =
 			XPath.findAll(artifact.rootdoc.getTreeAsRoot(), "//NOTEBOOK_SUPPORT", artifact.rootdoc.parser);
 		if ( !supportNodes.isEmpty() ) {

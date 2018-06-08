@@ -20,14 +20,14 @@ rootdocument
 
 book:	BOOK attrs[List.of("label","author","title","version","watermark")] END_TAG
 		(ws? include)*
-		(ws? data | ws? notebook_support | ws? copyright)*
+		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_)*
 		book_content
 	;
 
 article
 	:	ARTICLE
 		(ws? include)*
-		(ws? data | ws? notebook_support | ws? copyright)*
+		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_)*
 		ws?
 	;
 

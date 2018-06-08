@@ -47,6 +47,10 @@ $endif$
 <p>$model.attributes.author$</p>
 <p style="font-size: 80%">$model.book.copyright$</font></p>
 
+$if(model.book.abstract_)$
+<p>$model.book.abstract_$</p>
+$endif$
+
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>

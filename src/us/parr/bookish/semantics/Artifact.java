@@ -24,7 +24,10 @@ public abstract class Artifact {
 	/** A symlink to where data is should be made for snippets to exec */
 	public String dataDir;
 
-	public String copyright;
+	public String copyright; // translated to output target
+
+	/** Abstract tag in book or article root file, not chapter file(s) */
+	public String abstract_; // translated to output target
 
 	public List<String> notebookResources = new ArrayList<>();
 
