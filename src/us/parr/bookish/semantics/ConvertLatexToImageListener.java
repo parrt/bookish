@@ -54,7 +54,7 @@ public class ConvertLatexToImageListener extends BookishBaseListener {
 		this.doc = doc;
 		this.codefileBasename = doc.getSourceBaseName();
 
-		texConverter = new Tex2SVG(tool.outputDir);
+		texConverter = new Tex2SVG(tool);
 	}
 
 	@Override

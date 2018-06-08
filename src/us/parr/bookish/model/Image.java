@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Image extends OutputModelObject {
-	public static final Set<String> supportedSingleFormats = new HashSet<String>() {{
+	public static final Set<String> supportedSingleFormats = new HashSet<>() {{
 		add("jpg");
 		add("png");
 	}};

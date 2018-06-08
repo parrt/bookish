@@ -87,7 +87,7 @@ public class Tool {
 	public Map<String, Object> options = new HashMap<>();
 
 	public static final Set<String> validOptions =
-		new HashSet<String>() {{
+		new HashSet<>() {{
 			add("-o");          // output dir
 			add("-target");     // html or latex
 		}};
@@ -413,7 +413,7 @@ public class Tool {
 //		System.out.println(doctree.toStringTree(Arrays.asList(BookishParser.ruleNames)));
 
 		if ( isRoot ) {
-			return new RootDocInfo(artifact, parser, (BookishParser.RootdocumentContext)doctree);
+			return new RootDocInfo(artifact, parser, doctree);
 		}
 		return new ChapDocInfo(artifact, parser, (BookishParser.ChapterContext)doctree);
 	}
@@ -444,7 +444,7 @@ public class Tool {
 					continue; // don't set key-value pair
 				}
 				// set key-value pair into attributes list
-				if ( key!=null && value!=null ) {
+				if ( value!=null ) {
 					String v = value.getText();
 					if ( v.charAt(0)=='"' || v.charAt(0)=='{' ) {
 						v = stripQuotes(v);

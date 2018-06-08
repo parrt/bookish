@@ -3,12 +3,11 @@ package us.parr.bookish.semantics;
 import org.antlr.v4.runtime.misc.Triple;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
-import us.parr.lib.ParrtIO;
+import us.parr.bookish.Tool;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.regex.Pattern;
 
 import static us.parr.lib.ParrtSys.execInDir;
 
@@ -17,25 +16,29 @@ public class Tex2SVG {
 
 	public enum LatexType {EQN, BLOCKEQN, LATEX}
 
-	public String outputDir;
+	public Tool tool;
 
-	public Tex2SVG(String outputDir) {
-		this.outputDir = outputDir;
+	public Tex2SVG(Tool tool) {
+		this.tool = tool;
 	}
 
 	public Triple<String,Float,Float> tex2svg(String latex, LatexType type, int fontsize) {
 		try {
 			latex = latex.trim();
-			String tmpdir = new File(outputDir).getAbsolutePath();
+			String outputDir = new File(tool.outputDir).getAbsolutePath();
+			String buildDir = tool.getBuildDir();
 
-			if ( !Files.exists(Paths.get(tmpdir)) ) {
-				Files.createDirectories(Paths.get(tmpdir));
+			if ( !Files.exists(Paths.get(outputDir)) ) {
+				Files.createDirectories(Paths.get(outputDir));
 			}
-			if ( !Files.exists(Paths.get(tmpdir+"/images")) ) {
-				Files.createSymbolicLink(Paths.get(tmpdir+"/images"), Paths.get(outputDir+"/images"));
+			if ( !Files.exists(Paths.get(buildDir)) ) {
+				Files.createDirectories(Paths.get(buildDir));
+			}
+			if ( !Files.exists(Paths.get(outputDir+"/images")) ) {
+				Files.createSymbolicLink(Paths.get(outputDir+"/images"), Paths.get(tool.outputDir+"/images"));
 			}
 
-			String texfilename = tmpdir+"/temp.tex";
+			String texfilename = buildDir+"/temp.tex";
 			ST template = null;
 			switch ( type ) {
 				case EQN:
@@ -54,12 +57,8 @@ public class Tex2SVG {
 
 //			System.out.println("wrote "+texfilename);
 
-			String[] results = execInDir(tmpdir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex");
+			String[] results = execInDir(buildDir, "xelatex", "-shell-escape", "-interaction=nonstopmode", "temp.tex");
 //    println(results.a)
-
-			String metricsRegex = "// bookish metrics: ([0-9]*[.][0-9]+)pt, ([0-9]*[.][0-9]+)pt";
-			Pattern metricsPattern =  Pattern.compile("metricsRegex");
-			String log = ParrtIO.load(tmpdir+"/temp.log");
 
 			float height=0, depth=0;
 
@@ -82,17 +81,17 @@ public class Tex2SVG {
 				System.err.println(results[1]);
 			}
 
-			results = execInDir(tmpdir, "pdfcrop", "temp.pdf");
+			results = execInDir(buildDir, "pdfcrop", "temp.pdf");
 			if ( results[1].length()>0 ) {
 				System.err.println(results[1]);
 			}
 
-			results = execInDir(tmpdir, "pdf2svg", "temp-crop.pdf", "temp.svg");
+			results = execInDir(buildDir, "pdf2svg", "temp-crop.pdf", "temp.svg");
 			if ( results[1].length()>0 ) {
 				System.err.println(results[1]);
 			}
 
-			String svgfilename = tmpdir+"/temp.svg";
+			String svgfilename = buildDir+"/temp.svg";
 			return new Triple<>(new String(Files.readAllBytes(Paths.get(svgfilename))),height,depth);
 		}
 		catch (Exception e) {

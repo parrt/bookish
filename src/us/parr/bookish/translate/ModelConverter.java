@@ -48,10 +48,6 @@ public class ModelConverter {
 		// CREATE TEMPLATE FOR THIS OUTPUT OBJECT
 		Class<? extends OutputModelObject> cl = omo.getClass();
 		String templateName = cl.getSimpleName();
-		if ( templateName == null ) {
-			System.err.println("no model to template mapping for " + cl.getSimpleName());
-			return new ST("["+templateName+" invalid]");
-		}
 		ST st = templates.getInstanceOf(templateName);
 		if ( st == null ) {
 			System.err.println("no model to template mapping for " + cl.getSimpleName());
@@ -139,7 +135,7 @@ public class ModelConverter {
 				}
 				else if ( o instanceof Map ) {
 					Map<?, ?> nestedOmoMap = (Map<?, ?>)o;
-					Map<Object, ST> m = new LinkedHashMap<Object, ST>();
+					Map<Object, ST> m = new LinkedHashMap<>();
 					for (Map.Entry<?, ?> entry : nestedOmoMap.entrySet()) {
 						ST nestedST = walk((OutputModelObject)entry.getValue());
 //						System.out.println("set ModelElement "+fieldName+"="+nestedST+" in "+templateName);

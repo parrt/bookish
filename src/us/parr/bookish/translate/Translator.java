@@ -100,7 +100,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	public static int INLINE_EQN_FONT_SIZE = 13;
 	public static int BLOCK_EQN_FONT_SIZE = 13;
 	public static Map<Class<? extends EntityDef>,Class<? extends EntityRef>> defToRefMap =
-		new HashMap<Class<? extends EntityDef>,Class<? extends EntityRef>>() {{
+		new HashMap<>() {{
 			put(CitationDef.class, CitationRef.class);
 			put(FigureDef.class, FigureRef.class);
 			put(SideFigDef.class, FigureRef.class);

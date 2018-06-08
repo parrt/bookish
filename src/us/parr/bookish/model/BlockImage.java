@@ -9,7 +9,7 @@ public class BlockImage extends Image {
 	public BlockImage(Translator translator, String src, String alt) {
 		super(
 			translator,
-			new HashMap<String,String>()
+			new HashMap<>()
 				{{
 					put("src", src);
 					put("alt", alt);
