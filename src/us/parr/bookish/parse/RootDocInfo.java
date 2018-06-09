@@ -3,6 +3,7 @@ package us.parr.bookish.parse;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import us.parr.bookish.semantics.Artifact;
+import us.parr.bookish.semantics.Book;
 
 import java.util.Map;
 
@@ -13,7 +14,12 @@ public class RootDocInfo extends DocInfo {
 		super(artifact, parser, tree);
 		this.parser = parser;
 		this.tree = tree;
-		attributes = getTreeAsRoot().book().attrs().attributes;
+		if ( artifact instanceof Book ) {
+			attributes = ((BookishParser.BookContext)tree).attrs().attributes;
+		}
+		else {
+			// articles have no attributes yet
+		}
 	}
 
 	public String getGeneratedFilename(String target) {
