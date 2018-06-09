@@ -93,10 +93,11 @@ public class Tool {
 			add("-target");     // html or latex
 		}};
 
+	public Artifact artifact;
 	public String target;
 	public String inputDir;
 	public String outputDir;
-	public String rootfile;
+	public String rootFile;
 
 	public static void main(String[] args) throws Exception {
 		Tool tool = new Tool();
@@ -107,13 +108,13 @@ public class Tool {
 
 	public void process(String[] args) throws Exception {
 		options = handleArgs(args);
-		rootfile = option("rootfile");
+		rootFile = option("rootfile");
 
-		inputDir = new File(rootfile).getParent();
+		inputDir = new File(rootFile).getParent();
 		outputDir = option("o");
 		target = option("target");
 
-		processAllDocuments(rootfile);
+		processAllDocuments(rootFile);
 	}
 
 	public void processAllDocuments(String rootfile) throws IOException {
@@ -134,6 +135,8 @@ public class Tool {
 	public void createArtifactDirectories(Artifact artifact) {
 		ParrtIO.mkdir(outputDir+"/images");
 		ParrtIO.mkdir(outputDir+"/data");
+		ParrtIO.mkdir(outputDir+"/notebooks");
+		ParrtIO.mkdir(outputDir+"/css");
 		ParrtIO.mkdir(getBuildDir()+"/snippets");
 	}
 
@@ -299,17 +302,20 @@ public class Tool {
 	 * Write out notebooks derived from snippets.
 	 */
 	public void execAllPythonSnippets(Artifact artifact) {
+		PySnippetExecutor executor = new PySnippetExecutor(this);
+
 		for (ChapDocInfo doc : artifact.docs) {
 			DefPythonEntitiesListener pyPhase = new DefPythonEntitiesListener(doc);
 			ParseTreeWalker walker = new ParseTreeWalker();
 			walker.walk(pyPhase, doc.tree);
 
-			PySnippetExecutor executor = new PySnippetExecutor(this);
 			executor.prepExecutionEnv(doc);
 			executor.execSnippets(doc);
 			executor.saveNotebooks(doc);
 			executor.annotateTreesWithOutput(doc);
 		}
+
+		executor.createNotebooksIndexFile();
 	}
 
 	/** Parse root doc and any subordinate files. Result is an
@@ -317,7 +323,7 @@ public class Tool {
 	 *  done on trees.
 	 */
 	public Artifact parseAllFiles(String rootfile) throws IOException {
-		Artifact artifact = createArtifact(rootfile);
+		this.artifact = createArtifact(rootfile);
 
 		List<String> includes = collectIncludeFilenames(artifact.rootdoc);
 		int n = 1;
@@ -335,7 +341,7 @@ public class Tool {
 	}
 
 	public Artifact createArtifact(String rootFile) throws IOException {
-		RootDocInfo rootdoc = parseRoot(rootfile);
+		RootDocInfo rootdoc = parseRoot(rootFile);
 
 		// book or article?
 		Artifact artifact = null;
@@ -474,7 +480,7 @@ public class Tool {
 	}
 
 	public String getBuildDir() {
-		return BUILD_DIR+"-"+stripFileExtension(ParrtIO.basename(rootfile));
+		return BUILD_DIR+"-"+stripFileExtension(ParrtIO.basename(rootFile));
 	}
 
 	public boolean isHTMLTarget() { return target.equals("html"); }

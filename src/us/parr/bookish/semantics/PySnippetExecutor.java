@@ -102,7 +102,6 @@ public class PySnippetExecutor {
 
 	public void saveNotebooks(ChapDocInfo doc) {
 		MultiMap<String, ExecutableCodeDef> labelToDefs = collectSnippetsByLabel(doc);
-
 		for (String label : labelToDefs.keySet()) {
 			List<ExecutableCodeDef> defs = (List<ExecutableCodeDef>)labelToDefs.get(label);
 			saveNotebook(doc, label, defs);
@@ -131,6 +130,21 @@ public class PySnippetExecutor {
 		if ( result[1]!=null && result[1].length()>0 ) {
 			System.err.println(result[1]); // errors during python compilation not exec
 		}
+	}
+
+	public void createNotebooksIndexFile() {
+		ST indexFile = tool.artifact.templates.getInstanceOf("NotebooksIndexFile");
+		indexFile.add("booktitle", tool.artifact.title);
+
+		for (ChapDocInfo doc : tool.artifact.docs) {
+			String basename = doc.getSourceBaseName();
+
+			MultiMap<String, ExecutableCodeDef> labelToDefs = collectSnippetsByLabel(doc);
+			for (String label : labelToDefs.keySet()) {
+				indexFile.add("names", basename+"/"+label);
+			}
+		}
+		ParrtIO.save(tool.outputDir+"/notebooks/index.html", indexFile.render());
 	}
 
 	public void annotateTreesWithOutput(ChapDocInfo doc) {

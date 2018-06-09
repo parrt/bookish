@@ -13,13 +13,13 @@ From: https://css-tricks.com/probably-dont-base64-svg/
 make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
 */
 
-header(title) ::= <<
+header(title,cssdir="css") ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
-<link rel="stylesheet" type="text/css" href="css/book.css"/>
+<link rel="stylesheet" type="text/css" href="$cssdir$/book.css"/>
 <title>$title$</title>
 </head>
 <body>
@@ -116,6 +116,18 @@ $endif$
 $content$
 
 $subcontainers$
+>>
+
+NotebooksIndexFile(names,booktitle) ::= <<
+$header(title={Jupyter Notebook Files for $booktitle$}, cssdir="../css")$
+
+<h1>Jupyter Notebook Files for $booktitle$</h1>
+
+<ul>
+$names:{n | <li><a href="$n$.ipynb">$n$.ipynb</a></li>}; separator="\n"$
+</ul>
+
+$footer()$
 >>
 
 Author(model, author) ::= <<
