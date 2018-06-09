@@ -30,9 +30,8 @@ public class ArtifactListener extends BookishBaseListener {
 		artifact.notebookResources.add(ctx.attrs().attributes.get("file") );
 	}
 
-
 	@Override
-	public void enterDataBuild(BookishParser.DataBuildContext ctx) {
+	public void enterData(BookishParser.DataContext ctx) {
 		artifact.dataDir = ctx.attrs().attributes.get("dir");
 	}
 

@@ -147,7 +147,7 @@ public class PySnippetExecutor {
 			for (ExecutableCodeDef def : defs) {
 				String stderr = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".err");
 				if ( def instanceof PyFigDef ) {
-					((PyFigDef) def).generatedFilenameNoSuffix = tool.outputDir+"/images/"+basename+"/"+basename+"_"+label+"_"+def.index;
+					((PyFigDef) def).generatedFilenameNoSuffix = "images/"+basename+"/"+basename+"_"+label+"_"+def.index;
 				}
 				if ( stderr.trim().length()>0 ) {
 					System.err.println(stderr);

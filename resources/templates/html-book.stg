@@ -13,13 +13,14 @@ From: https://css-tricks.com/probably-dont-base64-svg/
 make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
 */
 
-header() ::= <<
+header(title) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 <link rel="stylesheet" type="text/css" href="css/book.css"/>
+<title>$title$</title>
 </head>
 <body>
 >>
@@ -33,7 +34,7 @@ footer() ::= <<
  *  all content in separate files.  Article has no main page.
  */
 BookFrontMatterFile(model) ::= <<
-$header()$
+$header(title=model.title)$
 
 $if(model.attributes.version)$
 <div class="watermark">
@@ -70,7 +71,7 @@ $footer()$
 
 /** Any kind of output document; wraps chapter */
 OutputFile(model, body) ::= <<
-$header()$
+$header(title=body.model.title)$
 $body$
 $footer()$
 >>
