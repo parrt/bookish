@@ -2,6 +2,7 @@ package us.parr.bookish.semantics;
 
 import us.parr.bookish.entity.ArticleDef;
 import us.parr.bookish.entity.BookDef;
+import us.parr.bookish.entity.CalloutDef;
 import us.parr.bookish.entity.ChapterDef;
 import us.parr.bookish.entity.CitationDef;
 import us.parr.bookish.entity.EntityDef;
@@ -142,5 +143,11 @@ public class DefEntitiesListener extends BookishParserBaseListener {
 	@Override
 	public void enterFigure(BookishParser.FigureContext ctx) {
 		defEntity(new FigureDef(figCounter++, ctx.attrs()));
+	}
+
+	// callout   : CALLOUT attrs[List.of("label")] END_TAG content END_CALLOUT ;
+	@Override
+	public void enterCallout(BookishParser.CalloutContext ctx) {
+		defEntity(new CalloutDef(defCounter++, ctx.attrs(), ctx.content().getText()));
 	}
 }

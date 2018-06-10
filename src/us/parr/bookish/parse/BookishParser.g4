@@ -181,7 +181,7 @@ figure    : FIGURE attrs[List.of("label","caption")] END_TAG content END_FIGURE 
 
 aside	  : ASIDE attrs[List.of("title")] END_TAG content END_ASIDE ;
 
-callout   : CALLOUT content END_CALLOUT ;
+callout   : CALLOUT attrs[List.of("label")] END_TAG content END_CALLOUT ;
 
 pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayData]
     :	PYEVAL attrs[List.of("label","output","hide")] END_TAG pycodeblock END_PYEVAL

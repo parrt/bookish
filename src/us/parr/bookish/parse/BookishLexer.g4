@@ -36,7 +36,7 @@ INCLUDE    	: '<include '  -> pushMode(XML_MODE) ;
 
 IMG		    : '<img ' -> pushMode(XML_MODE) ;
 
-CALLOUT     : '<callout>' ;
+CALLOUT     : '<callout ' -> pushMode(XML_MODE) ;
 END_CALLOUT : '</callout>' ;
 
 CUT		    : '<cut>' .*? '</cut>' -> skip ;

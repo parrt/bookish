@@ -1,10 +1,9 @@
 package us.parr.bookish.model;
 
-public class Callout extends OutputModelObject {
-	@ModelElement
-	public OutputModelObject text;
+import us.parr.bookish.entity.EntityDef;
 
-	public Callout(OutputModelObject text) {
-		this.text = text;
+public class Callout extends SideNote {
+	public Callout(EntityDef def, OutputModelObject text) {
+		super(def, text);
 	}
 }

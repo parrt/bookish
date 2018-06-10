@@ -283,6 +283,7 @@ SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 SectionRef(model) ::= "<b>Section $model.def.index$</b> <i>$model.def.title$</i>"
 ChapterRef(model) ::= "<b>Chapter $model.def.index$</b> <i>$model.def.title$</i>"
+CalloutRef(model) ::= "" // show nothing; ref just identifies which para to associate with
 UnknownRef(model) ::= <<
 <span style="color: red">[$model.def.label$]</span>
 >>
@@ -331,8 +332,14 @@ TableHeaderItem(model, contents) ::= <<
 
 Paragraph(model, content) ::= <<
 
+$if(model.entitiesRefd)$
+<div class="p_wrapper">
 $model.entitiesRefd:{d | $d.template$}$
+<p class=p_left>$content$</p>
+</div>
+$else$
 <p>$content$</p>
+$endif$
 
 >>
 

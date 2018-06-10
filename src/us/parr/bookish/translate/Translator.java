@@ -3,6 +3,7 @@ package us.parr.bookish.translate;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.xpath.XPath;
 import us.parr.bookish.Tool;
+import us.parr.bookish.entity.CalloutDef;
 import us.parr.bookish.entity.ChapterDef;
 import us.parr.bookish.entity.CitationDef;
 import us.parr.bookish.entity.EntityDef;
@@ -62,6 +63,7 @@ import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.Text;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.UnknownSymbol;
+import us.parr.bookish.model.ref.CalloutRef;
 import us.parr.bookish.model.ref.ChapterRef;
 import us.parr.bookish.model.ref.CitationRef;
 import us.parr.bookish.model.ref.EntityRef;
@@ -111,6 +113,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 			put(SubSectionDef.class, SectionRef.class);
 			put(SubSubSectionDef.class, SectionRef.class);
 			put(ChapterDef.class, ChapterRef.class);
+			put(CalloutDef.class, CalloutRef.class);
 		}};
 
 	public Tool tool;
@@ -562,7 +565,18 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 
 	@Override
 	public OutputModelObject visitCallout(BookishParser.CalloutContext ctx) {
-		return new Callout(visit(ctx.content()));
+		String label = getAttr(ctx, "label");
+		EntityDef def = docInfo.getEntity(label);
+		if ( def==null ) {
+			return null;
+		}
+		SideNote n = new Callout(def, visit(ctx.content()));
+		def.model = n;
+
+		if ( label==null ) {
+			return n; // if no label, insert inline here at this point in document model
+		}
+		return null;
 	}
 
 	@Override
