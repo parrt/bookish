@@ -24,6 +24,8 @@ public abstract class Artifact {
 	/** A symlink to where data is for building/exec'ing python code */
 	public String dataDir;
 
+	public String cssFile;
+
 	/** Copy these files from dataDir into generated artifact */
 	public List<String> dataFilesToCopy = new ArrayList<>();
 

@@ -25,6 +25,7 @@ END_COPYRIGHT : '</copyright>' ;
 DATA        : '<data ' -> pushMode(XML_MODE) ;
 END_DATA    : '</data>' ;
 DATA_COPY	: '<copy ' -> pushMode(XML_MODE) ;
+CSS			: '<css ' -> pushMode(XML_MODE) ;
 
 NOTEBOOK_SUPPORT : '<notebook-support ' -> pushMode(XML_MODE) ;
 

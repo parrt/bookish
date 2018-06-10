@@ -13,13 +13,13 @@ From: https://css-tricks.com/probably-dont-base64-svg/
 make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
 */
 
-header(title,cssdir="css") ::= <<
+header(title,css) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
-<link rel="stylesheet" type="text/css" href="$cssdir$/book.css"/>
+<link rel="stylesheet" type="text/css" href="$css$"/>
 <title>$title$</title>
 </head>
 <body>
@@ -33,29 +33,29 @@ footer() ::= <<
 /** This is the title page, TOC etc... for the book. Chapters and
  *  all content in separate files.  Article has no main page.
  */
-BookFrontMatterFile(model) ::= <<
-$header(title=model.title)$
+BookFrontMatterFile(file) ::= <<
+$header(title=file.title, css=file.book.cssFile)$
 
-$if(model.attributes.version)$
+$if(file.attributes.version)$
 <div class="watermark">
-<i>$model.attributes.watermark$</i><br>
-Book version $model.attributes.version$
+<i>$file.attributes.watermark$</i><br>
+Book version $file.attributes.version$
 </div>
 $endif$
 
-<h1>$model.title$</h1>
+<h1>$file.title$</h1>
 
-<p>$model.attributes.author$</p>
-<p style="font-size: 80%">$model.book.copyright$</font></p>
+<p>$file.attributes.author$</p>
+<p style="font-size: 80%">$file.book.copyright$</font></p>
 
-$if(model.book.abstract_)$
-<p>$model.book.abstract_$</p>
+$if(file.book.abstract_)$
+<p>$file.book.abstract_$</p>
 $endif$
 
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>
-$model.chapterDocuments:{chap |
+$file.chapterDocuments:{chap |
 	<li><a href="$chap.generatedFilename$">$chap.title$</a></li>
 	<ul>
 	$chap.subcontainers:{sec |
@@ -69,9 +69,9 @@ $model.chapterDocuments:{chap |
 $footer()$
 >>
 
-/** Any kind of output document; wraps chapter */
-OutputFile(model, body) ::= <<
-$header(title=body.model.title)$
+/** Any kind of output document; wraps chapter but not book toc */
+OutputFile(artifact, body) ::= <<
+$header(title=artifact.title, css=artifact.cssFile)$
 $body$
 $footer()$
 >>
@@ -118,8 +118,8 @@ $content$
 $subcontainers$
 >>
 
-NotebooksIndexFile(names,booktitle) ::= <<
-$header(title={Jupyter Notebook Files for $booktitle$}, cssdir="../css")$
+NotebooksIndexFile(artifact,names,booktitle) ::= <<
+$header(title={Jupyter Notebook Files for $booktitle$}, css=artifact.cssFile)$
 
 <h1>Jupyter Notebook Files for $booktitle$</h1>
 

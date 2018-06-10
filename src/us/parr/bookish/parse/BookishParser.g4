@@ -20,14 +20,14 @@ rootdocument
 
 book:	BOOK attrs[List.of("label","author","title","version","watermark")] END_TAG
 		(ws? include)*
-		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_)*
+		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css)*
 		book_content
 	;
 
 article
 	:	ARTICLE
 		(ws? include)*
-		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_)*
+		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css)*
 		ws?
 	;
 
@@ -49,6 +49,8 @@ data:	DATA attrs[List.of("dir")] END_TAG
 		ws?
 		END_DATA
 	;
+
+css : 	CSS attrs[List.of("file")] END_TAG ;
 
 dataCopy : DATA_COPY attrs[List.of("file")] END_TAG ;
 

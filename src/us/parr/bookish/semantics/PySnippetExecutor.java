@@ -134,6 +134,7 @@ public class PySnippetExecutor {
 
 	public void createNotebooksIndexFile() {
 		ST indexFile = tool.artifact.templates.getInstanceOf("NotebooksIndexFile");
+		indexFile.add("artifact", tool.artifact);
 		indexFile.add("booktitle", tool.artifact.title);
 
 		for (ChapDocInfo doc : tool.artifact.docs) {

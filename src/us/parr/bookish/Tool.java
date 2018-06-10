@@ -179,6 +179,7 @@ public class Tool {
 		for (Chapter chapter : chapterModels) {
 			ST chapST = converter.walk(chapter);
 			ST outputFileST = artifact.templates.getInstanceOf("OutputFile");
+			outputFileST.add("artifact", artifact);
 			outputFileST.add("body", chapST);
 			fileSTs.add(outputFileST);
 		}

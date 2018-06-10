@@ -39,4 +39,9 @@ public class ArtifactListener extends BookishBaseListener {
 	public void enterDataCopy(BookishParser.DataCopyContext ctx) {
 		artifact.dataFilesToCopy.add( ctx.attrs().attributes.get("file") );
 	}
+
+	@Override
+	public void enterCss(BookishParser.CssContext ctx) {
+		artifact.cssFile = ctx.attrs().attributes.get("file");
+	}
 }
