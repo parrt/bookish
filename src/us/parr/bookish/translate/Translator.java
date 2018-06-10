@@ -210,36 +210,33 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitSection(BookishParser.SectionContext ctx) {
 		String title = getAttr(ctx, "title");
-		String label = getAttr(ctx, "label");
 
 		List<ContainerWithTitle> subsections = new ArrayList<>();
 		for (ParseTree el : ctx.subsection()) {
 			subsections.add((SubSection)visit(el));
 		}
 		OutputModelObject content = getContentModel(ctx.content());
-		return new Section(ctx.def, title, label, content, subsections);
+		return new Section(ctx.def, title, content, subsections);
 	}
 
 	@Override
 	public OutputModelObject visitSubsection(BookishParser.SubsectionContext ctx) {
 		String title = getAttr(ctx, "title");
-		String label = getAttr(ctx, "label");
 
 		List<ContainerWithTitle> subsubsections = new ArrayList<>();
 		for (ParseTree el : ctx.subsubsection()) {
 			subsubsections.add((SubSection)visit(el));
 		}
 		OutputModelObject content = getContentModel(ctx.content());
-		return new SubSection(ctx.def, title, label, content, subsubsections);
+		return new SubSection(ctx.def, title, content, subsubsections);
 	}
 
 	@Override
 	public OutputModelObject visitSubsubsection(BookishParser.SubsubsectionContext ctx) {
 		String title = getAttr(ctx, "title");
-		String label = getAttr(ctx, "label");
 
 		OutputModelObject content = getContentModel(ctx.content());
-		return new SubSubSection(ctx.def, title, label, content);
+		return new SubSubSection(ctx.def, title, content);
 	}
 
 	@Override

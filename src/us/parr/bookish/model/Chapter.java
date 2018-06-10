@@ -31,7 +31,7 @@ public class Chapter extends ContainerWithTitle {
 	               OutputModelObject content,
 	               List<ContainerWithTitle> sections)
 	{
-		super(def, def.title, def.label, content);
+		super(def, def.title, content);
 		this.docInfo = docInfo;
 		this.artifact = artifact;
 		this.abstract_ = abstract_;

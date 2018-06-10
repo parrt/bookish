@@ -7,16 +7,14 @@ import java.util.List;
 public class Section extends ContainerWithTitle {
 	public Section(EntityDef def,
 	               String title,
-	               String anchor,
 	               OutputModelObject content,
 	               List<ContainerWithTitle> subsections)
 	{
-		super(def, title, anchor, content);
+		super(def, title, content);
 		this.subcontainers = subsections;
 	}
 
 	public String getAnchor() {
-		if ( anchor!=null ) return anchor;
-		return "sec"+sectionNumber;
+		return def.label;
 	}
 }

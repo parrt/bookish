@@ -15,7 +15,7 @@ public abstract class EntityWithScope extends EntityDef {
 		this.enclosingScope = enclosingScope;
 		this.title = attrsCtx.attributes.get("title");
 		if ( label==null ) {
-			label = "chp:"+getContainerNumber();
+			label = "sec:"+getContainerNumber();
 		}
 	}
 
