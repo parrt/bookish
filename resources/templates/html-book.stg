@@ -178,11 +178,11 @@ $content$
 
 TextBlock(model,elements) ::= "$elements$"
 
-SideQuote(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$model.def.attributes.quote$</i>&rdquo; &mdash; $model.def.attributes.author$</span>"
+SideQuote(model) ::= "<p class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$model.def.attributes.quote$</i>&rdquo; &mdash; $model.def.attributes.author$</p>"
 
-SideNote(model,text) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>$text$</span>"
+SideNote(model,text) ::= "<p class=sidenote><span class=sup>$model.def.index$</span>$text$</p>"
 
-Citation(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$model.def.title$</i>&rdquo; &mdash; $model.def.author$</span>"
+Citation(model) ::= "<p class=sidenote><span class=sup>$model.def.index$</span>&nbsp;&ldquo;<i>$model.def.title$</i>&rdquo; &mdash; $model.def.author$</p>"
 
 ChapQuote(model) ::= "<p>&ldquo;<i>$model.quote$</i>&rdquo; &mdash; $model.author$</p>"
 

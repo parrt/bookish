@@ -117,7 +117,6 @@ paragraph_element
 	|	inline_code
 	|	inline_py
 	|	linebreak
-	|	quoted
  	|	dollar
  	|	lt
 	|	text
@@ -125,7 +124,7 @@ paragraph_element
 	;
 
 paragraph_content
- 	:	paragraph_element+
+ 	:	(paragraph_element|quoted)+
  	;
 
 dollar : DOLLAR ;
@@ -138,7 +137,7 @@ italics : ITALICS ;
 
 bold : BOLD ;
 
-quoted : QUOTE paragraph_content QUOTE ;
+quoted : QUOTE paragraph_element+ QUOTE ;
 
 inline_code : INLINE_CODE ;
 
