@@ -8,6 +8,7 @@ import us.parr.bookish.parse.RootDocInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /** Track all information about an artifact, which typically consists
  *  of multiple files.  Track the list of documents, where the first
@@ -39,6 +40,9 @@ public abstract class Artifact {
 	public RootDocInfo rootdoc;
 	public List<ChapDocInfo> docs = new ArrayList<>();
 
+	/** Attributes of the book or article tag in root file */
+	public Map<String,String> attributes;
+
 	public STGroup templates;
 
 	public Artifact(Tool tool, String title) {
@@ -50,6 +54,7 @@ public abstract class Artifact {
 	public void addRootDoc(RootDocInfo rootdoc) {
 		this.rootdoc = rootdoc;
 		this.rootdoc.artifact = this;
+		this.attributes = rootdoc.attributes;
 	}
 
 	public void addDoc(ChapDocInfo doc) {

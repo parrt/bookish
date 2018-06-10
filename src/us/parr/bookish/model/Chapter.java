@@ -1,6 +1,7 @@
 package us.parr.bookish.model;
 
 import us.parr.bookish.entity.ChapterDef;
+import us.parr.bookish.parse.DocInfo;
 import us.parr.bookish.semantics.Artifact;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public class Chapter extends ContainerWithTitle {
 
 	public Artifact artifact; // book or article
 
+	public DocInfo docInfo; // specific document
+
 	public String copyright;
 
 	public String generatedFilename;
@@ -21,6 +24,7 @@ public class Chapter extends ContainerWithTitle {
 	public Map<String,String> attributes;
 
 	public Chapter(Artifact artifact,
+	               DocInfo docInfo,
 	               ChapterDef def,
 	               PreAbstract preabstract,
 	               Abstract abstract_,
@@ -28,6 +32,7 @@ public class Chapter extends ContainerWithTitle {
 	               List<ContainerWithTitle> sections)
 	{
 		super(def, def.title, def.label, content);
+		this.docInfo = docInfo;
 		this.artifact = artifact;
 		this.abstract_ = abstract_;
 		this.preabstract = preabstract;

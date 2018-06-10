@@ -189,6 +189,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		}
 		Join contentModel = getContentModel(ctx.content());
 		Chapter chapter = new Chapter(artifact,
+		                              docInfo,
 		                              ctx.def,
 		                              (PreAbstract) null,
 		                              (Abstract) abstract_,

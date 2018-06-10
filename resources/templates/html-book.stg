@@ -77,31 +77,31 @@ $footer()$
 >>
 
 /** Also represents an article page */
-Chapter(model, preabstract, abstract_, content, subcontainers) ::= <<
-$if(model.artifact.rootdoc.attributes.version)$
+Chapter(chapter, preabstract, abstract_, content, subcontainers) ::= <<
+$if(chapter.artifact.attributes.version)$
 <div class="watermark">
-<i>$model.artifact.rootdoc.attributes.watermark$</i><br>
-Book version $model.artifact.rootdoc.attributes.version$
+<i>$chapter.artifact.attributes.watermark$</i><br>
+Book version $chapter.artifact.attributes.version$
 </div>
 $endif$
 
-<h1>$model.title$</h1>
+<h1>$chapter.title$</h1>
 
-<p>$model.artifact.rootdoc.attributes.author$</p>
+<p>$chapter.artifact.attributes.author$</p>
 
-<p style="font-size: 80%">$model.artifact.copyright$</p>
+<p style="font-size: 80%">$chapter.artifact.copyright$</p>
 
-$model.attributes.author$
+$chapter.attributes.author$
 
 $preabstract$
 
 $abstract_$
 
-$if(model.subcontainers)$
+$if(chapter.subcontainers)$
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>
-$model.subcontainers:{sec |
+$chapter.subcontainers:{sec |
 	<li><a href="#$sec.anchor$">$sec.title$</a></li>
 	<ul>
 	$sec.subcontainers:{subsec |
