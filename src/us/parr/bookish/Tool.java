@@ -180,6 +180,7 @@ public class Tool {
 			ST chapST = converter.walk(chapter);
 			ST outputFileST = artifact.templates.getInstanceOf("OutputFile");
 			outputFileST.add("artifact", artifact);
+			outputFileST.add("title", chapter.title);
 			outputFileST.add("body", chapST);
 			fileSTs.add(outputFileST);
 		}
