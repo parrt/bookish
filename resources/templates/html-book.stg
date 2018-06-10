@@ -119,7 +119,7 @@ $subcontainers$
 >>
 
 NotebooksIndexFile(artifact,names,booktitle) ::= <<
-$header(title={Jupyter Notebook Files for $booktitle$}, css=artifact.cssFile)$
+$header(title={Jupyter Notebook Files for $booktitle$}, css={../$artifact.cssFile$})$
 
 <h1>Jupyter Notebook Files for $booktitle$</h1>
 
