@@ -13,10 +13,21 @@ From: https://css-tricks.com/probably-dont-base64-svg/
 make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
 */
 
-header(title,css) ::= <<
+header(title,css,googletracking) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+$if(googletracking)$
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=$googletracking$"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '$googletracking$');
+</script>
+$endif$
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 <link rel="stylesheet" type="text/css" href="$css$"/>
@@ -34,7 +45,7 @@ footer() ::= <<
  *  all content in separate files.  Article has no main page.
  */
 BookFrontMatterFile(file) ::= <<
-$header(title=file.title, css=file.book.cssFile)$
+$header(title=file.title, css=file.book.cssFile, googletracking=file.attributes.googletracking)$
 
 $if(file.attributes.version)$
 <div class="watermark">
@@ -71,7 +82,7 @@ $footer()$
 
 /** Any kind of output document; wraps chapter but not book toc */
 OutputFile(artifact, title, body) ::= <<
-$header(title=title, css=artifact.cssFile)$
+$header(title=title, css=artifact.cssFile, googletracking=artifact.attributes.googletracking)$
 $body$
 $footer()$
 >>
@@ -119,7 +130,9 @@ $subcontainers$
 >>
 
 NotebooksIndexFile(artifact,names,booktitle) ::= <<
-$header(title={Jupyter Notebook Files for $booktitle$}, css={../$artifact.cssFile$})$
+$header(title={Jupyter Notebook Files for $booktitle$},
+        css={../$artifact.cssFile$},
+        googletracking=artifact.attributes.googletracking)$
 
 <h1>Jupyter Notebook Files for $booktitle$</h1>
 
