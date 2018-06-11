@@ -1,7 +1,7 @@
 lexer grammar BookishLexer;
 
 BOOK    	: '<book '  -> pushMode(XML_MODE) ;
-ARTICLE    	: '<article>' ;
+ARTICLE    	: '<article' -> pushMode(XML_MODE) ;
 CHAPTER		: '<chapter ' -> pushMode(XML_MODE) ;
 SECTION		: '<section ' -> pushMode(XML_MODE) ;
 SUBSECTION  : '<subsection ' -> pushMode(XML_MODE) ;

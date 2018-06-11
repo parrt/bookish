@@ -19,7 +19,7 @@ public class RootDocInfo extends DocInfo {
 			attributes = ((BookishParser.BookContext)rootTag).attrs().attributes;
 		}
 		else {
-			// articles have no attributes yet
+			attributes = ((BookishParser.ArticleContext)rootTag).attrs().attributes;
 		}
 	}
 
