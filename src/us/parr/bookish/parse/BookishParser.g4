@@ -217,8 +217,11 @@ table
 		TABLE_
 	;
 
-table_header : TR (ws? TH attrs[List.of("width")]? END_TAG table_item)+ ;
+table_header : TR table_header_item+ ;
+
 table_row : TR (ws? TD table_item)+ ;
+
+table_header_item : ws? TH attrs[List.of("width")]? END_TAG table_item ;
 
 list_item : content? ;
 

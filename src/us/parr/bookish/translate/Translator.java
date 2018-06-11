@@ -82,6 +82,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -338,17 +339,18 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	}
 
 	/*
-	table_header : TR ws? (TH attrs END_OF_TAG table_item)+ ;
-	th_tag : TH attr_assignment+ END_OF_TAG ;
+table_header : TR table_header_item+ ;
+table_header_item : ws? TH attrs[List.of("width")]? END_TAG table_item ;
+table_row : TR (ws? TD table_item)+ ;
 	*/
 	@Override
 	public OutputModelObject visitTable_header(BookishParser.Table_headerContext ctx) {
 		List<TableItem> items = new ArrayList<>();
-		for (int i = 0; i<ctx.attrs().size(); i++) {
-			BookishParser.AttrsContext attrsOfTH = ctx.attrs().get(i);
-			BookishParser.Table_itemContext itemCtx = ctx.table_item().get(i);
+		for (BookishParser.Table_header_itemContext itemCtx : ctx.table_header_item()) {
 			TableItem item = (TableItem) visit(itemCtx);
-			items.add(new TableHeaderItem(item.contents, attrsOfTH.attributes));
+			BookishParser.AttrsContext attrsOfTH = itemCtx.attrs();
+			Map<String, String> attributes = attrsOfTH!=null ? attrsOfTH.attributes : Collections.emptyMap();
+			items.add(new TableHeaderItem(item.contents, attributes));
 		}
 		return new TableRow(items);
 	}
