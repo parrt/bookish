@@ -48,7 +48,7 @@ TODO	    : '\\todo' '{' .*? '}' ;
 SYMBOL		: '\\symbol' '{' .*? '}' ;
 
 EQN         : '$' ~'$'+ '$' ;
-BLOCK_EQN   : '\n' '\\[' .+? '\\]' ;
+BLOCK_EQN   : '\\[' .+? '\\]' ;
 
 OL : '<ol>' ;
 LI : '<li>' ;
@@ -88,7 +88,6 @@ REF		  : '[' ~']'+ ']' ; // like [1] or [chp.intro] or [Ng]
 
 DOLLAR	  : '\\$' ;
 LT		  : '\\<' ;
-LBRACK 	  : '\\[' ;
 
 COMMENT : '<!--' .*? '-->' -> skip ;
 
