@@ -48,7 +48,7 @@ TODO	    : '\\todo' '{' .*? '}' ;
 SYMBOL		: '\\symbol' '{' .*? '}' ;
 
 EQN         : '$' ~'$'+ '$' ;
-BLOCK_EQN   : '\\[' .+? '\\]' ;
+BLOCK_EQN   : '\n' '\\[' .+? '\\]' ;
 
 OL : '<ol>' ;
 LI : '<li>' ;
