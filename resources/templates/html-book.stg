@@ -113,12 +113,13 @@ $if(chapter.subcontainers)$
 <p class="toc_title">Contents</p>
 <ul>
 $chapter.subcontainers:{sec |
-	<li><a href="#$sec.anchor$">$sec.title$</a></li>
+	<li><a href="#$sec.anchor$">$sec.title$</a>
 	<ul>
 	$sec.subcontainers:{subsec |
 		<li><a href="#$subsec.anchor$">$subsec.title$</a></li>
 	}$
 	</ul>
+	</li>
 }$
 </ul>
 </div>
