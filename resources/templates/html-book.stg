@@ -100,9 +100,9 @@ $endif$
 
 <p>$chapter.artifact.attributes.author$</p>
 
-<p style="font-size: 80%">$chapter.artifact.copyright$</p>
+<p>$chapter.attributes.author$</p>
 
-$chapter.attributes.author$
+<p style="font-size: 80%">$chapter.artifact.copyright$</p>
 
 $preabstract$
 
