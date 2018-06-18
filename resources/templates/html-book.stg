@@ -47,14 +47,15 @@ footer() ::= <<
 BookFrontMatterFile(file) ::= <<
 $header(title=file.title, css=file.book.cssFile, googletracking=file.attributes.googletracking)$
 
+
+<h1>$file.title$</h1>
+
 $if(file.attributes.version)$
 <div class="watermark">
 <i>$file.attributes.watermark$</i><br>
 Book version $file.attributes.version$
 </div>
 $endif$
-
-<h1>$file.title$</h1>
 
 <p>$file.attributes.author$</p>
 <p style="font-size: 80%">$file.book.copyright$</font></p>
@@ -89,12 +90,14 @@ $footer()$
 
 /** Also represents an article page */
 Chapter(chapter, preabstract, abstract_, content, subcontainers) ::= <<
-$if(chapter.artifact.attributes.version)$
 <div class="watermark">
+$if(chapter.artifact.attributes.watermark)$
 <i>$chapter.artifact.attributes.watermark$</i><br>
-Book version $chapter.artifact.attributes.version$
-</div>
 $endif$
+$if(chapter.artifact.attributes.version)$
+Book version $chapter.artifact.attributes.version$
+$endif$
+</div>
 
 <h1>$chapter.title$</h1>
 
