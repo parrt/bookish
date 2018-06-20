@@ -44,4 +44,9 @@ public class ArtifactListener extends BookishBaseListener {
 	public void enterCss(BookishParser.CssContext ctx) {
 		artifact.cssFile = ctx.attrs().attributes.get("file");
 	}
+
+	@Override
+	public void enterMetadata(BookishParser.MetadataContext ctx) {
+		artifact.metadata = ctx.attrs().attributes;
+	}
 }

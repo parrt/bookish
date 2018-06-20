@@ -37,6 +37,8 @@ public abstract class Artifact {
 
 	public List<String> notebookResources = new ArrayList<>();
 
+	public Map<String,String> metadata;
+
 	public RootDocInfo rootdoc;
 	public List<ChapDocInfo> docs = new ArrayList<>();
 

@@ -20,14 +20,14 @@ rootdocument
 
 book:	BOOK attrs[List.of("label","author","title","version","watermark","googletracking")] END_TAG
 		(ws? include)*
-		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css)*
+		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css | ws? metadata)*
 		book_content
 	;
 
 article
 	:	ARTICLE attrs[List.of("version","watermark","googletracking")] END_TAG
 		(ws? include)*
-		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css)*
+		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css | ws? metadata)*
 		ws?
 	;
 
@@ -55,6 +55,9 @@ css : 	CSS attrs[List.of("file")] END_TAG ;
 dataCopy : DATA_COPY attrs[List.of("file")] END_TAG ;
 
 copyright : COPYRIGHT content END_COPYRIGHT ;
+
+metadata : METADATA attrs[List.of("title","imageurl","description","url","pagetype","twitterhandle")] END_TAG ;
+
 
 notebook_support : NOTEBOOK_SUPPORT attrs[List.of("file")] END_TAG ;
 

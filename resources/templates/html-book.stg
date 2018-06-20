@@ -32,6 +32,7 @@ $endif$
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 <link rel="stylesheet" type="text/css" href="$css$"/>
 <title>$title$</title>
+$webmetadata(artifact.metadata)$
 </head>
 <body>
 >>
@@ -41,33 +42,57 @@ footer() ::= <<
 </html>
 >>
 
+// title,imageurl,description,url,pagetype,twitterhandle
+webmetadata(data) ::= <<
+<!-- META -->
+<!-- LinkedIn meta -->
+<meta property='og:title' content="$data.title$"/>
+<meta property='og:image' content="$data.imageurl$">
+<meta property='og:description' content="$data.description$"/>
+<meta property='og:url' content="$data.url$"/>
+
+<!-- Facebook meta -->
+<meta property="og:type" content="website" />
+
+<!-- Twitter meta -->
+<meta name="twitter:title" content="$data.title$">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="$data.twitterhandle$">
+<meta name="twitter:creator" content="$data.twitterhandle$">
+<meta name="twitter:description" content="$data.description$">
+<meta name="twitter:image" content="$data.imageurl$">
+<!-- END META -->
+>>
+
 /** This is the title page, TOC etc... for the book. Chapters and
  *  all content in separate files.  Article has no main page.
+ *
+ *  'artifact' attribute available to all nested templates.
  */
-BookFrontMatterFile(file) ::= <<
-$header(title=file.title, css=file.book.cssFile, googletracking=file.attributes.googletracking)$
+BookFrontMatterFile(artifact) ::= <<
+$header(title=artifact.title, css=artifact.book.cssFile, googletracking=artifact.attributes.googletracking)$
 
 
-<h1>$file.title$</h1>
+<h1>$artifact.title$</h1>
 
-$if(file.attributes.version)$
+$if(artifact.attributes.version)$
 <div class="watermark">
-<i>$file.attributes.watermark$</i><br>
-Book version $file.attributes.version$
+<i>$artifact.attributes.watermark$</i><br>
+Book version $artifact.attributes.version$
 </div>
 $endif$
 
-<p>$file.attributes.author$</p>
-<p style="font-size: 80%">$file.book.copyright$</font></p>
+<p>$artifact.attributes.author$</p>
+<p style="font-size: 80%">$artifact.book.copyright$</font></p>
 
-$if(file.book.abstract_)$
-<p>$file.book.abstract_$</p>
+$if(artifact.book.abstract_)$
+<p>$artifact.book.abstract_$</p>
 $endif$
 
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>
-$file.chapterDocuments:{chap |
+$artifact.chapterDocuments:{chap |
 	<li><a href="$chap.generatedFilename$">$chap.title$</a></li>
 	<ul>
 	$chap.subcontainers:{sec |
@@ -81,7 +106,9 @@ $file.chapterDocuments:{chap |
 $footer()$
 >>
 
-/** Any kind of output document; wraps chapter but not book toc */
+/** Any kind of output document; wraps chapter but not book toc.
+ *  'artifact' attribute available to all nested templates.
+ */
 OutputFile(artifact, title, body) ::= <<
 $header(title=title, css=artifact.cssFile, googletracking=artifact.attributes.googletracking)$
 $body$
