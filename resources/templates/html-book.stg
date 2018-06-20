@@ -52,7 +52,7 @@ webmetadata(data) ::= <<
 <meta property='og:url' content="$data.url$"/>
 
 <!-- Facebook meta -->
-<meta property="og:type" content="website" />
+<meta property="og:type" content="$data.pagetype$" />
 
 <!-- Twitter meta -->
 <meta name="twitter:title" content="$data.title$">
