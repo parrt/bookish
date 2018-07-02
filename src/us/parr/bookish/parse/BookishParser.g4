@@ -25,7 +25,7 @@ book:	BOOK attrs[List.of("label","author","title","version","watermark","googlet
 	;
 
 article
-	:	ARTICLE attrs[List.of("version","watermark","googletracking")] END_TAG
+	:	ARTICLE attrs[List.of("version","watermark","googletracking")]? END_TAG
 		(ws? include)*
 		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css | ws? metadata)*
 		ws?
