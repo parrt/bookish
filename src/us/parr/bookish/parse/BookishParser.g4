@@ -242,7 +242,9 @@ todo : TODO ;
 
 symbol : SYMBOL ;
 
-latex returns [String relativeImageFilename] : LATEX LATEX_CONTENT END_LATEX ;
+latex returns [String relativeImageFilename] : LATEX latex_content END_LATEX ;
+
+latex_content : LATEX_CONTENT+ ;
 
 block_eqn returns [String relativeImageFilename] : BLOCK_EQN ;
 

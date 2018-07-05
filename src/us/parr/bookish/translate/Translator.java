@@ -255,7 +255,7 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitLatex(BookishParser.LatexContext ctx) {
 		// relativeImageFilename is null implies must be html not latex output
-		String latex = ctx.LATEX_CONTENT().getText();
+		String latex = ctx.latex_content().getText();
 		return new Latex(this, ctx.relativeImageFilename, latex, latex);
 	}
 

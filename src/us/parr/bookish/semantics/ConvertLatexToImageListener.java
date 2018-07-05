@@ -137,7 +137,7 @@ public class ConvertLatexToImageListener extends BookishBaseListener {
 
 	@Override
 	public void enterLatex(BookishParser.LatexContext ctx) {
-		String text = ctx.LATEX_CONTENT().getText().trim();
+		String text = ctx.latex_content().getText().trim();
 
 		String relativePath = "images/latex-"+md5hash(text)+".svg";
 		String src = tool.outputDir+"/"+relativePath;
