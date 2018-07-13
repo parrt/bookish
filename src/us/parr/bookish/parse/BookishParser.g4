@@ -18,7 +18,7 @@ rootdocument
 	|	article EOF
 	;
 
-book:	BOOK attrs[List.of("label","author","title","version","watermark","googletracking")] END_TAG
+book:	BOOK attrs[List.of("label","author","title","version","watermark","googletracking","annotations")] END_TAG
 		(ws? include)*
 		(ws? data | ws? notebook_support | ws? copyright | ws? abstract_ | ws? css | ws? metadata)*
 		book_content
@@ -84,6 +84,7 @@ content
 		|	block_eqn
 		|	eqn
 		|	latex
+		|	html
 		|	ordered_list
 		|	unordered_list
 		|	table
@@ -120,6 +121,7 @@ paragraph_element
 	|	inline_code
 	|	inline_py
 	|	linebreak
+	|	html
  	|	dollar
  	|	lt
 	|	text
@@ -245,6 +247,10 @@ symbol : SYMBOL ;
 latex returns [String relativeImageFilename] : LATEX latex_content END_LATEX ;
 
 latex_content : LATEX_CONTENT+ ;
+
+html returns [String relativeImageFilename] : HTML html_content END_HTML ;
+
+html_content : HTML_CONTENT+ ;
 
 block_eqn returns [String relativeImageFilename] : BLOCK_EQN ;
 

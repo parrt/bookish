@@ -416,6 +416,8 @@ Latex(model) ::= <<
 
 >>
 
+RawHTML(model) ::= "$model.html$"
+
 BlockEquation(model) ::= <<
 
 <div><img class="blkeqn" $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$></div>

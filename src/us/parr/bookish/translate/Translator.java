@@ -48,6 +48,7 @@ import us.parr.bookish.model.PyEval;
 import us.parr.bookish.model.PyEvalDataFrame;
 import us.parr.bookish.model.PyFig;
 import us.parr.bookish.model.Quoted;
+import us.parr.bookish.model.RawHTML;
 import us.parr.bookish.model.Section;
 import us.parr.bookish.model.SideFigure;
 import us.parr.bookish.model.SideNote;
@@ -257,6 +258,12 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 		// relativeImageFilename is null implies must be html not latex output
 		String latex = ctx.latex_content().getText();
 		return new Latex(this, ctx.relativeImageFilename, latex, latex);
+	}
+
+	@Override
+	public OutputModelObject visitHtml(BookishParser.HtmlContext ctx) {
+		String html = ctx.html_content().getText();
+		return new RawHTML(html);
 	}
 
 	@Override

@@ -77,6 +77,8 @@ INLINE_PY_UNLABELED : '<py>' -> pushMode(PYCODE_MODE) ;
 
 LATEX	  : '<latex>' -> pushMode(LATEX_MODE) ;
 
+HTML	  : '<html>' -> pushMode(HTML_MODE) ;
+
 ITALICS	  : '*' ~' ' '*'
  		  | '*' ~' ' .*? ~' ' '*'
  		  ;
@@ -118,6 +120,10 @@ END_PY     : '</py>'     -> popMode ;
 mode LATEX_MODE;
 LATEX_CONTENT : ~'<'+ | '<' ;
 END_LATEX : '</latex>' -> popMode ;
+
+mode HTML_MODE;
+HTML_CONTENT : ~'<'+ | '<' ;
+END_HTML : '</html>' -> popMode ;
 
 mode XML_MODE;           //e.g, <img src="images/neuron.png" alt="neuron.png" width="250">
 XML_ATTR : [a-zA-Z\-_0-9]+ ;
