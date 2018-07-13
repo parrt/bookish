@@ -67,32 +67,32 @@ webmetadata(data) ::= <<
 /** This is the title page, TOC etc... for the book. Chapters and
  *  all content in separate files.  Article has no main page.
  *
- *  'artifact' attribute available to all nested templates.
+ *  'artifact' and 'file' attributes available to all nested templates.
  */
-BookFrontMatterFile(artifact) ::= <<
-$header(title=artifact.title, css=artifact.book.cssFile, googletracking=artifact.attributes.googletracking)$
+BookFrontMatterFile(file,artifact) ::= <<
+$header(title=file.title, css=file.book.cssFile, googletracking=file.attributes.googletracking)$
 
 
-<h1>$artifact.title$</h1>
+<h1>$file.title$</h1>
 
-$if(artifact.attributes.version)$
+$if(file.attributes.version)$
 <div class="watermark">
-<i>$artifact.attributes.watermark$</i><br>
-Book version $artifact.attributes.version$
+<i>$file.attributes.watermark$</i><br>
+Book version $file.attributes.version$
 </div>
 $endif$
 
-<p>$artifact.attributes.author$</p>
-<p style="font-size: 80%">$artifact.book.copyright$</font></p>
+<p>$file.attributes.author$</p>
+<p style="font-size: 80%">$file.book.copyright$</font></p>
 
-$if(artifact.book.abstract_)$
-<p>$artifact.book.abstract_$</p>
+$if(file.book.abstract_)$
+<p>$file.book.abstract_$</p>
 $endif$
 
 <div id="toc">
 <p class="toc_title">Contents</p>
 <ul>
-$artifact.chapterDocuments:{chap |
+$file.chapterDocuments:{chap |
 	<li><a href="$chap.generatedFilename$">$chap.title$</a></li>
 	<ul>
 	$chap.subcontainers:{sec |
@@ -107,10 +107,10 @@ $footer()$
 >>
 
 /** Any kind of output document; wraps chapter but not book toc.
- *  'artifact' attribute available to all nested templates.
+ *  'artifact' and 'file' attributes available to all nested templates.
  */
-OutputFile(artifact, title, body) ::= <<
-$header(title=title, css=artifact.cssFile, googletracking=artifact.attributes.googletracking)$
+OutputFile(file, artifact, title, body) ::= <<
+$header(title=title, css=file.cssFile, googletracking=file.attributes.googletracking)$
 $body$
 $footer()$
 >>
@@ -160,10 +160,10 @@ $content$
 $subcontainers$
 >>
 
-NotebooksIndexFile(artifact,names,booktitle) ::= <<
+NotebooksIndexFile(file,artifact,names,booktitle) ::= <<
 $header(title={Jupyter Notebook Files for $booktitle$},
-        css={../$artifact.cssFile$},
-        googletracking=artifact.attributes.googletracking)$
+        css={../$file.cssFile$},
+        googletracking=file.attributes.googletracking)$
 
 <h1>Jupyter Notebook Files for $booktitle$</h1>
 

@@ -89,7 +89,7 @@ public class ModelConverter {
 			Set<String> t = new HashSet<>(argNames);
 			t.remove(modelArgName);
 			if (!t.equals(new HashSet<>(fieldNames))) {
-				System.err.println("mismatch in template " + templateName + " between arguments and @ModelElement fields: " +
+				System.err.println("warning: mismatch in template " + templateName + " between arguments and @ModelElement fields: " +
 					                   t + "!=" + fieldNames);
 			}
 		}
