@@ -70,7 +70,7 @@ webmetadata(data) ::= <<
  *  'artifact' and 'file' attributes available to all nested templates.
  */
 BookFrontMatterFile(file,artifact) ::= <<
-$header(title=file.title, css=file.book.cssFile, googletracking=file.attributes.googletracking)$
+$header(title=artifact.title, css=artifact.cssFile, googletracking=file.attributes.googletracking)$
 
 
 <h1>$file.title$</h1>
@@ -110,7 +110,7 @@ $footer()$
  *  'artifact' and 'file' attributes available to all nested templates.
  */
 OutputFile(file, artifact, title, body) ::= <<
-$header(title=title, css=file.cssFile, googletracking=file.attributes.googletracking)$
+$header(title=title, css=artifact.cssFile, googletracking=file.attributes.googletracking)$
 $body$
 $footer()$
 >>
