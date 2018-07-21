@@ -107,10 +107,11 @@ $footer()$
 >>
 
 /** Any kind of output document; wraps chapter but not book toc.
- *  'artifact' and 'file' attributes available to all nested templates.
+ *  'artifact' attribute available to all nested templates.
+ *  There is no file attribute as OutputFile has no model object.
  */
-OutputFile(file, artifact, title, body) ::= <<
-$header(title=title, css=artifact.cssFile, googletracking=file.attributes.googletracking)$
+OutputFile(artifact, title, body) ::= <<
+$header(title=title, css=artifact.cssFile, googletracking=artifact.attributes.googletracking)$
 $body$
 $footer()$
 >>
