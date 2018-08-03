@@ -190,8 +190,11 @@ public class Tool {
 			convertNonInlinedDefModels(converter, doc);
 		}
 
-		ST mainFileST = converter.walk(mainFile); // convert main root file if book
-		mainFileST.add("artifact", artifact);
+		ST mainFileST = null;
+		if ( mainFile!=null ) {
+			mainFileST = converter.walk(mainFile); // convert main root file if book
+			mainFileST.add("artifact", artifact);
+		}
 
 		// Some entities are in global scope, such as chapters, and so
 		// held in rootdoc's entity list but they are not defined by
