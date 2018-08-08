@@ -13,7 +13,7 @@ From: https://css-tricks.com/probably-dont-base64-svg/
 make sure to take <?xml version="1.0" encoding="UTF-8"?> tag off the head of .svg file.
 */
 
-header(title,css,googletracking) ::= <<
+header(title,css,googletracking,metadata) ::= <<
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -32,7 +32,7 @@ $endif$
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 <link rel="stylesheet" type="text/css" href="$css$"/>
 <title>$title$</title>
-$webmetadata(artifact.metadata)$
+$webmetadata(metadata)$
 </head>
 <body>
 >>
@@ -67,10 +67,12 @@ webmetadata(data) ::= <<
 /** This is the title page, TOC etc... for the book. Chapters and
  *  all content in separate files.  Article has no main page.
  *
- *  'artifact' and 'file' attributes available to all nested templates.
+ *  'file' attribute available to all nested templates.
  */
 BookFrontMatterFile(file) ::= <<
-$header(title=file.book.title, css=file.book.cssFile, googletracking=file.attributes.googletracking)$
+$header(title=file.book.title, css=file.book.cssFile,
+        googletracking=file.attributes.googletracking,
+        metadata=file.book.metadata)$
 
 
 <h1>$file.title$</h1>
@@ -111,7 +113,9 @@ $footer()$
  *  There is no file attribute as OutputFile has no model object.
  */
 OutputFile(artifact, title, body) ::= <<
-$header(title=title, css=artifact.cssFile, googletracking=artifact.attributes.googletracking)$
+$header(title=title, css=artifact.cssFile,
+        googletracking=artifact.attributes.googletracking,
+        metadata=artifact.metadata)$
 $body$
 $footer()$
 >>
@@ -164,7 +168,8 @@ $subcontainers$
 NotebooksIndexFile(file,artifact,names,booktitle) ::= <<
 $header(title={Jupyter Notebook Files for $booktitle$},
         css={../$file.cssFile$},
-        googletracking=file.attributes.googletracking)$
+        googletracking=file.attributes.googletracking,
+        metadata=file.book.metadata)$
 
 <h1>Jupyter Notebook Files for $booktitle$</h1>
 
