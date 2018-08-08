@@ -193,7 +193,6 @@ public class Tool {
 		ST mainFileST = null;
 		if ( mainFile!=null ) {
 			mainFileST = converter.walk(mainFile); // convert main root file if book
-			mainFileST.add("artifact", artifact);
 		}
 
 		// Some entities are in global scope, such as chapters, and so

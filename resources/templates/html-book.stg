@@ -69,8 +69,8 @@ webmetadata(data) ::= <<
  *
  *  'artifact' and 'file' attributes available to all nested templates.
  */
-BookFrontMatterFile(file,artifact) ::= <<
-$header(title=artifact.title, css=artifact.cssFile, googletracking=file.attributes.googletracking)$
+BookFrontMatterFile(file) ::= <<
+$header(title=file.book.title, css=file.book.cssFile, googletracking=file.attributes.googletracking)$
 
 
 <h1>$file.title$</h1>
