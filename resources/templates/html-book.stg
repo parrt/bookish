@@ -1,7 +1,8 @@
 delimiters "$","$"
 
 symbols ::= [
-	"copyright":"&copy;"
+	"copyright":"&copy;",
+	"tm":"&trade;"
 ]
 
 /*

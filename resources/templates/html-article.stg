@@ -2,3 +2,8 @@ delimiters "$","$"
 
 import "html-book.stg"
 
+// these are not imported for some reason
+symbols ::= [
+	"copyright":"&copy;",
+	"tm":"&trade;"
+]

@@ -467,6 +467,10 @@ table_row : TR (ws? TD table_item)+ ;
 		text = text.substring("\\symbol".length());
 		text = stripQuotes(text); // remove {...}
 		Map<String, Object> symbols = artifact.templates.rawGetDictionary("symbols");
+		if ( symbols==null ) {
+			System.err.println("No symbols dictionary in the template file");
+			return new Text("[?]");
+		}
 		Object s = symbols.get(text);
 		if ( s==null ) {
 			String location = docInfo.getSourceName()+" "+ctx.start.getLine()+":"+ctx.start.getCharPositionInLine();
