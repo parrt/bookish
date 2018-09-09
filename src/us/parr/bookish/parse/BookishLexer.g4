@@ -107,7 +107,7 @@ SPACE : ' ' ;
 TEXT : NOT_SPECIAL+ ;
 
 fragment
-NOT_SPECIAL : ~[$<[*\\"\]`\n\r] ;
+NOT_SPECIAL : ~[$<[*\\"\]`\n\r\t] ;
 
 // ----------------------------- MODES -------------------------------
 
