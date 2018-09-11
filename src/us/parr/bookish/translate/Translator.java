@@ -375,8 +375,10 @@ table_row : TR (ws? TD table_item)+ ;
 	@Override
 	public OutputModelObject visitTable_item(BookishParser.Table_itemContext ctx) {
 		List<OutputModelObject> contents = new ArrayList<>();
-		for (ParseTree child : ctx.children) {
-			contents.add( visit(child) );
+		if ( ctx.children!=null ) {
+			for (ParseTree child : ctx.children) {
+				contents.add(visit(child));
+			}
 		}
 		return new TableItem(contents);
 	}
