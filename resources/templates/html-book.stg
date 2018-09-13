@@ -379,9 +379,9 @@ $items$
 </tr>
 >>
 
-TableItem(model, contents) ::= "<td align=center>$contents$</td>"
+TableItem(model, contents) ::= "<td align=center valign=top>$contents$</td>"
 TableHeaderItem(model, contents) ::= <<
-<th align=center $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>$contents$</th>
+<th align=center valign=top $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>$contents$</th>
 >>
 
 Paragraph(model, content) ::= <<
