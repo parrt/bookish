@@ -239,7 +239,7 @@ ChapQuote(model) ::= "<p>&ldquo;<i>$model.quote$</i>&rdquo; &mdash; $model.autho
 
 dumpCode(code) ::= <<
 $\n$
-<div class="codeblk">$code$</div>
+<div class="codeblk">$code; format="xml-encode"$</div>
 >>
 
 BlockCode(model) ::= <<
