@@ -454,7 +454,9 @@ $text$
 </div>
 >>
 
-InlineCode(model) ::= "<span class=inlinecode>$model.code$</span>"
+InlineCode(model) ::= <<
+<span class=inlinecode>$model.code; format="xml-encode"$</span>
+>>
 
 Bold(model) ::= "<b>$model.text$</b>"
 Italics(model) ::= "<i>$model.text$</i>"
