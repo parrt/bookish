@@ -52,7 +52,7 @@ public class DefEntitiesListener extends BookishParserBaseListener {
 		if ( entity.label!=null ) {
 			if ( entities.containsKey(entity.label) ) {
 				System.err.printf("line %d: redefinition of label %s\n",
-				                  entity.getStartToken().getLine(), entity.label);
+				                  entity.getStartToken()!=null ? entity.getStartToken().getLine() : -1, entity.label);
 			}
 			entities.put(entity.label, entity);
 			System.out.println("Def "+entity);
