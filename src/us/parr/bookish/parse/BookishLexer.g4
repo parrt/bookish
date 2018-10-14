@@ -92,7 +92,7 @@ REF		  : '[' ~']'+ ']' ; // like [1] or [chp.intro] or [Ng]
 DOLLAR	  : '\\$' ;
 LT		  : '\\<' ;
 
-COMMENT : '<!--' .*? '-->' -> skip ;
+COMMENT : [\t ]* '<!--' .*? '-->' [\t ]* -> skip ;
 
 LINE_BREAK : '\\\\' '\r'? '\n' ;
 
