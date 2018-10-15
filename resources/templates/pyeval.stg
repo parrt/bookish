@@ -13,7 +13,7 @@ def dump(o, display_expr):
 	if type(o)==DataFrame:
 		return o.to_csv(index=True)
 	else:
-		return repr(o)
+		return str(o)
 
 <snippets; separator="\n">
 >>

@@ -662,7 +662,7 @@ table_row : TR (ws? TD table_item)+ ;
 			if ( dataA.length>1 ) {
 				data = join(Arrays.copyOfRange(dataA, 1, dataA.length), "\n");
 				if ( dataA.length==2 && type.startsWith("float") ) {
-					data = String.format("%.4f", Double.parseDouble(dataA[1]));
+					data = String.format("%.2f", Double.parseDouble(dataA[1]));
 				}
 			}
 			return new InlinePyEval(ctx.codeDef, ctx.stdout, ctx.stderr, type, data);
