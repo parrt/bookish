@@ -102,6 +102,7 @@ content
 		|	firstuse
 		|	inline_code
 		|	dollar
+		|	star
 		|	lt
 	 	)+
 	 ;
@@ -123,6 +124,7 @@ paragraph_element
 	|	linebreak
 	|	html
  	|	dollar
+	|	star
  	|	lt
 	|	text
 	|	ws_no_blank_lines
@@ -133,6 +135,8 @@ paragraph_content
  	;
 
 dollar : DOLLAR ;
+
+star : STAR ;
 
 lt : LT ;
 

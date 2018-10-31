@@ -459,6 +459,11 @@ table_row : TR (ws? TD table_item)+ ;
 	}
 
 	@Override
+	public OutputModelObject visitStar(BookishParser.StarContext ctx) {
+		return new Text("*");
+	}
+
+	@Override
 	public OutputModelObject visitLt(BookishParser.LtContext ctx) {
 		return new Text("<");
 	}
