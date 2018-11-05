@@ -6,6 +6,7 @@ import us.parr.bookish.entity.CalloutDef;
 import us.parr.bookish.entity.ChapterDef;
 import us.parr.bookish.entity.CitationDef;
 import us.parr.bookish.entity.EntityDef;
+import us.parr.bookish.entity.EntityWithScope;
 import us.parr.bookish.entity.FigureDef;
 import us.parr.bookish.entity.SectionDef;
 import us.parr.bookish.entity.SideFigDef;
@@ -49,6 +50,9 @@ public class DefEntitiesListener extends BookishParserBaseListener {
 	}
 
 	public void defEntity(EntityDef entity) {
+		if ( !(entity instanceof EntityWithScope) ) {
+			entity.enclosingScope = currentSecPtr;
+		}
 		if ( entity.label!=null ) {
 			if ( entities.containsKey(entity.label) ) {
 				System.err.printf("line %d: redefinition of label %s\n",

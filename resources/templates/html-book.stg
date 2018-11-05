@@ -326,13 +326,13 @@ $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"
 
 SideFigure(model, code) ::= <<
-<span class=sidenote>$code$<br><b>Figure $model.def.index$</b>. $model.caption$</span>
+<span class=sidenote>$code$<br><b>Figure $model.def.enclosingChapter.index$.$model.def.index$</b>. $model.caption$</span>
 >>
 
 // side stuff collected into Paragraph model and float:right'd for HTML (but not latex)
 SiteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 CitationRef(model) ::= "<span class=sup>$model.def.index$</span>"
-FigureRef(model) ::= "<b>Figure $model.def.index$</b>"
+FigureRef(model) ::= "<b>Figure $model.def.enclosingChapter.index$.$model.def.index$</b>"
 SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 
