@@ -125,7 +125,7 @@ public class PySnippetExecutor {
 		String nbWriterFilename = "mk_ipynb_"+basename+"_"+label+".py";
 		ParrtIO.save(chapterSnippetsDir+"/"+nbWriterFilename, nbcode);
 
-		System.err.println("### "+chapterSnippetsDir+"/"+nbWriterFilename);
+//		System.err.println("### "+chapterSnippetsDir+"/"+nbWriterFilename);
 		String[] result = ParrtSys.execInDir(chapterSnippetsDir, "pythonw", nbWriterFilename);
 		if ( result[1]!=null && result[1].length()>0 ) {
 			System.err.println(result[1]); // errors during python compilation not exec

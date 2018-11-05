@@ -237,7 +237,7 @@ public class Tool {
 	public void saveOutput(String target, DocInfo docInfo, String output) {
 		String outFilename = docInfo.getGeneratedFilename(target);
 		ParrtIO.save(outputDir+"/"+outFilename, output);
-		System.out.println("Wrote "+outputDir+"/"+outFilename);
+//		System.out.println("Wrote "+outputDir+"/"+outFilename);
 	}
 
 	/** define all entities in all files */

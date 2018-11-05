@@ -605,7 +605,7 @@ table_row : TR (ws? TD table_item)+ ;
 	public OutputModelObject visitRef(BookishParser.RefContext ctx) {
 		String label = stripQuotes(ctx.REF().getText()); // [label]
 		EntityDef def = docInfo.getEntity(label);
-		System.out.println("Ref to "+def);
+//		System.out.println("Ref to "+def);
 		if ( def==null ) {
 			System.err.printf("line %d: Unknown label '%s'\n", ctx.start.getLine(), label);
 			return new UnknownRef(ctx.REF().getSymbol());

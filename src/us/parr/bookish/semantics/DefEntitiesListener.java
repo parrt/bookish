@@ -55,7 +55,7 @@ public class DefEntitiesListener extends BookishParserBaseListener {
 				                  entity.getStartToken()!=null ? entity.getStartToken().getLine() : -1, entity.label);
 			}
 			entities.put(entity.label, entity);
-			System.out.println("Def "+entity);
+//			System.out.println("Def "+entity);
 		}
 	}
 
