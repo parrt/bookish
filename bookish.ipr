@@ -260,39 +260,6 @@
     <mapping directory="" vcs="Git" />
   </component>
   <component name="libraryTable">
-    <library name="antlr-4.7.1-complete">
-      <CLASSES>
-        <root url="jar:///usr/local/lib/antlr-4.7.1-complete.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES>
-        <root url="file://$USER_HOME$/antlr/code/antlr4/runtime/Java/src" />
-        <root url="file://$USER_HOME$/antlr/code/antlr4/tool/src" />
-        <root url="file://$USER_HOME$/antlr/code/stringtemplate4/src" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.ibm.icu:icu4j:58.2">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/icu4j/58.2/icu4j-58.2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/icu4j/58.2/icu4j-58.2-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/icu4j/58.2/icu4j-58.2-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.abego.treelayout:org.abego.treelayout.core:1.0.3">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/abego/treelayout/org.abego.treelayout.core/1.0.3/org.abego.treelayout.core-1.0.3.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/abego/treelayout/org.abego.treelayout.core/1.0.3/org.abego.treelayout.core-1.0.3-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/abego/treelayout/org.abego.treelayout.core/1.0.3/org.abego.treelayout.core-1.0.3-sources.jar!/" />
-      </SOURCES>
-    </library>
     <library name="Maven: org.antlr:antlr-runtime:3.5.2">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr-runtime/3.5.2/antlr-runtime-3.5.2.jar!/" />
@@ -315,26 +282,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.1/antlr4-runtime-4.7.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.antlr:antlr4:4.7.1">
+    <library name="Maven: org.antlr:ST4:4.0.9-SNAPSHOT">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.1/antlr4-4.7.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.9-SNAPSHOT/ST4-4.0.9-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.1/antlr4-4.7.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.9-SNAPSHOT/ST4-4.0.9-SNAPSHOT-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.1/antlr4-4.7.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.antlr:ST4:4.0.8">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.8/ST4-4.0.8.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.8/ST4-4.0.8-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.8/ST4-4.0.8-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.9-SNAPSHOT/ST4-4.0.9-SNAPSHOT-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-csv:1.6">
@@ -379,17 +335,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.glassfish:javax.json:1.0.4">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/javax.json/1.0.4/javax.json-1.0.4-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/javax.json/1.0.4/javax.json-1.0.4-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: us.parr:parrtlib:0.5-SNAPSHOT">
