@@ -17,13 +17,13 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4</artifactId>
-            <version>4.7.1</version>
+            <version>4.7.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.1</version>
+            <version>4.7.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
