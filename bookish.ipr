@@ -326,15 +326,15 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.2-SNAPSHOT/antlr4-4.7.2-SNAPSHOT-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.antlr:ST4:4.1-SNAPSHOT">
+    <library name="Maven: org.antlr:ST4:4.0.9-SNAPSHOT">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.1-SNAPSHOT/ST4-4.1-20181108.202948-3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.9-SNAPSHOT/ST4-4.0.9-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.1-SNAPSHOT/ST4-4.1-20181108.202948-3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.9-SNAPSHOT/ST4-4.0.9-SNAPSHOT-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.1-SNAPSHOT/ST4-4.1-20181108.202948-3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/ST4/4.0.9-SNAPSHOT/ST4-4.0.9-SNAPSHOT-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.apache.commons:commons-csv:1.6">
