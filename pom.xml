@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>ST4</artifactId>
-			<version>4.0.9-SNAPSHOT</version>
+			<version>4.1</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
