@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static us.parr.lib.ParrtIO.stripFileExtension;
 import static us.parr.lib.ParrtStrings.stripQuotes;
 import static us.parr.lib.ParrtSys.execCommandLine;
 
@@ -485,7 +484,7 @@ public class Tool {
 	}
 
 	public String getBuildDir() {
-		return BUILD_DIR+"-"+stripFileExtension(ParrtIO.basename(rootFile));
+		return outputDir+"/temp";
 	}
 
 	public boolean isHTMLTarget() { return target.equals("html"); }
