@@ -28,14 +28,21 @@ public class DataTable {
 			Reader in = new StringReader(csv);
 			CSVFormat format = CSVFormat.EXCEL.withHeader();
 			CSVParser parser = format.parse(in);
-			this.firstColIsIndex = false;
+			Set<String> colNames = parser.getHeaderMap().keySet();
+			boolean firstColumnNameMissing = colNames.contains(""); // ignore if no column name
+			if ( firstColumnNameMissing ) {
+				colNames.remove(""); // remove default index column name
+			}
+			this.colNames.addAll(colNames);
+			this.firstColIsIndex = !firstColumnNameMissing;
 			for (CSVRecord record : parser) {
-				if ( !firstColIsIndex && Character.isAlphabetic(record.get(0).charAt(0)) ) {
-					// latch if we see alpha not number
-					firstColIsIndex = true;
-				}
+//				if ( !firstColIsIndex && Character.isAlphabetic(record.get(0).charAt(0)) ) {
+//					// latch if we see alpha not number
+//					firstColIsIndex = true;
+//				}
 				List<String> row = new ArrayList<>();
 				for (int i = 0; i<record.size(); i++) {
+					if ( i==0 && firstColumnNameMissing ) continue;
 					String v = record.get(i);
 					boolean isInt = false;
 					try {
@@ -55,11 +62,6 @@ public class DataTable {
 				}
 				rows.add(row);
 			}
-			Set<String> colNames = parser.getHeaderMap().keySet();
-			if ( !firstColIsIndex ) {
-				colNames.remove(""); // remove index column name
-			}
-			this.colNames.addAll(colNames);
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);

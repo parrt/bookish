@@ -279,9 +279,14 @@ $dataTable(model.dataTable)$
 
 dataTable(dt) ::= <<
 <div class="scrollbar_wrapper">
-<table class="dataframe">
+<table class="dataframe $if(dt.firstColIsIndex)$dataframe-indexed$endif$">
 <thead>
+$if(dt.firstColIsIndex)$
+	<tr><td>&nbsp;</td>$rest(dt.colNames):{c | <th>$c$</th>}$</tr>
+    <tr><td>$first(dt.colNames)$</td></tr>
+$else$
 	<tr>$dt.colNames:{c | <th>$c$</th>}$</tr>
+$endif$
 </thead>
 <tbody>
 	$dt.rows:{r | $dataTableRow(dt,r)$}; separator="\n"$
@@ -292,11 +297,7 @@ dataTable(dt) ::= <<
 
 dataTableRow(dt,r) ::= <<
 <tr>
-$if(dt.firstColIsIndex)$
-<td><b>$first(r)$</b></td>$rest(r):{c| <td>$c$</td>}$
-$else$
-$rest(r):{c| <td>$c$</td>}$
-$endif$
+$r:{c| <td>$c$</td>}$
 </tr>
 >>
 
