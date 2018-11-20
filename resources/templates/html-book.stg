@@ -282,7 +282,7 @@ dataTable(dt) ::= <<
 <table class="dataframe $if(dt.firstColIsIndex)$dataframe-indexed$endif$">
 <thead>
 $if(dt.firstColIsIndex)$
-	<tr><td>&nbsp;</td>$rest(dt.colNames):{c | <th>$c$</th>}$</tr>
+	<tr><th>&nbsp;</th>$rest(dt.colNames):{c | <th>$c$</th>}$</tr>
     <tr><td>$first(dt.colNames)$</td></tr>
 $else$
 	<tr>$dt.colNames:{c | <th>$c$</th>}$</tr>
