@@ -25,9 +25,9 @@ import matplotlib as mpl
 fstderr = io.StringIO()
 with redirect_stderr(fstderr):
 	try:
-		plt.style.use('seaborn-colorblind')
 		fig__ = plt.figure(999999, clear=True) # clear previous fig 999999
-		mpl.rcParams['font.size'] = 20
+#		mpl.rcParams['font.size'] = 20
+		mpl.rcParams['figure.figsize'] = [4.0, 3.0]
 		mpl.rcParams['savefig.bbox'] = 'tight'
 		mpl.rcParams['savefig.pad_inches'] = '0.5'
 		mpl.rcParams['legend.fontsize'] = 16
