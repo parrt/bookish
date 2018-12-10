@@ -2,7 +2,8 @@ delimiters "$","$"
 
 symbols ::= [
 	"copyright":"&copy;",
-	"tm":"&trade;"
+	"tm":"&trade;",
+	"[":"["
 ]
 
 /*
