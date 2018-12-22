@@ -250,7 +250,7 @@ $\n$
 
 PyEval(model) ::= <<
 $if(model.codeDef.isCodeVisible)$
-$dumpCode({$if(model.codeDef.code)$$model.codeDef.code$$\n$$endif$$if(model.codeDef.displayExpr)$print($model.codeDef.displayExpr$)$endif$})$
+$dumpCode({$if(model.codeDef.code)$$model.codeDef.code; format="xml-encode"$$\n$$endif$$if(model.codeDef.displayExpr)$print($model.codeDef.displayExpr$)$endif$})$
 $endif$
 
 $if(model.stdout&&model.displayData)$
