@@ -8,6 +8,7 @@ import us.parr.bookish.entity.ExecutableCodeDef;
 import us.parr.bookish.entity.PyFigDef;
 import us.parr.bookish.parse.BookishParser;
 import us.parr.bookish.parse.ChapDocInfo;
+import us.parr.bookish.translate.HTMLEscaper;
 import us.parr.lib.ParrtCollections;
 import us.parr.lib.ParrtIO;
 import us.parr.lib.ParrtSys;
@@ -23,12 +24,14 @@ import static us.parr.lib.ParrtStrings.md5hash;
 import static us.parr.lib.ParrtSys.execCommandLine;
 
 public class PySnippetExecutor {
-	public static STGroup pycodeTemplates = new STGroupFile("templates/pyeval.stg");
+	public STGroup pycodeTemplates = new STGroupFile("templates/pyeval.stg");
 
 	public Tool tool;
 
 	public PySnippetExecutor(Tool tool) {
 		this.tool = tool;
+		pycodeTemplates = new STGroupFile("templates/pyeval.stg");
+		pycodeTemplates.registerRenderer(String.class, new HTMLEscaper());
 	}
 
 	public void prepExecutionEnv(ChapDocInfo doc) {
@@ -210,6 +213,7 @@ public class PySnippetExecutor {
 			if ( code!=null && code.trim().length()==0 ) {
 				code = null;
 			}
+			code = HTMLEscaper.stripBangs(code);
 			snippet.add("code", code);
 			snippets.add(snippet);
 		}
