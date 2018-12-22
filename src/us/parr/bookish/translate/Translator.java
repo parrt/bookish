@@ -68,6 +68,7 @@ import us.parr.bookish.model.ref.CalloutRef;
 import us.parr.bookish.model.ref.ChapterRef;
 import us.parr.bookish.model.ref.CitationRef;
 import us.parr.bookish.model.ref.EntityRef;
+import us.parr.bookish.model.ref.Figure;
 import us.parr.bookish.model.ref.FigureRef;
 import us.parr.bookish.model.ref.SectionRef;
 import us.parr.bookish.model.ref.SideNoteRef;
@@ -578,6 +579,21 @@ table_row : TR (ws? TD table_item)+ ;
 			return f; // if no label, insert inline here at this point in document model
 		}
 		return null;
+	}
+
+	@Override
+	public OutputModelObject visitFigure(BookishParser.FigureContext ctx) {
+		String label = getAttr(ctx, "label");
+		EntityDef def = docInfo.getEntity(label);
+		if ( def==null ) {
+			return null;
+		}
+
+		OutputModelObject fig = visit(ctx.content());
+		Figure f = new Figure(def, label, fig);
+		def.model = f;
+
+		return f; // insert inline here at this point in document model
 	}
 
 	@Override

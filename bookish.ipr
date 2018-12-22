@@ -304,26 +304,26 @@
         <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr-runtime/3.5.2/antlr-runtime-3.5.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.antlr:antlr4-runtime:4.7.2-SNAPSHOT">
+    <library name="Maven: org.antlr:antlr4-runtime:4.7.2">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.2-SNAPSHOT/antlr4-runtime-4.7.2-SNAPSHOT.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.2-SNAPSHOT/antlr4-runtime-4.7.2-SNAPSHOT-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.2-SNAPSHOT/antlr4-runtime-4.7.2-SNAPSHOT-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: org.antlr:antlr4:4.7.2-SNAPSHOT">
+    <library name="Maven: org.antlr:antlr4:4.7.2">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.2-SNAPSHOT/antlr4-4.7.2-SNAPSHOT.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.2/antlr4-4.7.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.2-SNAPSHOT/antlr4-4.7.2-SNAPSHOT-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.2/antlr4-4.7.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.2-SNAPSHOT/antlr4-4.7.2-SNAPSHOT-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4/4.7.2/antlr4-4.7.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.antlr:ST4:4.1">

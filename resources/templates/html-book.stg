@@ -327,6 +327,10 @@ $if(model.stderr)$<p class="stderr">$model.stderr$</p>$endif$
 
 Site(model) ::= "<span class=sidenote><span class=sup>$model.def.index$</span>&nbsp;<tt>$model.def.website$</tt></span>"
 
+Figure(model, code) ::= <<
+<span class=figure>$code$<br><b>Figure $model.def.enclosingChapter.index$.$model.def.index$</b>. $model.caption$</span>
+>>
+
 SideFigure(model, code) ::= <<
 <span class=sidenote>$code$<br><b>Figure $model.def.enclosingChapter.index$.$model.def.index$</b>. $model.caption$</span>
 >>
