@@ -35,10 +35,7 @@ public class HTMLEscaper extends StringRenderer {
 			String[] lines = s.split("\\n");
 			for (int i = 0; i<lines.length; i++) {
 				if ( lines[i].startsWith("!") ) {
-					lines[i] = " "+lines[i].substring(1);
-				}
-				else {
-					lines[i] = "<span class=\"greyout\">" + lines[i] + "</span>";
+					lines[i] = "<span class=\"highlight\">" + lines[i].substring(1) + "</span>";
 				}
 			}
 			s = ParrtCollections.join(lines, "\n");
