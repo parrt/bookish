@@ -23,6 +23,7 @@
       <module name="bookish" target="9" />
     </bytecodeTargetLevel>
   </component>
+  <component name="Encoding" addBOMForNewFiles="with NO BOM" />
   <component name="InspectionProjectProfileManager">
     <profile version="1.0">
       <option name="myName" value="Project Default" />
