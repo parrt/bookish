@@ -318,9 +318,11 @@ $if(model.codeDef.isCodeVisible)$
 $dumpCode(model.codeDef.code)$
 $endif$
 $if(!model.args.side)$
+<center>
 <a href="$model.codeDef.generatedFilenameNoSuffix$.svg"><img src="$model.codeDef.generatedFilenameNoSuffix$.svg"
   width="$model.args.width$%"
 ></a>
+</center>
 $else$
 </div> <!-- end div for p_wrapper -->
 $endif$
