@@ -419,7 +419,9 @@ InlineImage(model) ::= <<
 >>
 
 Image(model) ::= <<
+<center>
 <img $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>
+</center>
 >>
 
 BlockImage(model) ::= <<$\n$
