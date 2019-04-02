@@ -336,7 +336,7 @@ Figure(model, code) ::= <<
 >>
 
 SideFigure(model, code) ::= <<
-<span class=sidenote>$code$<br><b>Figure $model.def.enclosingChapter.index$.$model.def.index$</b>. $model.caption$</span>
+<span class=sidenote>$code$<b>Figure $model.def.enclosingChapter.index$.$model.def.index$</b>. $model.caption$</span>
 >>
 
 // side stuff collected into Paragraph model and float:right'd for HTML (but not latex)
