@@ -192,7 +192,7 @@ aside	  : ASIDE attrs[List.of("title")] END_TAG content END_ASIDE ;
 callout   : CALLOUT attrs[List.of("label")] END_TAG content END_CALLOUT ;
 
 pyeval returns [PyEvalDef codeDef, String stdout, String stderr, String displayData]
-    :	PYEVAL attrs[List.of("label","output","hide")] END_TAG pycodeblock END_PYEVAL
+    :	PYEVAL attrs[List.of("label","output","hide","disable")] END_TAG pycodeblock END_PYEVAL
 	;
 
 pyfig returns [PyFigDef codeDef, String stdout, String stderr]

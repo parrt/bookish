@@ -202,6 +202,7 @@ public class PySnippetExecutor {
 	public List<ST> getSnippetTemplates(STGroup pycodeTemplates, List<ExecutableCodeDef> defs) {
 		List<ST> snippets = new ArrayList<>();
 		for (ExecutableCodeDef def : defs) {
+			if ( !def.isEnabled ) continue;
 			String tname = def.isOutputVisible ? "pyeval" : "pyfig";
 			ST snippet = pycodeTemplates.getInstanceOf(tname);
 			snippet.add("def",def);

@@ -18,6 +18,7 @@ public abstract class ExecutableCodeDef extends EntityDef {
 
 	public boolean isCodeVisible = true;
 	public boolean isOutputVisible = true;
+	public boolean isEnabled = true;
 
 	public ExecutableCodeDef(ParserRuleContext tree,
 	                         String inputFilename,
@@ -35,6 +36,9 @@ public abstract class ExecutableCodeDef extends EntityDef {
 			}
 			if ( attrsCtx.attributes.containsKey("output") ) {
 				displayExpr = attrsCtx.attributes.get("output");
+			}
+			if ( attrsCtx.attributes.containsKey("disable") ) {
+				isEnabled = !attrsCtx.attributes.get("disable").equals("true");
 			}
 		}
 		if ( label==null ) {
