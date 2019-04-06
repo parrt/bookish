@@ -15,6 +15,7 @@ import us.parr.lib.ParrtSys;
 import us.parr.lib.collections.MultiMap;
 import us.parr.lib.collections.MultiMapOfLists;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -163,6 +164,22 @@ public class PySnippetExecutor {
 			List<ExecutableCodeDef> defs = (List<ExecutableCodeDef>) labelToDefs.get(label);
 			// For each snippet
 			for (ExecutableCodeDef def : defs) {
+				String errFilename = chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".err";
+
+				File f = new File(errFilename);
+				if ( !f.exists() ) {
+					if ( def.tree instanceof BookishParser.PyevalContext ) {
+						BookishParser.PyevalContext tree = (BookishParser.PyevalContext) def.tree;
+						tree.stderr = "Can't find stderr file "+(basename+"_"+label+"_"+def.index)+" for this code:\n"+def.code;
+						System.err.println(tree.stderr);
+					}
+					else {
+						BookishParser.Inline_pyContext tree = (BookishParser.Inline_pyContext) def.tree;
+						tree.stderr = "Can't find stderr file "+(basename+"_"+label+"_"+def.index)+" for this code:\n"+def.code;
+						System.err.println(tree.stderr);
+					}
+					continue;
+				}
 				String stderr = ParrtIO.load(chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".err");
 				if ( def instanceof PyFigDef ) {
 					((PyFigDef) def).generatedFilenameNoSuffix = "images/"+basename+"/"+basename+"_"+label+"_"+def.index;
