@@ -72,7 +72,7 @@ public class PySnippetExecutor {
 		// for each group of code with same label, create executable py file
 		for (String label : labelToDefs.keySet()) {
 			List<ExecutableCodeDef> defs = (List<ExecutableCodeDef>)labelToDefs.get(label);
-			List<ST> snippets = getSnippetTemplates(pycodeTemplates, defs);
+			List<ST> snippets = getSnippetTemplates(doc, label, pycodeTemplates, defs);
 			ST file = pycodeTemplates.getInstanceOf("pyfile");
 			file.add("snippets", snippets);
 			file.add("buildDir", tool.getBuildDir());
@@ -216,10 +216,24 @@ public class PySnippetExecutor {
 		}
 	}
 
-	public List<ST> getSnippetTemplates(STGroup pycodeTemplates, List<ExecutableCodeDef> defs) {
+	public List<ST> getSnippetTemplates(ChapDocInfo doc,
+	                                    String label,
+	                                    STGroup pycodeTemplates,
+	                                    List<ExecutableCodeDef> defs)
+	{
 		List<ST> snippets = new ArrayList<>();
 		for (ExecutableCodeDef def : defs) {
-			if ( !def.isEnabled ) continue;
+			// avoid generating output for disable=true snippets if output available
+			String basename = doc.getSourceBaseName();
+			String snippetsDir = tool.getBuildDir()+"/snippets";
+			String chapterSnippetsDir = snippetsDir+"/"+basename;
+			String errFilename = chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".err";
+			String outFilename = chapterSnippetsDir+"/"+basename+"_"+label+"_"+def.index+".out";
+			if ( ((new File(errFilename)).exists()&&(new File(outFilename)).exists()) &&
+				 !def.isEnabled ) {
+				continue;
+			}
+
 			String tname = def.isOutputVisible ? "pyeval" : "pyfig";
 			ST snippet = pycodeTemplates.getInstanceOf(tname);
 			snippet.add("def",def);
