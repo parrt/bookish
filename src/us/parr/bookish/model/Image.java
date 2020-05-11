@@ -10,6 +10,7 @@ import java.util.Set;
 public class Image extends OutputModelObject {
 	public static final Set<String> supportedSingleFormats = new HashSet<>() {{
 		add("jpg");
+		add("gif");
 		add("png");
 	}};
 
