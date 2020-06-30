@@ -339,6 +339,10 @@ SideFigure(model, code) ::= <<
 <span class=sidenote>$code$<br><b>Figure $model.def.enclosingChapter.index$.$model.def.index$</b>. $model.caption$</span>
 >>
 
+YouTube(model) ::= <<
+<iframe src="$model.src$?autoplay=0&rel=0" $if(model.width)$width="$model.width$"$endif$ $if(model.height)$height="$model.height$"$endif$ frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+>>
+
 // side stuff collected into Paragraph model and float:right'd for HTML (but not latex)
 SiteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 CitationRef(model) ::= "<span class=sup>$model.def.index$</span>"
@@ -419,9 +423,19 @@ InlineImage(model) ::= <<
 >>
 
 Image(model) ::= <<
+$if(model.attributes.side)$
+<div class="p_wrapper">
+<span class=sidenote>
+$endif$
 <center>
+$if(model.attributes.url)$<a href="$model.attributes.url$">$endif$
 <img $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>
+$if(model.attributes.url)$</a>$endif$
 </center>
+$if(model.attributes.side)$
+</span>
+</div>
+$endif$
 >>
 
 BlockImage(model) ::= <<$\n$

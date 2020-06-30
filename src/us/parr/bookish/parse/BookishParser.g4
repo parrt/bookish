@@ -74,6 +74,7 @@ content
 	 	|	sidenote
 	 	|	sidefig
 	 	|	figure
+	 	|	youtube
 	 	|	aside
 	 	|	site
 	 	|	citation
@@ -187,6 +188,8 @@ sidefig   : SIDEFIG attrs[List.of("label","caption")] END_TAG content END_SIDEFI
 
 figure    : FIGURE attrs[List.of("label","caption")] END_TAG content END_FIGURE ;
 
+youtube  : YOUTUBE attrs[List.of("width","height","src")] END_TAG ;
+
 aside	  : ASIDE attrs[List.of("title")] END_TAG content END_ASIDE ;
 
 callout   : CALLOUT attrs[List.of("label")] END_TAG content END_CALLOUT ;
@@ -238,7 +241,7 @@ table_item : content? ;
 
 block_image : image ;
 
-image : IMG attrs[List.of("src","width")] END_TAG ;
+image : IMG attrs[List.of("src","width","side","url")] END_TAG ;
 
 ref : REF ;
 

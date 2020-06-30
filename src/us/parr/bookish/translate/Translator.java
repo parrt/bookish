@@ -64,6 +64,7 @@ import us.parr.bookish.model.TableRow;
 import us.parr.bookish.model.Text;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.UnknownSymbol;
+import us.parr.bookish.model.YouTube;
 import us.parr.bookish.model.ref.CalloutRef;
 import us.parr.bookish.model.ref.ChapterRef;
 import us.parr.bookish.model.ref.CitationRef;
@@ -331,6 +332,11 @@ public class Translator extends BookishParserBaseVisitor<OutputModelObject> {
 	@Override
 	public OutputModelObject visitImage(BookishParser.ImageContext ctx) {
 		return new Image(this, ctx.attrs().attributes);
+	}
+
+	@Override
+	public OutputModelObject visitYoutube(BookishParser.YoutubeContext ctx) {
+		return new YouTube(ctx.attrs().attributes);
 	}
 
 	@Override
