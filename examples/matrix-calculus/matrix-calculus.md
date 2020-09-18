@@ -523,7 +523,7 @@ With deeply nested expressions, it helps to think about deploying the chain rule
 \end{array}\\]
 	<li> Compute derivatives.
 \\[\begin{array}{lllllllll}
- \frac{d}{u_x} u_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
+ \frac{d}{x} u_1 & = & \frac{d}{x} x^3 & = & 3x^2\\
  \frac{d}{u_1} u_2 & = & \frac{d}{u_1} sin(u_1) & = & cos(u_1) \\
  \frac{d}{u_2} u_3 & = & \frac{d}{u_2} u_2^2 & =& 2u_2\\
  \frac{d}{u_3} u_4 & = & \frac{d}{u_3} ln(u_3) & =& \frac{1}{u_3}\\
@@ -654,7 +654,7 @@ We can achieve that by simply introducing a new temporary variable as an alias f
 \frac{\partial f(u_1,\ldots,u_{n+1})}{\partial x} = \sum_{i=1}^{n+1} \frac{\partial f}{\partial u_i}\frac{\partial  u_i}{\partial  x}
 \\]
 
-This chain rule that takes into consideration the total derivative degenerates to the single-variable chain rule when all intermediate variables are functions of a single variable.   Consequently, you can remember this more general formula to cover both cases.  As a bit of dramatic foreshadowing, notice that the summation sure looks like a vector dot product, $\frac{\partial f}{\partial \mathbf{u}} \cdot \frac{\partial \mathbf{u}}{\partial x}$, or  a vector multiply $\frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$.
+This total-derivative chain rule degenerates to the single-variable chain rule when all intermediate variables are functions of a single variable.   Consequently, you can remember this more general formula to cover both cases.  As a bit of dramatic foreshadowing, notice that the summation sure looks like a vector dot product, $\frac{\partial f}{\partial \mathbf{u}} \cdot \frac{\partial \mathbf{u}}{\partial x}$, or  a vector multiply $\frac{\partial f}{\partial \mathbf{u}} \frac{\partial \mathbf{u}}{\partial x}$.
 
 Before we move on, a word of caution about terminology on the web. Unfortunately, the chain rule given in this section, based upon the total derivative, is universally called "multivariable chain rule" in calculus discussions, which is highly misleading! Only the intermediate variables are multivariate functions. The overall function, say, $f(x) = x + x^2$, is a scalar function that accepts a single parameter $x$. The derivative and parameter are scalars, not vectors, as one would expect with a so-called multivariate chain rule.  (Within the context of a non-matrix calculus class, "multivariate chain rule" is likely unambiguous.) To reduce confusion, we use "single-variable total-derivative chain rule" to spell out the distinguishing feature between the simple single-variable chain rule, $\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}$, and this one.
 
@@ -975,7 +975,7 @@ Let's use these partial derivatives now to handle the entire loss function.
 
 ## The gradient of the neural network loss function
 
-Training a neuron requires that we take the derivative of our loss  or "cost" function with respect to the parameters of our model, $\mathbf{w}$ and $b$. Because we train with multiple vector inputs (e.g., multiple images) and scalar targets (e.g., one classification per image), we need some more notation. Let
+Training a neuron requires that we take the derivative of our loss  or "cost" function with respect to the parameters of our model, $\mathbf{w}$ and $b$. For this example we'll use mean squared error as our loss function. Because we train with multiple vector inputs (e.g., multiple images) and scalar targets (e.g., one classification per image), we need some more notation. Let
 
 \\[ X = [\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N]^T \\]
 
@@ -1024,28 +1024,28 @@ Then, for the overall gradient, we get:
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial \mathbf{w}} \\\\
  & = & \frac{1}{N} \sum_{i=1}^N 2v \frac{\partial v}{\partial \mathbf{w}} \\\\
  & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
-	2v\vec{0}^T = \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	-2v\mathbf{x}^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+  2v\vec{0}^T = \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  -2v\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
-	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	-2(y_i-u)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+  \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  -2(y_i-u)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
-	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	-2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+  \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  -2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\
 \phantom{\frac{\partial C(v)}{\partial \mathbf{w}}} & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
-	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	-2(y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+  \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  -2(y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
- & = & \begin{cases}
-	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	\frac{-2}{N} \sum_{i=1}^N (y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+ & = & \frac{-2}{N} \sum_{i=1}^N \begin{cases}
+  \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  (y_i-(\mathbf{w}\cdot\mathbf{x}_i+b))\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}\\\\
- & = & \begin{cases}
-	\vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+ & = & \frac{2}{N} \sum_{i=1}^N \begin{cases}
+  \vec{0}^T & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  (\mathbf{w}\cdot\mathbf{x}_i+b-y_i)\mathbf{x}_i^T & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
 \end{cases}
 \end{eqnarray*}
 }}
@@ -1053,7 +1053,7 @@ Then, for the overall gradient, we get:
 To interpret that equation, we can substitute an error term $e_i = \mathbf{w}\cdot\mathbf{x}_i+b-y_i$ yielding:
 
 \\[
-\frac{\partial C}{\partial \mathbf{w}} = \frac{2}{N} \sum_{i=1}^N e_i\mathbf{x}_i^T ~~~\text{(for the nonzero activation case)}
+\frac{\partial C}{\partial \mathbf{w}} = \frac{2}{N} \sum_{i=1}^N e_i\mathbf{x}_i^T ~~~\text{(for the nonzero activation cases)}
 \\]
 
 From there, notice that this computation is a weighted average across all $\mathbf{x}_i$ in $X$. The weights are the error terms, the difference between the target output and the actual neuron output for each $\mathbf{x}_i$ input. The resulting gradient will, on average, point in the direction of higher cost or loss because large $e_i$ emphasize their associated $\mathbf{x}_i$. Imagine we only had one input vector, $N=|X|=1$, then the gradient is just $2e_1\mathbf{x}_1^T$.  If the error is 0, then the gradient is zero and we have arrived at the minimum loss. If $e_1$ is some small positive difference, the gradient is a small step in the direction of $\mathbf{x}_1$. If $e_1$ is large, the gradient is a large step in that direction. If $e_1$ is negative, the gradient is reversed, meaning the highest cost is in the negative direction.
@@ -1099,29 +1099,29 @@ And for the partial of the cost function itself we get:
  & = & \frac{1}{N} \sum_{i=1}^N \frac{\partial v^2}{\partial v} \frac{\partial v}{\partial b} \\\\
  & = & \frac{1}{N} \sum_{i=1}^N 2v \frac{\partial v}{\partial b} \\\\
  & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
- 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
- 	-2v & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+  0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  -2v & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
  \end{cases}\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
- 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
- 	-2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b)) & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+  0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  -2(y_i-max(0, \mathbf{w}\cdot\mathbf{x}_i+b)) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
  \end{cases}\\\\
  & = & \frac{1}{N} \sum_{i=1}^N \begin{cases}
- 	0 & \mathbf{w} \cdot \mathbf{x} + b \leq 0\\
- 	2(\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x} + b > 0\\
+  0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  2(\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
  \end{cases}\\\\
- & = & \begin{cases}
-	0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
-	\frac{2}{N} \sum_{i=1}^N (\mathbf{w}\cdot\mathbf{x}_i+b-y_i) & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
+ & = & \frac{2}{N} \sum_{i=1}^N  \begin{cases}
+  0 & \mathbf{w} \cdot \mathbf{x}_i + b \leq 0\\
+  \mathbf{w}\cdot\mathbf{x}_i+b-y_i & \mathbf{w} \cdot \mathbf{x}_i + b > 0\\
  \end{cases}
 \end{eqnarray*}
 }}
 
 As before, we can substitute an error term:
 
-\\[ \frac{\partial C}{\partial b} = \frac{2}{N} \sum_{i=1}^N e_i ~~~\text{(for the nonzero activation case)} \\]
+\\[ \frac{\partial C}{\partial b} = \frac{2}{N} \sum_{i=1}^N e_i ~~~\text{(for the nonzero activation cases)} \\]
 
-The partial derivative is then just the average error or zero, according to the activation level. To update the neuron bias, we nudge it in the opposite direction of increased cost:
+The partial derivative is then just the average of the error or zero, according to the activation level. To update the neuron bias, we nudge it in the opposite direction of increased cost:
 
 \\[ b_{t+1} = b_{t} - \eta \frac{\partial C}{\partial b} \\]
 
