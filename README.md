@@ -145,7 +145,7 @@ As the [ANTLR](http://www.antlr.org) guy, I ain't afeared of building a language
 
 ### How to typeset and display math via SVG
 
-If you can't use JavaScript, you have to use images. If you have to use images, you want scalable graphics, which means SVG files. So, the translator must extract equations and replace them with `<img>` tags referencing SVG files. That part is not too hard; take a look at [Tex2SVG](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/Tex2SVG.java) and you'll see that I'm just running three programs in sequence to process the equation into an SVG file: `xelatex` then `pdfcrop` then `pdf2svg`.
+If you can't use JavaScript, you have to use images. If you have to use images, you want scalable graphics, which means SVG files. So, the translator must extract equations and replace them with `<img>` tags referencing SVG files. That part is not too hard; take a look at [Tex2SVG](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/semantics/Tex2SVG.java) and you'll see that I'm just running three programs in sequence to process the equation into an SVG file: `xelatex` then `pdfcrop` then `pdf2svg`.
 
 The really tricky bit is the vertical alignment of equations within a line of HTML text. Check out this sentence with embedded equations:
 
