@@ -1,6 +1,6 @@
 # Bookish
 
-Bookish is an xml-ish + some markdown format for books and articles that it can convert to HTML and latex. I used it to generate this article: [The Matrix Calculus You Need For Deep Learning](http://parrt.cs.usfca.edu/doc/matrix-calculus/index.html). 
+Bookish is an xml-ish + some markdown format for books and articles that it can convert to HTML and latex. I used it to generate this article: [The Matrix Calculus You Need For Deep Learning](https://explained.ai/matrix-calculus/index.html). 
 
 You can use python directly in the doc like a notebook to compute and print stuff:
 
@@ -122,7 +122,7 @@ Here are the tags that contain attributes, not all of which are required:
 
 [Jeremy Howard](http://www.fast.ai/about/#jeremy) and [I](http://parrt.cs.usfca.edu/) wrote up a nice mathy latex document called ``*The Matrix Calculus You Need For Deep Learning*'' that has over 600 equations. We wanted to post it to the web in HTML or markdown but quickly ran into a problem trying to get equations rendered.
 
-In the end we converted the source document to markdown and build a translator that generated [HTML](http://parrt.cs.usfca.edu/doc/matrix-calculus/index.html) using SVG for equations and [PDF](http://parrt.cs.usfca.edu/doc/matrix-calculus.pdf) from native latex equations. It does a pretty good job with html as you can see:
+In the end we converted the source document to markdown and build a translator that generated [HTML](https://explained.ai/matrix-calculus/index.html) using SVG for equations and [PDF](https://arxiv.org/pdf/1802.01528) from native latex equations. It does a pretty good job with html as you can see:
 
 <table>
 <tr><td>
@@ -145,7 +145,7 @@ As the [ANTLR](http://www.antlr.org) guy, I ain't afeared of building a language
 
 ### How to typeset and display math via SVG
 
-If you can't use JavaScript, you have to use images. If you have to use images, you want scalable graphics, which means SVG files. So, the translator must extract equations and replace them with `<img>` tags referencing SVG files. That part is not too hard; take a look at [Tex2SVG](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/translate/Tex2SVG.java) and you'll see that I'm just running three programs in sequence to process the equation into an SVG file: `xelatex` then `pdfcrop` then `pdf2svg`.
+If you can't use JavaScript, you have to use images. If you have to use images, you want scalable graphics, which means SVG files. So, the translator must extract equations and replace them with `<img>` tags referencing SVG files. That part is not too hard; take a look at [Tex2SVG](https://github.com/parrt/bookish/blob/master/src/us/parr/bookish/semantics/Tex2SVG.java) and you'll see that I'm just running three programs in sequence to process the equation into an SVG file: `xelatex` then `pdfcrop` then `pdf2svg`.
 
 The really tricky bit is the vertical alignment of equations within a line of HTML text. Check out this sentence with embedded equations:
 
