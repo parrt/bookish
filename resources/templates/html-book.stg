@@ -442,9 +442,9 @@ $endif$
 >>
 
 BlockImage(model) ::= <<$\n$
-<center>
+$if(!model.attributes.nocenter)$<center>$endif$
 $Image(model)$
-</center>
+$if(!model.attributes.nocenter)$</center>$endif$
 $\n$
 >>
 
