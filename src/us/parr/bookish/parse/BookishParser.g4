@@ -102,6 +102,7 @@ content
 	 	|	ws
 		|	firstuse
 		|	inline_code
+		|	hyphen
 		|	dollar
 		|	star
 		|	lt
@@ -124,6 +125,7 @@ paragraph_element
 	|	inline_py
 	|	linebreak
 	|	html
+	|	hyphen
  	|	dollar
 	|	star
  	|	lt
@@ -134,6 +136,8 @@ paragraph_element
 paragraph_content
  	:	(paragraph_element|quoted)+
  	;
+
+hyphen : HYPHEN ;
 
 dollar : DOLLAR ;
 
@@ -231,9 +235,11 @@ table
 
 table_header : TR table_header_item+ ;
 
-table_row : TR (ws? TD table_item)+ ;
+table_row : TR table_row_item+ ;
 
-table_header_item : ws? TH attrs[List.of("width")]? END_TAG table_item ;
+table_row_item : ws? TD attrs[List.of("align")]? END_TAG table_item ;
+
+table_header_item : ws? TH attrs[List.of("width","align")]? END_TAG table_item ;
 
 list_item : content? ;
 
@@ -241,7 +247,7 @@ table_item : content? ;
 
 block_image : image ;
 
-image : IMG attrs[List.of("src","width","side","url")] END_TAG ;
+image : IMG attrs[List.of("src","width","side","url","align","nocenter")] END_TAG ;
 
 ref : REF ;
 

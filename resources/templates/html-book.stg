@@ -87,7 +87,7 @@ Book version $file.attributes.version$
 $endif$
 
 <p>$file.attributes.author$</p>
-<p style="font-size: 80%">$file.book.copyright$</font></p>
+<p style="font-size: 80%; line-height:1.1;">$file.book.copyright$</font></p>
 
 $if(file.book.abstract_)$
 <p>$file.book.abstract_$</p>
@@ -139,7 +139,7 @@ $endif$
 
 <p>$chapter.attributes.author$</p>
 
-<p style="font-size: 80%">$chapter.artifact.copyright$</p>
+<p style="font-size: 80%; line-height:1.1;">$chapter.artifact.copyright$</p>
 
 $preabstract$
 
@@ -400,9 +400,12 @@ $items$
 </tr>
 >>
 
-TableItem(model, contents) ::= "<td align=center valign=top>$contents$</td>"
+TableRowItem(model, contents) ::= <<
+<td valign=top $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>$contents$</td>
+>>
+
 TableHeaderItem(model, contents) ::= <<
-<th align=center valign=top $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>$contents$</th>
+<th valign=top $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>$contents$</th>
 >>
 
 Paragraph(model, content) ::= <<
@@ -427,11 +430,11 @@ $if(model.attributes.side)$
 <div class="p_wrapper">
 <span class=sidenote>
 $endif$
-<center>
+$if(!model.attributes.nocenter)$<center>$endif$
 $if(model.attributes.url)$<a href="$model.attributes.url$">$endif$
 <img $model.attributes:{attr | $attr$="$model.attributes.(attr)$"}; separator=" "$>
 $if(model.attributes.url)$</a>$endif$
-</center>
+$if(!model.attributes.nocenter)$</center>$endif$
 $if(model.attributes.side)$
 </span>
 </div>
@@ -493,6 +496,8 @@ InlineCode(model) ::= <<
 
 Bold(model) ::= "<b>$model.text$</b>"
 Italics(model) ::= "<i>$model.text$</i>"
+
+Hyphen(model) ::= "&mdash;"
 
 TODO(model) ::= <<
 <span style="color: red">{TODO: $model.text$}</span>

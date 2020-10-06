@@ -31,6 +31,7 @@ import us.parr.bookish.model.EqnIndexedVecVar;
 import us.parr.bookish.model.EqnVar;
 import us.parr.bookish.model.EqnVecVar;
 import us.parr.bookish.model.HyperLink;
+import us.parr.bookish.model.Hyphen;
 import us.parr.bookish.model.Image;
 import us.parr.bookish.model.InlineCode;
 import us.parr.bookish.model.InlineEquation;
@@ -61,6 +62,7 @@ import us.parr.bookish.model.Table;
 import us.parr.bookish.model.TableHeaderItem;
 import us.parr.bookish.model.TableItem;
 import us.parr.bookish.model.TableRow;
+import us.parr.bookish.model.TableRowItem;
 import us.parr.bookish.model.Text;
 import us.parr.bookish.model.UnOrderedList;
 import us.parr.bookish.model.UnknownSymbol;
@@ -372,9 +374,11 @@ table_row : TR (ws? TD table_item)+ ;
 	@Override
 	public OutputModelObject visitTable_row(BookishParser.Table_rowContext ctx) {
 		List<TableItem> items = new ArrayList<>();
-		for (BookishParser.Table_itemContext el : ctx.table_item()) {
-			TableItem item = (TableItem) visit(el);
-			items.add(item);
+		for (BookishParser.Table_row_itemContext itemCtx : ctx.table_row_item()) {
+			TableItem item = (TableItem) visit(itemCtx);
+			BookishParser.AttrsContext attrsOfTH = itemCtx.attrs();
+			Map<String, String> attributes = attrsOfTH!=null ? attrsOfTH.attributes : Collections.emptyMap();
+			items.add(new TableRowItem(item.contents, attributes));
 		}
 		return new TableRow(items);
 	}
@@ -458,6 +462,11 @@ table_row : TR (ws? TD table_item)+ ;
 	@Override
 	public OutputModelObject visitItalics(BookishParser.ItalicsContext ctx) {
 		return new Italics(stripQuotes(ctx.getText()));
+	}
+
+	@Override
+	public OutputModelObject visitHyphen(BookishParser.HyphenContext ctx) {
+		return new Hyphen();
 	}
 
 	@Override

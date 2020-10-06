@@ -63,7 +63,7 @@ UL_ : '</ul>' ;
 TABLE : '<table>' ;
 TR : '<tr>' ;
 TH : '<th' -> pushMode(XML_MODE) ;
-TD : '<td>' ;
+TD : '<td' -> pushMode(XML_MODE) ;
 TABLE_ : '</table>' ;
 
 QUOTE : '"' ;
@@ -95,6 +95,8 @@ DOLLAR	  : '\\$' ;
 STAR	  : '\\*' ;
 LT		  : '\\<' ;
 
+HYPHEN	  : '--' ;
+
 COMMENT : [\t ]* '<!--' .*? '-->' [\t ]* -> skip ;
 
 LINE_BREAK : '\\\\' '\r'? '\n' ;
@@ -107,10 +109,10 @@ TAB : '\t' ;
 
 SPACE : ' ' ;
 
-TEXT : NOT_SPECIAL+ ;
+TEXT : NOT_SPECIAL+ | '-' ; // '-' handles case where we don't have '--'
 
 fragment
-NOT_SPECIAL : ~[$<[*\\"\]`\n\r\t] ;
+NOT_SPECIAL : ~[$<[*\\"\]`\n\r\t\-] ;
 
 // ----------------------------- MODES -------------------------------
 

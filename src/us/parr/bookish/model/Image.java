@@ -43,12 +43,20 @@ public class Image extends OutputModelObject {
 				}
 			}
 			attributes.put("src", src);
+			if ( !attributes.containsKey("url") ) {
+				attributes.put("url", src);
+			}
 		}
 		else {
 			System.err.println("No src attribute on IMG tag");
 		}
 		String width = attributes.get("width");
-		width = translator.processImageWidth(width);
-		attributes.put("width", width);
+		if ( width==null ) {
+			attributes.remove("width");
+		}
+		else {
+			width = translator.processImageWidth(width);
+			attributes.put("width", width);
+		}
 	}
 }
