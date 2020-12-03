@@ -181,6 +181,13 @@ public class Tool {
 			outputFileST.add("artifact", artifact);
 			outputFileST.add("title", chapter.title);
 			outputFileST.add("body", chapST);
+			if ( artifact.attributes.get("numbering")==null ||
+				 !artifact.attributes.get("numbering").equals("false") ) {
+				outputFileST.add("numbering", true);
+			}
+			else {
+				outputFileST.add("numbering", false);
+			}
 			fileSTs.add(outputFileST);
 		}
 

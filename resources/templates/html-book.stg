@@ -114,7 +114,7 @@ $footer()$
  *  'artifact' attribute available to all nested templates.
  *  There is no file attribute as OutputFile has no model object.
  */
-OutputFile(artifact, title, body) ::= <<
+OutputFile(artifact, title, body, numbering) ::= <<
 $header(title=title, css=artifact.cssFile,
         googletracking=artifact.attributes.googletracking,
         metadata=artifact.metadata)$
@@ -133,7 +133,7 @@ Book version $chapter.artifact.attributes.version$
 $endif$
 </div>
 
-<h1>$chapter.def.entityID$ $chapter.title$</h1>
+<h1>$if(numbering)$$chapter.def.entityID$ $endif$$chapter.title$</h1>
 
 <p>$chapter.artifact.attributes.author$</p>
 
@@ -202,7 +202,7 @@ PreAbstract(model, elements) ::= <<
 
 Section(model, content, subcontainers) ::= <<
 
-<h2 id="$model.anchor$">$model.def.entityID$ $model.title$</h2>
+<h2 id="$model.anchor$">$if(numbering)$$model.def.entityID$ $endif$$model.title$</h2>
 
 $content$
 
@@ -212,7 +212,7 @@ $subcontainers$
 
 SubSection(model, content, subcontainers) ::= <<
 
-<h3 id="$model.anchor$">$model.def.entityID$ $model.title$</h3>
+<h3 id="$model.anchor$">$if(numbering)$$model.def.entityID$ $endif$$model.title$</h3>
 
 $content$
 
@@ -222,7 +222,7 @@ $subcontainers$
 
 SubSubSection(model, content, subcontainers) ::= <<
 
-<h4 id="$model.anchor$">$model.def.entityID$ $model.title$</h4>
+<h4 id="$model.anchor$">$if(numbering)$$model.def.entityID$ $endif$$model.title$</h4>
 
 $content$
 
@@ -350,7 +350,7 @@ FigureRef(model) ::= "<b>Figure $model.def.enclosingChapter.index$.$model.def.in
 SideNoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 SideQuoteRef(model) ::= "<span class=sup>$model.def.index$</span>"
 
-SectionRef(model) ::= "<b>Section $model.def.entityID$</b> <i>$model.def.title$</i>"
+SectionRef(model) ::= "<b>Section$if(numbering)$ $model.def.entityID$$endif$</b> <i>$model.def.title$</i>"
 /* what is filename?
 <<
 <a href="#$model.def.label$"><b>Section $model.def.index$</b> <i>$model.def.title$</i></a>
