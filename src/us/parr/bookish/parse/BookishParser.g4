@@ -247,7 +247,7 @@ table_item : content? ;
 
 block_image : image ;
 
-image : IMG attrs[List.of("src","width","side","url","align","nocenter")] END_TAG ;
+image : IMG attrs[List.of("src","width","side","url","align","nocenter","alt")] END_TAG ;
 
 ref : REF ;
 
