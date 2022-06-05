@@ -41,6 +41,8 @@ import us.parr.lib.ParrtIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -110,6 +112,10 @@ public class Tool {
 		rootFile = option("rootfile");
 
 		inputDir = new File(rootFile).getParent();
+		if ( inputDir==null ) {
+			Path currentRelativePath = Paths.get("");
+			inputDir = currentRelativePath.toAbsolutePath().toString();
+		}
 		outputDir = option("o");
 		target = option("target");
 

@@ -1,0 +1,95 @@
+#toc {
+    background: #f9f9f9 none repeat scroll 0 0;
+    border: 1px solid #aaa;
+    display: table;
+    font-size: 83%;
+    padding: 10px;
+    width: auto;
+}
+.toc_title {
+    font-weight: 700;
+    text-align: center;
+}
+#toc li, #toc ul, #toc ul li{
+    list-style: outside none none !important;
+}
+#toc a {
+	color: #3A4145;
+	text-decoration: none;
+}
+#toc a:hover {
+	text-decoration: underline;
+}
+#author {
+        font-size: 16px;
+}
+.eqnvec {
+        font-family: Merriweather, serif;
+        font-weight: bold;
+        font-size: 14px;
+}
+.eqn {
+        font-family:  Merriweather, serif;
+        font-weight: normal;
+        font-style: italic;
+        font-size: 14px;
+}
+.blkeqn {
+		padding: 10px;
+		margin-left: 100px;
+}
+table {
+	border-spacing: 15px 0px
+}
+body {
+        font-family: "Merriweather", serif;
+        font-size: 14px;
+        letter-spacing: 0.01rem;
+        line-height: 1.5em;
+        color: #3A4145;
+        background: #FFFFFF;
+        max-width: 900px;
+        margin: auto;
+        -webkit-text-size-adjust: 100%;
+        margin: 8px !important;
+}
+p {
+        margin: 15px 5px 15px 0px;
+}
+.watermark {
+    font-size: 100%;
+    right: 10px;
+    opacity: 0.4;
+    color: BLACK;
+    position: absolute;
+    top: 30px;
+}
+@media (max-width: 415px) {
+        /* iphone 6+ 414x628 browser window, iphone 6 is 375 x 559 in browser */
+        .blkeqn {
+                padding: 0px;
+                margin-left: 0px;
+        }
+        body {
+                font-size: 14px;
+        }
+        .watermark {
+            position: static;
+        }
+}
+@media (max-width: 736px) {
+        /* iphone7+ 736 wide */
+        .blkeqn {
+                padding: 0px;
+                margin-left: 0px;
+        }
+        body {
+                font-size: 14px;
+        }
+        .watermark {
+            position: static;
+        }
+}
+h1 {
+        line-height: 1.2em;
+}

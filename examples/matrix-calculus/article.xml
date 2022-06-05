@@ -1,17 +1,18 @@
 <article
       googletracking="G-LKK44VKP71"
-      watermark="<a href='https://explained.ai/matrix-calculus/index.html'>Main article</a><br>Brought to you by <a href='http://explained.ai'>explained.ai</a>">
-<!--
-<article title="The Matrix Calculus You Need For Deep Learning"
-      author={[Terence Parr](https://www.linkedin.com/in/terence-parr/) and [Jeremy Howard](http://www.fast.ai/about/#jeremy)}>
--->
+      watermark="Brought to you by <a href='http://explained.ai'>explained.ai</a>"
+      numbering="false">
 
-<include file="matrix-calculus.xml">
+<include file="index.xml">
 
 <css file="css/article.css">
 
 <copyright>
+(Terence is a tech lead at Google and ex-Professor of computer/data science in [University of San Francisco's MS in Data Science program](https://www.usfca.edu/arts-sciences/graduate-programs/data-science). You might know Terence as the creator of the ANTLR parser generator. For more material, see Jeremy's [fast.ai courses](http://course.fast.ai) and University of San Francisco's Data Institute [in-person version of the deep learning course](https://www.usfca.edu/data-institute/certificates/deep-learning-part-one).)
+
 Please send comments, suggestions, or fixes to [Terence](mailto:terence@parr.us).
+
+[Printable version](https://arxiv.org/abs/1802.01528) (This HTML was generated from markup using [bookish](https://github.com/parrt/bookish))
 </copyright>
 
 <metadata title="The Matrix Calculus You Need For Deep Learning"
