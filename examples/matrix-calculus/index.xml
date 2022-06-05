@@ -619,13 +619,13 @@ Because $u_2(x,u) = x + u_1$ has multiple parameters, partial derivatives come i
 \begin{array}{lllllllll}
 	\frac{\partial u_1(x)}{\partial x} &=& 2x &&&(\text{same as }\frac{du_1(x)}{dx})\\
 	\frac{\partial u_2(x,u_1)}{\partial u_1} &=& \frac{\partial }{\partial u_1}(x + u_1) = 0 + 1 = 1\\
-	\frac{\partial u_2(x,u_1)}{\partial x} &\includegraphics[scale=.012]{../images/not-equal-icon.png}& \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1 & & &(\text{something's not quite right here!})\\
+	\frac{\partial u_2(x,u_1)}{\partial x} &\includegraphics[scale=.012]{../images/not-equal-icon.png} & \frac{\partial }{\partial x}(x + u_1) = 1 + 0 = 1 & & &(\text{something's not quite right here!})\\
 \end{array}
 \]
 
 Ooops! The partial $\frac{\partial u_2(x,u_1)}{\partial x}$ is wrong because it violates a key assumption for partial derivatives. When taking the partial derivative with respect to $x$, the other variables must not vary as $x$ varies. Otherwise, we could not act as if the other variables were constants. Clearly, though, $u_1(x)=x^2$ is a function of $x$ and therefore varies with $x$. $\frac{\partial u_2(x,u_1)}{\partial x} \neq 1 + 0$ because $\frac{\partial u_1(x)}{\partial x} \neq 0$. A quick look at the data flow diagram for $y=u_2(x,u_1)$ shows multiple paths from $x$ to $y$, thus, making it clear we need to consider direct and indirect (through $u_1(x)$) dependencies on $x$:
 
-<img src="images/plus-square.png" alt="plus-square.png" width="30%">
+<img src="images/plus-square.png" alt="plus-square.png" width="20%">
 
 A change in $x$ affects $y$ both as an operand of the addition and as the operand of the square operator. Here's an equation that describes how tweaks to $x$ affect the output:
 
