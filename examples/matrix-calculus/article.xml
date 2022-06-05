@@ -1,0 +1,23 @@
+<article
+      googletracking="G-LKK44VKP71"
+      watermark="<a href='https://explained.ai/matrix-calculus/index.html'>Main article</a><br>Brought to you by <a href='http://explained.ai'>explained.ai</a>">
+<!--
+<article title="The Matrix Calculus You Need For Deep Learning"
+      author={[Terence Parr](https://www.linkedin.com/in/terence-parr/) and [Jeremy Howard](http://www.fast.ai/about/#jeremy)}>
+-->
+
+<include file="matrix-calculus.xml">
+
+<css file="css/article.css">
+
+<copyright>
+Please send comments, suggestions, or fixes to [Terence](mailto:terence@parr.us).
+</copyright>
+
+<metadata title="The Matrix Calculus You Need For Deep Learning"
+	imageurl="https://explained.ai/matrix-calculus/images/neuron.png"
+	description="This paper is an attempt to explain all the matrix calculus you need in order to understand the training of deep neural networks. We assume no math knowledge beyond what you learned in calculus 1, and provide links to help you refresh the necessary math where needed."
+	url="https://explained.ai/matrix-calculus/index.html"
+	pagetype="article"
+	twitterhandle="@the_antlr_guy"
+>
